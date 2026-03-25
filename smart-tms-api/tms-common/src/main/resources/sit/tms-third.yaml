@@ -1,0 +1,28 @@
+esign:
+  host: https://smlopenapi.esign.cn
+  noticeDeveloperUrl: 'http://wwww.xxxx.net/api/esign/notice'
+ali:
+    ocr:
+      endpoint: ocr-api.cn-hangzhou.aliyuncs.com
+      access-key: xxxxxxx
+      secret-key: xxxxxxx
+    sms:
+      region-id:
+      api-url:
+      access-key:
+      secret-key:
+      sign-name:
+      template-code-map:
+        registerCode:
+        updatePwdCode:
+        authenticationCode:
+        verifyCodeLogin:
+baidu:
+  ocr:
+    client-key: xxxxxxx
+    client-secret: xxxxxxx
+  map:
+    ak: xxxxxxx
+ding:
+  app-key: xxxxxxx
+  app-secret: xxxxxxx

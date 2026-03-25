@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.material.goods.GoodsDao">
+    <update id="deleteGoods">
+        UPDATE t_material_goods
+        SET deleted_flag = #{deletedFlag}
+        WHERE goods_id = #{goodsId}
+    </update>
+
+    <select id="queryPage"
+            resultType="net.lab1024.tms.admin.module.business.material.goods.domain.GoodsVO">
+        SELECT y.*
+        FROM t_material_goods y
+        <where>
+            y.deleted_flag = #{queryForm.deletedFlag}
+            <if test="queryForm.keywords != null and queryForm.keywords != ''">
+                AND (
+                INSTR(y.goods_name,#{queryForm.keywords})
+                )
+            </if>
+            <if test="queryForm.enterpriseId != null">
+                AND y.enterprise_id = #{queryForm.enterpriseId}
+            </if>
+        </where>
+        <if test="queryForm.sortItemList == null or queryForm.sortItemList.size == 0">
+            ORDER BY y.sort asc ,y.create_time DESC
+        </if>
+    </select>
+    <select id="getDetail"
+            resultType="net.lab1024.tms.admin.module.business.material.goods.domain.GoodsVO">
+        SELECT *
+        FROM t_material_goods
+        WHERE goods_id = #{goodsId}
+          AND deleted_flag = #{deletedFlag}
+    </select>
+
+    <select id="queryList"
+            resultType="net.lab1024.tms.admin.module.business.material.goods.domain.GoodsVO">
+        SELECT *
+        FROM t_material_goods
+        WHERE deleted_flag = #{deletedFlag}
+        and enterprise_id = #{enterpriseId}
+        order by sort asc, goods_id desc
+    </select>
+</mapper>

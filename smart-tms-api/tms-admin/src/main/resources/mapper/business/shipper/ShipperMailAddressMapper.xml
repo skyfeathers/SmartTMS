@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.shipper.dao.ShipperMailAddressDao">
+
+    <update id="updateDeletedFlagById">
+        update t_shipper_mail_address set deleted_flag = #{deletedFlag} where mail_address_id = #{mailAddressId}
+    </update>
+
+    <update id="updateDeletedFlag">
+        update t_shipper_mail_address set deleted_flag = #{deletedFlag} where  shipper_id in
+        <foreach collection="shipperIdList" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </update>
+
+    <update id="updateDefaultFlagById">
+        update t_shipper_mail_address set default_flag = #{defaultFlag} where mail_address_id = #{mailAddressId}
+    </update>
+
+    <update id="updateOtherNotDefault">
+        update t_shipper_mail_address set default_flag = #{defaultFlag} where shipper_id = #{shipperId} and id != #{mailAddressId}
+    </update>
+
+    <delete id="deleteByShipperId">
+        delete from t_shipper_mail_address where shipper_id = #{shipperId}
+    </delete>
+
+
+    <select id="selectByShipperId"
+            resultType="net.lab1024.tms.common.module.business.shipper.domain.ShipperMailAddressEntity">
+        select * from t_shipper_mail_address where shipper_id = #{shipperId} and deleted_flag = #{deletedFlag}
+    </select>
+
+    <select id="selectDefault"
+            resultType="net.lab1024.tms.common.module.business.shipper.domain.ShipperMailAddressEntity">
+        select * from t_shipper_mail_address where default_flag = #{defaultFlag} and shipper_id = #{shipperId}
+    </select>
+
+    <select id="query"
+            resultType="net.lab1024.tms.admin.module.business.shipper.domain.dto.ShipperMailAddressDTO">
+        select
+        *
+        from t_shipper_mail_address
+        where shipper_id = #{queryDTO.shipperId}
+        and deleted_flag = #{queryDTO.deletedFlag}
+        order by default_flag desc
+    </select>
+
+
+</mapper>

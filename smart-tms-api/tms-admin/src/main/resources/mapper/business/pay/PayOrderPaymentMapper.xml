@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.pay.dao.PayOrderPaymentDao">
+
+
+    <select id="selectByPayOrderIdList"
+            resultType="net.lab1024.tms.common.module.business.pay.domain.PayOrderPaymentEntity">
+        select * from t_pay_order_payment where pay_order_id in
+        <foreach collection="payOrderIdList" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="queryByPage" resultType="net.lab1024.tms.common.module.business.pay.domain.PayOrderPaymentEntity">
+        select
+        pop.*
+        from t_pay_order_payment pop
+        left join t_pay_order po on po.pay_order_id = pop.pay_order_id
+        <where>
+            <if test="queryForm.enterpriseId != null">
+                and po.enterprise_id = #{queryForm.enterpriseId}
+            </if>
+            <if test="queryForm.verificationStartTime != null">
+                and DATE_FORMAT(pop.pay_time, '%Y-%m-%d') &gt;= #{queryForm.verificationStartTime}
+            </if>
+            <if test="queryForm.verificationEndTime != null">
+                and DATE_FORMAT(pop.pay_time, '%Y-%m-%d') &lt;= #{queryForm.verificationEndTime}
+            </if>
+            <if test="queryForm.startTime != null">
+                and DATE_FORMAT(pop.create_time, '%Y-%m-%d') &gt;= #{queryForm.startTime}
+            </if>
+            <if test="queryForm.endTime != null">
+                and DATE_FORMAT(pop.create_time, '%Y-%m-%d') &lt;= #{queryForm.endTime}
+            </if>
+            <if test="queryForm.payOrderExcludeAuditStatus != null">
+                and po.audit_status != #{queryForm.payOrderExcludeAuditStatus}
+            </if>
+        </where>
+    </select>
+
+    <select id="sumReceiveAmount" resultType="java.math.BigDecimal">
+        select IFNULL(SUM(po.payable_total_amount),0)
+        from t_pay_order po
+        <where>
+            <if test="queryForm.enterpriseId != null">
+                and po.enterprise_id = #{queryForm.enterpriseId}
+            </if>
+            <if test="queryForm.verificationStartTime != null">
+                and DATE_FORMAT(po.pay_time, '%Y-%m-%d') &gt;= #{queryForm.verificationStartTime}
+            </if>
+            <if test="queryForm.verificationEndTime != null">
+                and DATE_FORMAT(po.pay_time, '%Y-%m-%d') &lt;= #{queryForm.verificationEndTime}
+            </if>
+            <if test="queryForm.startTime != null">
+                and DATE_FORMAT(po.create_time, '%Y-%m-%d') &gt;= #{queryForm.startTime}
+            </if>
+            <if test="queryForm.endTime != null">
+                and DATE_FORMAT(po.create_time, '%Y-%m-%d') &lt;= #{queryForm.endTime}
+            </if>
+            <if test="queryForm.payOrderExcludeAuditStatus != null">
+                and po.audit_status != #{queryForm.payOrderExcludeAuditStatus}
+            </if>
+        </where>
+    </select>
+</mapper>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.driver.module.business.waybill.dao.WaybillDao">
+
+    <select id="selectWaybillPage" resultType="net.lab1024.tms.driver.module.business.waybill.domain.vo.WaybillVO">
+        SELECT w.*,
+               o.order_no,
+               o.business_type_code,
+               o.container_location,
+               o.placing_location,
+               o.unloading_location,
+               o.return_container_location,
+               o.load_time
+        FROM t_waybill w
+        LEFT JOIN t_order o ON w.order_id = o.order_id
+        LEFT JOIN t_shipper s ON s.shipper_id = w.shipper_id
+        <where>
+            w.driver_id = #{queryForm.driverId}
+            <if test="queryForm.enterpriseId != null">
+                AND w.enterprise_id = #{queryForm.enterpriseId}
+            </if>
+            <if test="queryForm.keywords != null and queryForm.keywords != ''">
+                AND ( INSTR(w.waybill_number, #{queryForm.keywords})
+                OR INSTR(o.order_no, #{queryForm.keywords})
+                OR INSTR(w.container_number, #{queryForm.keywords})
+                OR INSTR(w.lead_seal_number, #{queryForm.keywords}) )
+            </if>
+            <if test="queryForm.waybillStatusList != null and queryForm.waybillStatusList.size > 0">
+                AND w.waybill_status IN
+                <foreach collection="queryForm.waybillStatusList" open="(" close=")" separator="," item="status">
+                    #{status}
+                </foreach>
+            </if>
+            <if test="queryForm.shipperId != null">
+                AND w.shipper_id = #{queryForm.shipperId}
+            </if>
+            <if test="queryForm.vehicleId != null">
+                AND w.vehicle_id = #{queryForm.vehicleId}
+            </if>
+            <if test="queryForm.startTime != null">
+                AND DATE_FORMAT(w.create_time, '%Y-%m-%d') &gt;= #{queryForm.startTime}
+            </if>
+            <if test="queryForm.endTime != null">
+                AND DATE_FORMAT(w.create_time, '%Y-%m-%d') &lt;= #{queryForm.endTime}
+            </if>
+        </where>
+        <if test="queryForm.sortItemList == null or queryForm.sortItemList.size == 0">
+            order by w.waybill_id desc
+        </if>
+    </select>
+
+    <select id="selectWaybillDetail"
+            resultType="net.lab1024.tms.driver.module.business.waybill.domain.vo.WaybillVO">
+        SELECT w.*,
+               o.order_no,
+               o.business_type_code,
+               o.container_location,
+               o.placing_location,
+               o.unloading_location,
+               o.return_container_location,
+               o.load_time
+        FROM t_waybill w
+        LEFT JOIN t_order o ON w.order_id = o.order_id
+        WHERE w.waybill_id = #{waybillId}
+    </select>
+
+    <select id="selectWaybillCount" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM t_waybill
+        WHERE driver_id = #{driverId}
+        AND waybill_status != #{excludeStatus}
+        <if test="waybillStatusList != null and waybillStatusList.size > 0">
+            AND waybill_status IN
+            <foreach collection="waybillStatusList" item="status" open="(" close=")" separator=",">
+                #{status}
+            </foreach>
+        </if>
+    </select>
+
+</mapper>

@@ -1,0 +1,2 @@
+org.springframework.boot.env.EnvironmentPostProcessor=\
+  net.lab1024.tms.common.config.PostProcessorConfig

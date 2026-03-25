@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.bracket.BracketDao">
+
+    <select id="queryByPage" resultType="net.lab1024.tms.admin.module.business.bracket.domain.vo.BracketListVO">
+        SELECT b.*,
+               te.actual_name as managerName
+        FROM t_bracket b
+        left join t_employee te on b.manager_id = te.employee_id
+        WHERE b.deleted_flag = #{queryForm.deletedFlag}
+        <if test="queryForm.keyWords != null and queryForm.keyWords != ''">
+        AND (INSTR(b.bracket_no,#{queryForm.keyWords})
+        or INSTR(b.shorthand_code,#{queryForm.keyWords})
+        or INSTR(b.create_user_name,#{queryForm.keyWords})
+        )
+        </if>
+        <if test="queryForm.bracketNo != null and queryForm.bracketNo != ''">
+            AND INSTR(b.bracket_no,#{queryForm.bracketNo})
+        </if>
+        <if test="queryForm.managerId != null">
+            AND b.manager_id = #{queryForm.managerId}
+        </if>
+        <if test="queryForm.enterpriseId != null">
+            AND b.enterprise_id = #{queryForm.enterpriseId}
+        </if>
+        <if test="queryForm.shorthandCode != null and queryForm.shorthandCode != ''">
+            AND INSTR(b.shorthand_code,#{queryForm.shorthandCode})
+        </if>
+        <if test="queryForm.type != null and queryForm.type != ''">
+            AND INSTR(b.type,#{queryForm.type})
+        </if>
+        <if test="queryForm.weightStart != null">
+            AND b.weight &gt;= #{queryForm.weightStart}
+        </if>
+        <if test="queryForm.weightEnd != null">
+            AND b.weight &lt;= #{queryForm.weightEnd}
+        </if>
+        <if test="queryForm.tonnageStart != null">
+            AND b.tonnage &gt;= #{queryForm.tonnageStart}
+        </if>
+        <if test="queryForm.tonnageEnd != null">
+            AND b.tonnage &lt;= #{queryForm.tonnageEnd}
+        </if>
+        <if test="queryForm.createUserType != null">
+            AND b.create_user_type = #{queryForm.createUserType}
+        </if>
+        <if test="queryForm.createUserName != null and queryForm.createUserName != ''">
+            AND INSTR(b.create_user_name,#{queryForm.createUserName})
+        </if>
+        <if test="queryForm.auditStatus != null">
+            AND b.audit_status = #{queryForm.auditStatus}
+        </if>
+        <if test="queryForm.createStartTime != null">
+            and DATE_FORMAT(b.create_time, '%Y-%m-%d') &gt;= #{queryForm.createStartTime}
+        </if>
+        <if test="queryForm.createEndTime != null">
+            and DATE_FORMAT(b.create_time, '%Y-%m-%d') &lt;= #{queryForm.createEndTime}
+        </if>
+        <if test="queryForm.excludeIdList != null and queryForm.excludeIdList.size > 0">
+            AND b.bracket_id not in
+            <foreach collection="queryForm.excludeIdList" item="item" open="(" close=")" index="index" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="queryForm.includeIdList != null and queryForm.includeIdList.size > 0">
+            AND b.bracket_id in
+            <foreach collection="queryForm.includeIdList" item="item" open="(" close=")" index="index" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        GROUP BY b.bracket_id
+        <if test="queryForm.sortItemList == null or queryForm.sortItemList.size == 0">
+            ORDER BY b.create_time DESC
+        </if>
+    </select>
+
+    <update id="updateDeletedFlagById">
+        update t_bracket set deleted_flag = #{deletedFlag} , update_user_id = #{updateUserId} where bracket_id in
+        <foreach collection="bracketIdList" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </update>
+
+    <select id="selectList" resultType="net.lab1024.tms.common.module.business.bracket.domain.BracketEntity">
+        SELECT * FROM t_bracket
+        WHERE bracket_id IN
+        <foreach collection="list" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+        <if test="auditStatus != null">
+            AND audit_status = #{auditStatus}
+        </if>
+        <if test="deletedFlag != null">
+            AND deleted_flag = #{deletedFlag}
+        </if>
+    </select>
+
+    <update id="batchUpdateAuditStatus">
+        UPDATE t_bracket SET audit_status = #{auditStatus},audit_remark = #{auditRemark}
+        WHERE bracket_id IN
+        <foreach collection="list" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </update>
+
+    <update id="batchUpdateManager">
+        UPDATE t_bracket SET manager_id = #{managerId}
+        WHERE bracket_id IN
+        <foreach collection="list" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </update>
+
+    <select id="selectByNoExcludeIds"
+            resultType="net.lab1024.tms.common.module.business.bracket.domain.BracketEntity">
+        select * from t_bracket where enterprise_id = #{enterpriseId} and bracket_no = #{bracketNo} and deleted_flag = #{deletedFlag}
+        <if test="excludeIds != null and excludeIds.size > 0">
+            and bracket_id not in
+            <foreach collection="excludeIds" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+</mapper>

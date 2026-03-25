@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.fixedasset.module.business.location.LocationDao">
+    <update id="deleteLocation">
+        UPDATE t_location
+        SET deleted_flag = #{deletedFlag}
+        WHERE location_id = #{locationId}
+    </update>
+    <select id="queryByLocationName"
+            resultType="net.lab1024.tms.fixedasset.module.business.location.domain.LocationEntity">
+        SELECT *
+        FROM t_location
+        WHERE location_name = #{locationName}
+        AND deleted_flag = #{deletedFlag}
+        AND enterprise_id = #{enterpriseId}
+        <if test="excludeLocationId != null">
+            AND location_id != #{excludeLocationId}
+        </if>
+    </select>
+    <select id="queryPage"
+            resultType="net.lab1024.tms.fixedasset.module.business.location.domain.LocationVO">
+        SELECT *
+        FROM t_location
+        <where>
+            deleted_flag = #{queryForm.deletedFlag}
+            <if test="queryForm.keywords != null and queryForm.keywords != ''">
+                AND (INSTR(location_name,#{queryForm.keywords}) OR
+                    INSTR(create_user_name,#{queryForm.keywords})
+                    )
+            </if>
+            <if test="queryForm.type != null and queryForm.type != ''">
+                AND type = #{queryForm.type}
+            </if>
+            <if test="queryForm.enterpriseId != null">
+                AND enterprise_id = #{queryForm.enterpriseId}
+            </if>
+            <if test="queryForm.disabledFlag != null">
+                AND disabled_flag = #{queryForm.disabledFlag}
+            </if>
+        </where>
+        <if test="queryForm.sortItemList == null or queryForm.sortItemList.size == 0">
+            ORDER BY create_time DESC
+        </if>
+    </select>
+    <select id="getDetail"
+            resultType="net.lab1024.tms.fixedasset.module.business.location.domain.LocationVO">
+        SELECT *
+        FROM t_location tc
+        WHERE location_id = #{locationId}
+          AND deleted_flag = #{deletedFlag}
+    </select>
+    <select id="queryList"
+            resultType="net.lab1024.tms.fixedasset.module.business.location.domain.LocationVO">
+        SELECT *
+        FROM t_location
+        WHERE deleted_flag = #{deletedFlag} AND disabled_flag = #{disabledFlag}  AND enterprise_id = #{enterpriseId}
+        order by location_id desc
+    </select>
+
+
+
+    <select id="selectByLocationIdList"
+            resultType="net.lab1024.tms.fixedasset.module.business.location.domain.LocationEntity">
+        SELECT *
+        FROM t_location
+        WHERE deleted_flag = #{deletedFlag} AND disabled_flag = #{disabledFlag}
+        AND location_id in
+        <foreach collection="locationIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </select>
+</mapper>

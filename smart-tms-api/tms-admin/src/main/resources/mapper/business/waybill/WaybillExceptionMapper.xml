@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.waybill.dao.WaybillExceptionDao">
+
+    <select id="selectByWaybillIdList"
+            resultType="net.lab1024.tms.common.module.business.waybill.domain.entity.WaybillExceptionEntity">
+        SELECT * FROM t_waybill_exception
+        WHERE waybill_id IN
+        <foreach collection="waybillIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+        AND deleted_flag = #{deletedFlag}
+    </select>
+</mapper>

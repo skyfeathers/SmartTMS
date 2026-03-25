@@ -1,0 +1,14 @@
+server:
+  servlet:
+    context-path: '/'
+  port: 60003
+  tomcat:
+    basedir: /home/logs/tms/driver/tomcat-logs
+project:
+  name: tms-driver
+  module: net.lab1024.tms.driver.module
+swagger:
+  host: localhost/api/
+  tag-class: net.lab1024.tms.driver.constant.DriverSwaggerTagConst
+redis:
+  project-name: tms-driver

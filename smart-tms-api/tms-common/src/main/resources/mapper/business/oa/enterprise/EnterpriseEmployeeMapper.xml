@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.common.module.business.oa.enterprise.dao.CommonEnterpriseEmployeeDao">
+
+    <select id="selectEnterpriseIdByEmployeeId" resultType="java.lang.Long">
+        select enterprise_id from t_oa_enterprise_employee where employee_id = #{employeeId}
+    </select>
+
+    <select id="selectEmployeeIdByEnterpriseIdList" resultType="java.lang.Long">
+        select employee_id from t_oa_enterprise_employee where enterprise_id in
+        <foreach collection="enterpriseIdList" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </select>
+
+</mapper>

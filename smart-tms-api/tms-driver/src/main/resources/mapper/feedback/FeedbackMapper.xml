@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.driver.module.business.feedback.dao.FeedbackDao">
+
+    <select id="queryPage"
+            resultType="net.lab1024.tms.driver.module.business.feedback.domain.vo.FeedbackQueryVO">
+        SELECT feedback_id, feedback_content, feedback_attachment, create_time, update_time
+        FROM t_feedback
+        WHERE create_user_id = #{queryForm.driverId} AND create_user_type = #{queryForm.createUserType}
+        <if test="queryForm.searchWord != null and queryForm.searchWord != '' ">
+            AND INSTR(feedback_content, #{queryForm.searchWord})
+        </if>
+    </select>
+
+</mapper>

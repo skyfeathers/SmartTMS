@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.waybill.dao.WaybillReceiveCostDao">
+
+    <select id="selectByWaybillIdList"
+            resultType="net.lab1024.tms.common.module.business.waybill.domain.entity.WaybillReceiveCostEntity">
+        select * from t_waybill_receive_cost where waybill_id in
+        <foreach collection="waybillIdList" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="sumByWaybillIdListAndType"
+            resultType="net.lab1024.tms.admin.module.business.waybill.domain.vo.WaybillCostSumVO">
+        SELECT
+        waybill_id,
+        SUM( cost_amount ) costAmount,
+        cost_item_category
+        FROM
+        t_waybill_receive_cost
+        where
+        waybill_id in
+        <foreach collection="waybillIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+        GROUP BY
+        waybill_id,
+        cost_item_category
+
+    </select>
+
+    <select id="selectByWaybillIdListAndTypeCategory"
+            resultType="net.lab1024.tms.common.module.business.waybill.domain.entity.WaybillReceiveCostEntity">
+        select * from t_waybill_receive_cost where waybill_id in
+        <foreach collection="waybillIdList" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+        AND cost_item_category = #{costItemCategory}
+        AND cost_item_type = #{costItemType}
+    </select>
+
+    <select id="selectByWaybillIdListAndCategoryList"
+            resultType="net.lab1024.tms.common.module.business.waybill.domain.entity.WaybillReceiveCostEntity">
+        select * from t_waybill_receive_cost where waybill_id in
+        <foreach collection="waybillIdList" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+        AND cost_item_category in
+       <foreach collection="costItemCategoryList" item="item" open="(" close=")" separator=",">
+            #{item}
+       </foreach>
+    </select>
+</mapper>

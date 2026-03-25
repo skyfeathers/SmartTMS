@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.waybill.dao.WaybillOilCardRechargeApplyDao">
+
+    <select id="selectByWaybillId"
+            resultType="net.lab1024.tms.admin.module.business.waybill.domain.vo.WaybillOilCardRechargeApplyVO">
+        select
+        ra.*,
+        td.driver_name,
+        tv.vehicle_number,
+        tw.waybill_number,
+        toc.oil_card_no
+        from t_waybill_oil_card_recharge_apply ra
+        left join t_driver td on ra.driver_id = td.driver_id
+        left join t_vehicle tv on ra.vehicle_id = tv.vehicle_id
+        left join t_waybill tw on ra.waybill_id = tw.waybill_id
+        left join t_oil_card toc on ra.oil_card_id = toc.oil_card_id
+        where ra.waybill_id in
+        <foreach collection="waybillIdList" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </select>
+
+
+    <select id="selectWaybillOilCardRechargeAmount"
+            resultType="net.lab1024.tms.admin.module.business.waybill.domain.dto.WaybillOilCardRechargeAmountDTO">
+        select
+            waybill_id,
+            sum(amount) as amount
+        from t_waybill_oil_card_recharge_apply
+        where waybill_id in
+        <foreach collection="waybillIdList" open="(" close=")" item="item" separator=",">
+            #{item}
+        </foreach>
+        and audit_status in
+        <foreach collection="auditStatusList" open="(" close=")" item="item" separator=",">
+            #{item}
+        </foreach>
+        <if test="rechargeFlag != null">
+            and recharge_flag = #{rechargeFlag}
+        </if>
+        and disabled_flag = #{disabledFlag}
+        group by waybill_id
+    </select>
+
+    <select id="selectValidByWaybillId" resultType="net.lab1024.tms.common.module.business.waybill.domain.entity.WaybillOilCardRechargeApplyEntity">
+        select *
+        from t_waybill_oil_card_recharge_apply
+        where waybill_id = #{waybillId}
+        and audit_status in
+        <foreach collection="auditStatusList" open="(" close=")" item="item" separator=",">
+            #{item}
+        </foreach>
+        and disabled_flag = #{disabledFlag}
+    </select>
+
+    <select id="selectWaybillOilCardSubmitAmount"
+            resultType="net.lab1024.tms.admin.module.business.waybill.domain.dto.WaybillOilCardRechargeAmountDTO">
+        select
+        waybill_id,
+        sum(amount) as amount
+        from t_waybill_oil_card_recharge_apply
+        where waybill_id in
+        <foreach collection="waybillIdList" open="(" close=")" item="item" separator=",">
+            #{item}
+        </foreach>
+        and audit_status in
+        <foreach collection="auditStatusList" open="(" close=")" item="item" separator=",">
+            #{item}
+        </foreach>
+        and disabled_flag = #{disabledFlag}
+        group by waybill_id
+    </select>
+
+    <select id="selectAmountByOilCardList"
+            resultType="net.lab1024.tms.admin.module.business.oilcard.domain.dto.OilCardAmountDTO">
+        select
+        oil_card_id,
+        sum(amount) as balance
+        from t_waybill_oil_card_recharge_apply
+        where oil_card_id in
+        <foreach collection="oilCardIdList" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+        and audit_status = #{auditStatus}
+        and disabled_flag = #{disabledFlag}
+        and recharge_flag = #{rechargeFlag}
+        GROUP BY oil_card_id
+    </select>
+</mapper>

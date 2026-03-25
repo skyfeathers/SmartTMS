@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.order.dao.OrderDao">
+
+    <select id="queryByPage" resultType="net.lab1024.tms.admin.module.business.order.domain.vo.OrderVO">
+        SELECT
+        o.*,
+        s.short_name,
+        s.consignor,
+        schedule.actual_name scheduleName,
+        oe.enterprise_name
+        FROM
+        t_order o
+        LEFT JOIN t_shipper s ON s.shipper_id = o.shipper_id
+        LEFT JOIN t_employee schedule ON schedule.employee_id = o.schedule_id
+        LEFT JOIN t_oa_enterprise oe ON oe.enterprise_id = o.enterprise_id
+        <if test="(queryForm.keywords != null and queryForm.keywords != '') or (queryForm.cargoTypeClassificationCode != null and queryForm.cargoTypeClassificationCode != '')">
+            LEFT JOIN t_order_goods og on og.order_id = o.order_id
+        </if>
+        <where>
+            o.deleted_flag = #{queryForm.deletedFlag}
+            <if test="queryForm.keywords != null and queryForm.keywords != ''">
+            AND (INSTR(o.order_no,#{queryForm.keywords})
+            or INSTR(o.create_user_name,#{queryForm.keywords})
+            or INSTR(og.goods_name,#{queryForm.keywords})
+            )
+            </if>
+            <if test="queryForm.orderNo != null and queryForm.orderNo != ''">
+                AND INSTR(o.order_no,#{queryForm.orderNo})
+            </if>
+            <if test="queryForm.shipperContact != null and queryForm.shipperContact != ''">
+                AND INSTR(o.shipper_contact,#{queryForm.shipperContact})
+            </if>
+            <if test="queryForm.consignor != null and queryForm.consignor != ''">
+                AND INSTR(s.consignor,#{queryForm.consignor})
+            </if>
+            <if test="queryForm.shortName != null and queryForm.shortName != ''">
+                AND INSTR(s.short_name,#{queryForm.shortName})
+            </if>
+            <if test="queryForm.splitTransportFlag != null">
+                AND o.split_transport_flag = #{queryForm.splitTransportFlag}
+            </if>
+            <if test="queryForm.createUserName != null and queryForm.createUserName != ''">
+                AND INSTR(o.create_user_name,#{queryForm.createUserName})
+            </if>
+            <if test="queryForm.containerLocation != null and queryForm.containerLocation != ''">
+                AND INSTR(o.container_location,#{queryForm.containerLocation})
+            </if>
+            <if test="queryForm.placingLocation != null and queryForm.placingLocation != ''">
+                AND INSTR(o.placing_location,#{queryForm.placingLocation})
+            </if>
+            <if test="queryForm.unloadingLocation != null and queryForm.unloadingLocation != ''">
+                AND INSTR(o.unloading_location,#{queryForm.unloadingLocation})
+            </if>
+            <if test="queryForm.returnContainerLocation != null and queryForm.returnContainerLocation != ''">
+                AND INSTR(o.return_container_location,#{queryForm.returnContainerLocation})
+            </if>
+            <if test="queryForm.shipperId != null">
+                AND o.shipper_id = #{queryForm.shipperId}
+            </if>
+            <if test="queryForm.managerIdList != null and queryForm.managerIdList.size > 0">
+                AND o.manager_id IN
+                <foreach collection="queryForm.managerIdList" open="(" close=")" item="item" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="queryForm.latestPackingTimeStart != null">
+                and DATE_FORMAT(o.latest_packing_time, '%Y-%m-%d') &gt;= #{queryForm.latestPackingTimeStart}
+            </if>
+            <if test="queryForm.latestPackingTimeEnd != null">
+                and DATE_FORMAT(o.latest_packing_time, '%Y-%m-%d') &lt;= #{queryForm.latestPackingTimeEnd}
+            </if>
+            <if test="queryForm.loadTimeStart != null">
+                and DATE_FORMAT(o.load_time, '%Y-%m-%d') &gt;= #{queryForm.loadTimeStart}
+            </if>
+            <if test="queryForm.loadTimeEnd != null">
+                and DATE_FORMAT(o.load_time, '%Y-%m-%d') &lt;= #{queryForm.loadTimeStart}
+            </if>
+            <if test="queryForm.unloadTimeStart != null">
+                and DATE_FORMAT(o.unload_time, '%Y-%m-%d') &gt;= #{queryForm.unloadTimeStart}
+            </if>
+            <if test="queryForm.unloadTimeEnd != null">
+                and DATE_FORMAT(o.unload_time, '%Y-%m-%d') &lt;= #{queryForm.unloadTimeStart}
+            </if>
+            <if test="queryForm.businessTypeCode != null">
+                AND o.business_type_code = #{queryForm.businessTypeCode}
+            </if>
+            <if test="queryForm.orderType != null">
+                AND o.order_type = #{queryForm.orderType}
+            </if>
+            <if test="queryForm.cargoTypeClassificationCode != null and queryForm.cargoTypeClassificationCode != ''">
+                AND og.goods_type = #{queryForm.cargoTypeClassificationCode}
+            </if>
+
+            <if test="queryForm.containerBusinessTypeId != null">
+                AND o.container_business_type_id = #{queryForm.containerBusinessTypeId}
+            </if>
+
+            <if test="queryForm.status != null">
+                AND o.status = #{queryForm.status}
+            </if>
+
+            <if test="queryForm.areaId != null and queryForm.areaId != ''">
+                AND o.area_id = #{queryForm.areaId}
+            </if>
+
+            <if test="queryForm.cabinetId != null">
+                AND o.cabinet_id = #{queryForm.cabinetId}
+            </if>
+
+            <if test="queryForm.scheduleId != null">
+                AND o.schedule_id = #{queryForm.scheduleId}
+            </if>
+
+            <if test="queryForm.scheduleFlag != null">
+                AND o.schedule_flag = #{queryForm.scheduleFlag}
+            </if>
+
+            <if test="queryForm.enterpriseId != null">
+                AND o.enterprise_id = #{queryForm.enterpriseId}
+            </if>
+
+            <if test="queryForm.startTime != null">
+                and DATE_FORMAT(o.create_time, '%Y-%m-%d') &gt;= #{queryForm.startTime}
+            </if>
+            <if test="queryForm.endTime != null">
+                and DATE_FORMAT(o.create_time, '%Y-%m-%d') &lt;= #{queryForm.endTime}
+            </if>
+            <if test="queryForm.excludeOrderStatus != null">
+                and o.status != #{queryForm.excludeOrderStatus}
+            </if>
+        </where>
+        <if test="queryForm.keywords != null and queryForm.keywords != ''">
+            GROUP BY o.order_id
+        </if>
+        <if test="queryForm.sortItemList == null or queryForm.sortItemList.size == 0">
+            ORDER BY o.create_time DESC
+        </if>
+    </select>
+
+    <select id="getOrder" resultType="net.lab1024.tms.admin.module.business.order.domain.vo.OrderVO">
+        SELECT
+        o.*,
+        s.consignor,
+        s.short_name,
+        schedule.actual_name scheduleName,
+        oe.enterprise_name,
+        tr.transport_route_name
+        FROM
+        t_order o
+        LEFT JOIN t_shipper s ON s.shipper_id = o.shipper_id
+        LEFT JOIN t_employee schedule ON schedule.employee_id = o.schedule_id
+        LEFT JOIN t_oa_enterprise oe ON oe.enterprise_id = o.enterprise_id
+        LEFT JOIN t_transport_route tr on tr.transport_route_id = o.transport_route_id
+        WHERE order_id = #{orderId} AND o.deleted_flag = #{deletedFlag}
+    </select>
+
+    <select id="selectByOrderIdList" resultType="net.lab1024.tms.common.module.business.order.domain.OrderEntity">
+        select  * from t_order where deleted_flag = #{deletedFlag}
+        AND order_id in
+        <foreach collection="orderIdList" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="selectByIdList" resultType="net.lab1024.tms.admin.module.business.order.domain.vo.OrderVO">
+        SELECT
+            o.*,
+            s.consignor,
+            s.short_name,
+            schedule.actual_name scheduleName,
+            oe.enterprise_name
+        FROM
+            t_order o
+        LEFT JOIN t_shipper s ON s.shipper_id = o.shipper_id
+        LEFT JOIN t_employee schedule ON schedule.employee_id = o.schedule_id
+        LEFT JOIN t_oa_enterprise oe ON oe.enterprise_id = o.enterprise_id
+        where o.order_id in
+        <foreach collection="orderIdList" open="(" close=")" item="item" separator=",">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="countByShipperAndYear"
+            resultType="net.lab1024.tms.admin.module.business.reportform.shipper.domain.vo.ShipperCountMonthVO">
+        SELECT
+            shipper_id,
+            DATE_FORMAT( create_time, '%Y-%m' ) month,
+            COUNT( 1 ) count
+        FROM
+            t_order
+        WHERE
+            status != #{queryForm.excludeStatus}
+            AND DATE_FORMAT( create_time, '%Y' ) = #{queryForm.year}
+            AND enterprise_id = #{queryForm.enterpriseId}
+            <if test="shipperIdList != null and shipperIdList.size > 0">
+                AND shipper_id IN
+                <foreach collection="shipperIdList" separator="," open="(" close=")" item="item">
+                    #{item}
+                </foreach>
+            </if>
+        GROUP BY
+            shipper_id,
+            DATE_FORMAT( create_time, '%Y-%m' )
+    </select>
+
+    <select id="totalByShipperAndYear"
+            resultType="net.lab1024.tms.admin.module.business.reportform.shipper.domain.vo.ShipperCountMonthVO">
+        SELECT
+        DATE_FORMAT( create_time, '%Y-%m' ) month,
+        COUNT( 1 ) count
+        FROM
+        t_order
+        where status != #{queryForm.excludeStatus} and deleted_flag = #{queryForm.deletedFlag}
+        AND DATE_FORMAT( create_time, '%Y' ) = #{queryForm.year}
+        AND enterprise_id = #{queryForm.enterpriseId}
+        <if test="shipperIdList != null and shipperIdList.size > 0">
+            AND shipper_id in
+            <foreach collection="shipperIdList" separator="," item="item" open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+        GROUP BY
+        DATE_FORMAT( create_time, '%Y-%m' )
+    </select>
+
+    <select id="queryShipperByPage"
+            resultType="net.lab1024.tms.admin.module.business.shipper.domain.vo.ShipperSimpleVO">
+        select
+        o.shipper_id,
+        s.consignor,
+        s.short_name,
+        s.disable_flag
+        from t_order o
+        left join t_shipper s on o.shipper_id = s.shipper_id
+        where o.status != #{queryForm.excludeStatus} and o.deleted_flag = #{queryForm.deletedFlag}
+        <if test="queryForm.keywords != null and queryForm.keywords != ''">
+            AND (
+            INSTR(s.consignor,#{queryForm.keywords})
+            or INSTR(s.short_name,#{queryForm.keywords})
+            )
+        </if>
+        <if test="queryForm.enterpriseId != null">
+            AND o.enterprise_id = #{queryForm.enterpriseId}
+        </if>
+        group by o.shipper_id
+    </select>
+
+    <select id="selectByCustomerService"
+            resultType="net.lab1024.tms.admin.module.business.reportform.employee.domain.vo.EmployeeCustomerServiceOrderDTO">
+        SELECT order_id,
+               status OrderStatus,
+               create_user_id customerServiceId
+        FROM t_order
+        <where>
+            <if test="queryForm.enterpriseId != null">
+                AND enterprise_id = #{queryForm.enterpriseId}
+            </if>
+            <if test="queryForm.startDate != null">
+                AND DATE_FORMAT(create_time, '%Y-%m-%d') &gt;= #{queryForm.startDate}
+            </if>
+            <if test="queryForm.endDate != null">
+                AND DATE_FORMAT(create_time, '%Y-%m-%d') &lt;= #{queryForm.endDate}
+            </if>
+            <if test="queryForm.employeeIdList != null and queryForm.employeeIdList.size > 0">
+                AND create_user_id IN
+                <foreach collection="queryForm.employeeIdList" open="(" close=")" item="item" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <select id="selectBySchedule"
+            resultType="net.lab1024.tms.admin.module.business.reportform.employee.domain.dto.EmployeeScheduleOrderDTO">
+        SELECT order_id,
+               schedule_id
+        FROM t_order
+        WHERE schedule_flag = #{queryForm.scheduleFlag}
+          and status != #{queryForm.excludeOrderStatus}
+        <if test="queryForm.enterpriseId != null">
+            AND enterprise_id = #{queryForm.enterpriseId}
+        </if>
+        <if test="queryForm.startDate != null">
+            AND DATE_FORMAT(create_time, '%Y-%m-%d') &gt;= #{queryForm.startDate}
+        </if>
+        <if test="queryForm.endDate != null">
+            AND DATE_FORMAT(create_time, '%Y-%m-%d') &lt;= #{queryForm.endDate}
+        </if>
+        <if test="queryForm.employeeIdList != null and queryForm.employeeIdList.size > 0">
+            AND schedule_id IN
+            <foreach collection="queryForm.employeeIdList" open="(" close=")" item="item" separator=",">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="selectCancelByShipper"
+            resultType="net.lab1024.tms.admin.module.business.reportform.shipper.domain.dto.ShipperOrderCountDTO">
+        SELECT shipper_id,
+               COUNT(1) orderCount
+        FROM t_order
+        WHERE status = #{queryForm.orderStatus}
+        <if test="queryForm.enterpriseId != null">
+            AND enterprise_id = #{queryForm.enterpriseId}
+        </if>
+        <if test="queryForm.startDate != null">
+            AND DATE_FORMAT(create_time, '%Y-%m-%d') &gt;= #{queryForm.startDate}
+        </if>
+        <if test="queryForm.endDate != null">
+            AND DATE_FORMAT(create_time, '%Y-%m-%d') &lt;= #{queryForm.endDate}
+        </if>
+        <if test="queryForm.shipperIdList != null and queryForm.shipperIdList.size > 0">
+            AND shipper_id IN
+            <foreach collection="queryForm.shipperIdList" open="(" close=")" item="item" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        GROUP BY shipper_id
+    </select>
+
+    <select id="selectIdByNumber" resultType="java.lang.Long">
+        select order_id from t_order where order_no = #{orderNo}
+    </select>
+
+    <select id="countOrder" resultType="java.lang.Integer">
+        select count(1) from t_order where  status != #{excludeStatus} and enterprise_id = #{enterpriseId}
+    </select>
+
+</mapper>

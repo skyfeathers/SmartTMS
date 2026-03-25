@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.receive.dao.ReceiveOrderWaybillDao">
+
+
+    <select id="sumVerificationAmount"
+            resultType="net.lab1024.tms.admin.module.business.receive.domain.dto.ReceiveOrderAmountSumDTO">
+        SELECT receive_order_id,SUM(verification_amount) totalAmount FROM t_receive_order_verification
+        WHERE receive_order_id in
+        <foreach collection="receiveOrderIdList" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+        GROUP BY receive_order_id
+    </select>
+
+    <select id="selectWaybillIdByReceiveOrderId"
+            resultType="java.lang.Long">
+        SELECT waybill_id FROM t_receive_order_waybill where receive_order_id = #{receiveOrderId}
+    </select>
+
+
+
+    <select id="sumAmountByWaybillId"
+            resultType="net.lab1024.tms.admin.module.business.receive.domain.dto.WaybillOrderAmountSumDTO">
+        SELECT waybill_id,SUM(receive_amount) totalAmount FROM t_receive_order_waybill
+        WHERE receive_order_id in
+        <foreach collection="receiveOrderIdList" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
+
+
+    <select id="selectNoNeedInvoiceAndCheckAmountByWaybillIds"
+            resultType="net.lab1024.tms.admin.module.business.receive.domain.dto.ReceiveOrderShipperAmountDTO">
+        SELECT trow.receive_amount amount,
+               ro.shipper_id
+        FROM t_receive_order_waybill trow
+        LEFT JOIN t_receive_order ro ON ro.receive_order_id = trow.receive_order_id
+        WHERE ro.make_invoice_flag = #{makeInvoiceFlag} AND ro.check_status = #{checkStatus}
+        AND trow.waybill_id IN
+        <foreach collection="waybillIdList" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="selectAmountByWaybillIds"
+            resultType="net.lab1024.tms.admin.module.business.reportform.shipper.domain.dto.ShipperReceiveOrderDTO">
+        SELECT trow.waybill_id,
+        IFNULL(sum(trow.receive_amount), 0) receiveAmount
+        FROM t_receive_order_waybill trow
+        LEFT JOIN t_receive_order ro ON trow.receive_order_id = ro.receive_order_id
+        WHERE trow.waybill_id IN
+        <foreach collection="waybillIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+        AND ro.check_status != #{excludeCheckStatus}
+        AND ro.invoice_status != #{excludeInvoiceStatus}
+        GROUP BY trow.waybill_id
+    </select>
+
+</mapper>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.review.ReviewDao">
+
+    <!--审车信息分页查询-->
+    <select id="queryByPage" resultType="net.lab1024.tms.admin.module.business.review.domain.ReviewVO">
+        SELECT r.*,
+               v.vehicle_number,
+               oe.enterprise_name
+        FROM t_review r
+        LEFT JOIN t_vehicle v on v.vehicle_id = r.vehicle_id
+        LEFT JOIN t_oa_enterprise oe ON r.enterprise_id = oe.enterprise_id
+        <where>
+            r.deleted_flag = #{queryForm.deletedFlag}
+            <if test="queryForm.enterpriseId != null">
+                AND r.enterprise_id = #{queryForm.enterpriseId}
+            </if>
+            <if test="queryForm.vehicleId != null">
+                AND r.vehicle_id = #{queryForm.vehicleId}
+            </if>
+            <if test="queryForm.vehicleIdList != null and queryForm.vehicleIdList.size > 0">
+                AND r.vehicle_id in
+                <foreach collection="queryForm.vehicleIdList" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="queryForm.startDate != null">
+                AND DATE_FORMAT(r.review_date,'%Y-%m-%d') &gt;= #{queryForm.startDate}
+            </if>
+            <if test="queryForm.endDate != null">
+                AND DATE_FORMAT(r.review_date,'%Y-%m-%d') &lt;= #{queryForm.endDate}
+            </if>
+            <if test="queryForm.sortItemList == null or queryForm.sortItemList.size == 0">
+                ORDER BY r.create_time DESC
+            </if>
+        </where>
+    </select>
+
+    <!--更改审车删除状态-->
+    <update id="updateDeletedFlag">
+        UPDATE t_review
+        SET deleted_flag = #{deletedFlag}
+        WHERE review_id = #{reviewId}
+    </update>
+
+    <select id="sumByVehicleIdListAndType"
+            resultType="net.lab1024.tms.admin.module.business.reportform.carcost.domain.dto.CarCostVehicleMonthAmountDTO">
+        SELECT vehicle_id,SUM(review_amount) amount
+        FROM t_review
+        where deleted_flag = #{queryForm.deletedFlag}
+        and DATE_FORMAT(create_time, '%Y-%m-%d') &gt;= #{queryForm.startTime}
+        and DATE_FORMAT(create_time, '%Y-%m-%d') &lt;= #{queryForm.endTime}
+        and enterprise_id = #{queryForm.enterpriseId}
+        and vehicle_id in
+        <foreach collection="queryForm.vehicleIdList" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+        GROUP BY vehicle_id
+    </select>
+</mapper>

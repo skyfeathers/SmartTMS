@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.driver.module.business.oilcard.OilCardDao">
+
+    <select id="queryListByVehicleId"
+            resultType="net.lab1024.tms.driver.module.business.oilcard.domain.OilCardSimpleVO">
+        select
+               *
+        from t_oil_card
+        where deleted_flag = #{deletedFlag}
+        and disabled_flag = #{disabledFlag}
+        and type = #{type}
+        and (use_vehicle_id = #{vehicleId} or fixed_point_flag = #{fixedPointFlag})
+    </select>
+
+</mapper>

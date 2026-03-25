@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.shipper.dao.ShipperTrackDao">
+
+
+    <select id="query"
+            resultType="net.lab1024.tms.admin.module.business.shipper.domain.vo.ShipperTrackVO">
+        SELECT
+        ecct.*,
+        te.actual_name as employeeName,
+        d.name departmentName
+        FROM t_shipper_track ecct
+        LEFT JOIN t_employee te on ecct.employee_id = te.employee_id
+        left join t_department d on d.department_id = te.department_id
+        <where>
+            ecct.shipper_id = #{query.shipperId}
+            <if test="query.employeeId !=null">
+                AND ecct.employee_id = #{query.employeeId}
+            </if>
+            <if test="query.keywords !=null and query.keywords !=''">
+                AND INSTR(ecct.track_content,#{query.keywords})
+            </if>
+            <if test="query.startTime != null">
+                and DATE_FORMAT(ecct.create_time,'%Y-%m-%d') &gt;= #{query.startTime}
+            </if>
+            <if test="query.endTime != null">
+                and DATE_FORMAT(ecct.create_time,'%Y-%m-%d') &lt;= #{query.endTime}
+            </if>
+        </where>
+        <if test="query.sortItemList == null or query.sortItemList.size == 0">
+            ORDER BY ecct.create_time DESC
+        </if>
+    </select>
+
+    <select id="detail"
+            resultType="net.lab1024.tms.admin.module.business.shipper.domain.vo.ShipperTrackVO">
+        SELECT
+        ecct.*,
+        te.actual_name as employeeName
+        FROM t_shipper_track ecct
+        LEFT JOIN t_employee te on ecct.employee_id = te.employee_id
+        WHERE ecct.track_id = #{trackId}
+    </select>
+
+    <select id="selectByEmployeeId" resultType="java.lang.Long">
+        SELECT distinct shipper_id from t_shipper_track where employee_id = #{employeeId}
+    </select>
+
+    <select id="selectByShipperIdList"
+            resultType="net.lab1024.tms.admin.module.business.shipper.domain.vo.ShipperTrackVO">
+        select * from t_shipper_track where shipper_id in
+        <foreach collection="shipperIdList" item="item" open="(" close=")" index="index" separator=",">
+            #{item}
+        </foreach>
+        order by create_time desc
+    </select>
+
+
+</mapper>

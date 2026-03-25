@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.carcost.category.CarCostCategoryDao">
+
+    <select id="selectAll"
+            resultType="net.lab1024.tms.common.module.business.carcost.domain.vo.CarCostCategoryVO">
+        SELECT *
+        FROM t_car_cost_category
+        WHERE deleted_flag = #{deletedFlag}
+    </select>
+
+    <select id="selectByPage"
+            resultType="net.lab1024.tms.common.module.business.carcost.domain.vo.CarCostCategoryVO">
+        SELECT *
+        FROM t_car_cost_category
+        WHERE deleted_flag = #{queryForm.deletedFlag}
+        <if test="queryForm.keywords != null and queryForm.keywords != ''">
+            AND INSTR(category_name, #{queryForm.keywords})
+        </if>
+        <if test="queryForm.costType != null">
+            AND cost_type = #{queryForm.costType}
+        </if>
+        <if test="queryForm.payMode != null">
+            AND pay_mode = #{queryForm.payMode}
+        </if>
+        <if test="queryForm.sortItemList == null or queryForm.sortItemList.size == 0">
+            ORDER BY cost_type, sort
+        </if>
+    </select>
+
+    <select id="selectByCostType"
+            resultType="net.lab1024.tms.common.module.business.carcost.domain.vo.CarCostCategoryVO">
+        SELECT *
+        FROM t_car_cost_category
+        WHERE cost_type = #{costType} AND deleted_flag = #{deletedFlag}
+    </select>
+
+    <update id="updateDeletedFlag">
+        UPDATE t_car_cost_category
+        SET deleted_flag = #{deletedFlag}
+        WHERE category_id = #{categoryId}
+    </update>
+
+    <select id="selectByCategoryName"
+            resultType="net.lab1024.tms.common.module.business.carcost.domain.entity.CarCostCategoryEntity">
+        SELECT *
+        FROM t_car_cost_category
+        WHERE category_name = #{categoryName} AND deleted_flag = #{deletedFlag} AND cost_type = #{costType}
+        <if test="excludeIds != null and excludeIds.size > 0">
+            AND category_id NOT IN
+            <foreach collection="excludeIds" open="(" close=")" separator="," item="id">
+                #{id}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="selectByIdList"
+            resultType="net.lab1024.tms.common.module.business.carcost.domain.entity.CarCostCategoryEntity">
+        SELECT *
+        FROM t_car_cost_category
+        WHERE deleted_flag = #{deletedFlag} AND category_id IN
+        <foreach collection="categoryIdList" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </select>
+
+</mapper>

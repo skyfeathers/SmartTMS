@@ -1,0 +1,14 @@
+server:
+  servlet:
+    context-path: '/'
+  port: 60002
+  tomcat:
+    basedir: /home/logs/tms/fixed-asset/tomcat-logs
+project:
+  name: tms-fixed-asset
+  module: net.lab1024.tms.fixedasset.module
+swagger:
+  host: localhost/api/
+  tag-class: net.lab1024.tms.fixedasset.constant.FixedAssetSwaggerTagConst
+redis:
+  project-name: tms-admin

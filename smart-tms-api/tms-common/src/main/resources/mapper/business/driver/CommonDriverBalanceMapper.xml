@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.common.module.business.driver.dao.CommonDriverBalanceDao">
+
+    <select id="selectByEnterpriseIdAndDriverId"
+            resultType="net.lab1024.tms.common.module.business.driver.domain.DriverBalanceEntity">
+        SELECT
+            *
+        FROM
+            t_driver_balance pay
+        where enterprise_id = #{enterpriseId} and driver_id = #{driverId}
+    </select>
+
+    <update id="updateBalanceAmount">
+        update t_driver_balance set balance = balance + #{changeAmount},update_version = update_version + 1 where driver_balance_id = #{driverBalanceId} and update_version = #{updateVersion}
+    </update>
+
+
+</mapper>

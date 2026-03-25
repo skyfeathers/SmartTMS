@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.carcost.cashreceive.CarCostCashReceiveDao">
+
+    <update id="updateWaybillId">
+        UPDATE t_car_cost_cash_receive
+        SET waybill_id = #{waybillId}
+        WHERE cash_receive_id = #{cashReceiveId}
+    </update>
+
+    <select id="selectByWaybillId"
+            resultType="net.lab1024.tms.admin.module.business.carcost.cashreceive.domain.CarCostCashReceiveVO">
+        SELECT *
+        FROM t_car_cost_cash_receive
+        WHERE waybill_id = #{waybillId}
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectAmount" resultType="java.math.BigDecimal">
+        SELECT ROUND(IFNULL(SUM(Amount), 0), 4)
+        FROM t_car_cost_cash_receive
+        WHERE waybill_id = #{waybillId} AND audit_status = #{auditStatus}
+    </select>
+
+    <select id="selectDetail"
+            resultType="net.lab1024.tms.common.module.business.carcost.domain.vo.CarCostTabulationDetailVO">
+        SELECT cccr.*,
+               w.waybill_number,
+               w.container_number,
+               w.route_name,
+               w.business_date,
+               w.load_time,
+               v.vehicle_number,
+               s.short_name,
+               o.order_no
+        FROM t_car_cost_cash_receive cccr
+        LEFT JOIN t_waybill w ON cccr.waybill_id = w.waybill_id
+        LEFT JOIN t_vehicle v ON w.vehicle_id = v.vehicle_id
+        LEFT JOIN t_shipper s ON w.shipper_id = s.shipper_id
+        LEFT JOIN t_order o ON w.order_id = o.order_id
+        WHERE cccr.cash_receive_id = #{moduleId}
+    </select>
+
+    <select id="selectByWaybillIdListAndAuditStatus"
+            resultType="net.lab1024.tms.common.module.business.carcost.domain.entity.CarCostCashReceiveEntity">
+        SELECT *
+        FROM t_car_cost_cash_receive
+        WHERE waybill_id in
+        <foreach collection="waybillIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+        and audit_status = #{auditStatus}
+    </select>
+
+    <select id="selectDetailByTabulationIdList"
+            resultType="net.lab1024.tms.common.module.business.carcost.domain.vo.CarCostTabulationVO">
+        SELECT cccr.*,
+               cct.tabulation_id,
+               cct.module_id,
+               cct.module_type,
+               w.waybill_number,
+               w.container_number,
+               v.vehicle_number,
+               d.driver_name,
+               ccc.cost_type,
+               ccc.category_name
+        FROM t_car_cost_tabulation cct
+        LEFT JOIN t_waybill w ON cct.waybill_id = w.waybill_id
+        LEFT JOIN t_vehicle v ON cct.vehicle_id = v.vehicle_id
+        LEFT JOIN t_driver d ON cct.driver_id = d.driver_id
+        LEFT JOIN t_car_cost_category ccc ON cct.category_id = ccc.category_id
+        LEFT JOIN t_car_cost_cash_receive cccr ON cct.module_id = cccr.cash_receive_id
+        <where>
+            cct.tabulation_id IN
+            <foreach collection="tabulationIdList" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </where>
+    </select>
+</mapper>

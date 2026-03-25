@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.waybill.dao.WaybillCostDao">
+
+
+
+    <update id="batchUpdateWaybillCostAmount">
+        <foreach collection="list" separator=";" item="item">
+            update t_waybill_cost
+            set
+            paid_cost_amount = paid_cost_amount + #{item.amount}
+            where waybill_cost_id = #{item.id}
+        </foreach>
+    </update>
+
+
+
+    <select id="selectByWaybillIdList"
+            resultType="net.lab1024.tms.common.module.business.waybill.domain.entity.WaybillCostEntity">
+        select * from t_waybill_cost where waybill_id in
+        <foreach collection="waybillIdList" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="selectByWaybillId"
+            resultType="net.lab1024.tms.common.module.business.waybill.domain.entity.WaybillCostEntity">
+        select * from t_waybill_cost where waybill_id = #{waybillId}
+    </select>
+
+    <select id="sumByWaybillIdList"
+            resultType="net.lab1024.tms.admin.module.business.waybill.domain.vo.WaybillCostSumVO">
+        SELECT
+        waybill_id,
+        SUM( cost_amount ) costAmount,
+        cost_item_category,
+        cost_item_type
+        FROM
+        t_waybill_cost
+        WHERE
+        waybill_id IN
+        <foreach collection="waybillIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+        GROUP BY
+        waybill_id,
+        cost_item_category,
+        cost_item_type
+    </select>
+
+    <select id="sumByWaybillIdListAndType"
+            resultType="net.lab1024.tms.admin.module.business.waybill.domain.vo.WaybillCostSumVO">
+        SELECT
+        waybill_id,
+        SUM( cost_amount ) costAmount
+        FROM
+        t_waybill_cost
+        WHERE
+        waybill_id IN
+        <foreach collection="waybillIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+        AND cost_item_type = #{costItemType}
+        GROUP BY
+        waybill_id
+    </select>
+
+    <select id="sumByWaybillIdListAndCategory" resultType="java.math.BigDecimal">
+        SELECT SUM(cost_amount) FROM t_waybill_cost where waybill_id in
+        <foreach collection="waybillIdList" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+        <if test="costItemCategory != null">
+            and cost_item_category = #{costItemCategory}
+        </if>
+    </select>
+
+    <select id="selectByWaybillIdListAndCategoryList"
+            resultType="net.lab1024.tms.common.module.business.waybill.domain.entity.WaybillCostEntity">
+        SELECT waybill_id,
+               cost_amount,
+               cost_item_category
+        FROM t_waybill_cost
+        <where>
+            <if test="waybillIdList != null and waybillIdList.size() > 0">
+                waybill_id IN
+                <foreach collection="waybillIdList" open="(" close=")" separator="," item="item">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="categoryList != null and categoryList.size > 0">
+                AND cost_item_category IN
+                <foreach collection="categoryList" open="(" close=")" separator="," item="item">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+</mapper>

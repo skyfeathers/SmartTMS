@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.material.yard.YardDao">
+    <update id="deleteYard">
+        UPDATE t_material_yard
+        SET deleted_flag = #{deletedFlag}
+        WHERE yard_id = #{yardId}
+    </update>
+    <select id="queryByYardCode"
+            resultType="net.lab1024.tms.common.module.business.material.yard.YardEntity">
+        SELECT *
+        FROM t_material_yard
+        WHERE yard_code = #{yardCode}
+        AND enterprise_id = #{enterpriseId}
+        AND deleted_flag = #{deletedFlag}
+        <if test="excludeYardId != null">
+            AND yard_id != #{excludeYardId}
+        </if>
+    </select>
+    <select id="queryPage"
+            resultType="net.lab1024.tms.admin.module.business.material.yard.domain.YardVO">
+        SELECT y.*
+        FROM t_material_yard y
+        LEFT JOIN t_employee e ON y.create_user_id = e.employee_id
+        <where>
+            y.deleted_flag = #{queryForm.deletedFlag}
+            <if test="queryForm.keywords != null and queryForm.keywords != ''">
+                AND (INSTR(y.yard_name,#{queryForm.keywords}) OR INSTR(y.yard_code,#{queryForm.keywords})
+                OR INSTR(y.contact,#{queryForm.keywords}) OR INSTR(y.contact_phone,#{queryForm.keywords})
+                OR INSTR(y.create_user_name,#{queryForm.keywords}))
+            </if>
+            <if test="queryForm.enterpriseId != null">
+                AND y.enterprise_id = #{queryForm.enterpriseId}
+            </if>
+            <if test="queryForm.startTime != null">
+                AND DATE_FORMAT(y.create_time, '%Y-%m-%d') &gt;= #{queryForm.startTime}
+            </if>
+            <if test="queryForm.endTime != null">
+                AND DATE_FORMAT(y.create_time, '%Y-%m-%d') &lt;= #{queryForm.endTime}
+            </if>
+            <if test="queryForm.disabledFlag != null">
+                AND y.disabled_flag = #{queryForm.disabledFlag}
+            </if>
+        </where>
+        <if test="queryForm.sortItemList == null or queryForm.sortItemList.size == 0">
+            ORDER BY y.create_time DESC
+        </if>
+    </select>
+    <select id="getDetail"
+            resultType="net.lab1024.tms.admin.module.business.material.yard.domain.YardVO">
+        SELECT y.*
+        FROM t_material_yard y
+        WHERE y.yard_id = #{yardId}
+          AND y.deleted_flag = #{deletedFlag}
+    </select>
+
+    <select id="queryList"
+            resultType="net.lab1024.tms.admin.module.business.material.yard.domain.YardVO">
+        SELECT *
+        FROM t_material_yard
+        WHERE deleted_flag = #{deletedFlag} AND disabled_flag = #{disabledFlag}
+          AND enterprise_id = #{enterpriseId}
+        order by yard_id desc
+    </select>
+</mapper>

@@ -1,0 +1,98 @@
+server:
+  tomcat:
+    basedir: /home/logs/tms/tomcat-logs
+    accesslog:
+      enabled: true
+      pattern: '%t %{X-Forwarded-For}i %a "%r" %s %D (%D ms)'
+spring:
+  profiles:
+    active: '@profiles.active@'
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/tms_prod?autoReconnect=true&useServerPreparedStmts=false&rewriteBatchedStatements=true&characterEncoding=UTF-8&useSSL=false&allowMultiQueries=true&serverTimezone=Asia/Shanghai
+    username: root
+    password: xxxxx
+    initial-size: 100
+    min-idle: 50
+    max-active: 100
+    max-wait: 60000
+    time-between-eviction-runs-millis: 60000
+    min-evictable-idle-time-millis: 300000
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    filters: stat
+    druid:
+      username: druid
+      password: xxxxxx
+      login:
+        enabled: false
+      method:
+        pointcut: net.lab1024.nft..*Service.*
+  redis:
+    database: 10
+    host: 127.0.0.1
+    lettuce:
+      pool:
+        max-active: 5
+        min-idle: 1
+        max-idle: 3
+        max-wait: 30000ms
+    port: 50000
+    timeout: 10000ms
+    password: xxxxx
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+  jackson:
+    serialization:
+      write-enums-using-to-string: true
+      write-dates-as-timestamps: false
+    deserialization:
+      read-enums-using-to-string: true
+      fail-on-unknown-properties: false
+    default-property-inclusion: always
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  cache:
+    type: caffeine
+file:
+  storage:
+    mode: cloud
+    local:
+      path: /home/upload/
+    cloud:
+      region: oss-cn-zhangjiakou
+      endpoint: oss-cn-zhangjiakou.aliyuncs.com
+      bucket-name: xxxxx
+      access-key: xxxxx
+      secret-key: xxxxx
+      url:
+        expire: 7200000
+        public: https://${file.storage.cloud.bucket-name}.${file.storage.cloud.endpoint}/
+swagger:
+  api-group-name: smart-admin
+  title: SmartAdmin
+  description: SmartAdmin2.0
+  version: 2.0
+  host: locahost/api/
+  package: net.lab1024.tms
+  tag-class: net.lab1024.tms.common.constant.SwaggerTagConst
+  team-url: https://www.1024lab.net/
+http:
+  pool:
+    max-total: 20
+    connect-timeout: 50000
+    read-timeout: 50000
+    write-timeout: 50000
+    keep-alive: 300000
+token:
+  key: tms-prod-jwt-key
+  expire-day: 7
+access-control-allow-origin: '*'
+heart-beat:
+  interval-seconds: 30
+reload:
+  interval-seconds: 30
+# 合同模板 生成文件的临时路径
+contact:
+  template:
+    file-path: /home/file/contact-template/temp-file/

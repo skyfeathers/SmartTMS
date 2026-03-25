@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.expiredcertificate.ExpiredCertificateDao">
+    <delete id="deleteByModuleId">
+        DELETE FROM t_expired_certificate
+        WHERE module_type = #{moduleType} AND module_id = #{moduleId}
+    </delete>
+
+    <!-- 根据模块类型查询 -->
+    <select id="selectByModule"
+            resultType="net.lab1024.tms.common.module.business.expiredcertificate.domain.ExpiredCertificateEntity">
+        SELECT * FROM t_expired_certificate
+        WHERE module_type = #{moduleType} AND module_id = #{moduleId} AND type = #{type}
+        LIMIT 1
+    </select>
+
+    <!-- 分页查询到期证件列表 -->
+    <select id="query"
+            resultType="net.lab1024.tms.admin.module.business.expiredcertificate.domain.ExpiredCertificateVO">
+        SELECT * FROM t_expired_certificate
+        <where>
+            <if test="query.enterpriseId != null">
+                enterprise_id = #{query.enterpriseId}
+            </if>
+            <if test="query.moduleType != null">
+                module_type = #{query.moduleType}
+            </if>
+            <if test="query.type != null">
+                AND type = #{query.type}
+            </if>
+            <if test="query.status != null">
+                AND `status` = #{query.status}
+            </if>
+            <if test="query.searchWord != null and query.searchWord !=''">
+                AND ( INSTR(module_name,#{query.searchWord}) )
+            </if>
+            <if test="query.startDate != null">
+                AND DATE_FORMAT(expired_time, '%Y-%m-%d') &gt;= DATE_FORMAT(#{query.startDate}, '%Y-%m-%d')
+            </if>
+            <if test="query.endDate != null">
+                AND DATE_FORMAT(expired_time, '%Y-%m-%d') &lt;= DATE_FORMAT(#{query.endDate}, '%Y-%m-%d')
+            </if>
+        </where>
+        <if test="query.sortItemList == null or query.sortItemList.size == 0">
+            ORDER BY `status` ASC, expired_time ASC
+        </if>
+    </select>
+    <select id="moduleStatusNum"
+            resultType="net.lab1024.tms.admin.module.business.reportform.home.domain.HomeExpireCertVO">
+        select
+            count(1) as `value`, status
+        from t_expired_certificate
+        where enterprise_id = #{enterpriseId}
+        group by status
+    </select>
+</mapper>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.common.module.system.role.CommonRoleEmployeeDao">
+
+    <select id="selectRoleIdByEmployeeId" resultType="java.lang.Long">
+        SELECT er.role_id
+        FROM t_role_employee er
+        WHERE er.employee_id = #{employeeId}
+    </select>
+
+
+    <select id="selectEmployeeIdByRoleIdList" resultType="java.lang.Long">
+        SELECT
+        employee_id
+        FROM
+        t_role_employee
+        WHERE
+        role_id in
+        <foreach collection="roleIdList" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
+    <select id="selectRoleIdByEmployeeIdList"
+            resultType="net.lab1024.tms.common.module.system.role.domain.entity.RoleEmployeeEntity">
+        SELECT
+        *
+        FROM
+        t_role_employee
+        WHERE
+        employee_id in
+        <foreach collection="employeeIdList" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
+
+</mapper>

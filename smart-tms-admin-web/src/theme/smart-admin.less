@@ -1,0 +1,141 @@
+/**********************************  滚动条 **********************************/
+.smart-scroll {
+  scrollbar-width: thin;
+  -ms-overflow-style: none;
+  position: relative;
+  &::-webkit-scrollbar {
+    width: 1px;
+    height: 1px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 1px;
+    background: #cdcdcd;
+  }
+  &::-webkit-scrollbar-track {
+    border-radius: 1px;
+    background: #cdcdcd;
+  }
+}
+/**********************************  宽度 **********************************/
+.smart-width-100 {
+  width: 100%;
+}
+
+/**********************************  左间距 **********************************/
+.smart-margin-left5 {
+  margin-left: 5px;
+}
+
+.smart-margin-left10 {
+  margin-left: 10px;
+}
+
+.smart-margin-left15 {
+  margin-left: 15px;
+}
+
+.smart-margin-left20 {
+  margin-left: 20px;
+}
+
+/******************************** 上间距 ********************************/
+.smart-margin-top5 {
+  margin-top: 5px;
+}
+
+.smart-margin-top10 {
+  margin-top: 10px;
+}
+
+/******************************** 上间距 ********************************/
+.smart-margin-bottom5 {
+  margin-bottom: 5px;
+}
+
+.smart-margin-bottom10 {
+  margin-bottom: 10px;
+}
+
+/******************************** card样式 ********************************/
+.smart-form-card {
+  :deep(.ant-card-head-title) {
+    &::before {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 0;
+      width: 3px;
+      height: 30px;
+      background-color: @primary-color;
+    }
+  }
+}
+/******************************** hr ********************************/
+.smart-hr {
+  display: flex;
+  clear: both;
+  width: 100%;
+  min-width: 100%;
+  margin: 5px 0;
+  box-sizing: border-box;
+  padding: 0;
+  color: rgba(0, 0, 0, 0.85);
+  font-size: 14px;
+  font-variant: tabular-nums;
+  line-height: 1.5715;
+  list-style: none;
+  font-feature-settings: 'tnum';
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/******************************** 拖拽样式 ********************************/
+.smart-ghost-class {
+  background-color: #ccffff;
+}
+
+/******************************** 查询表格样式 ********************************/
+.smart-query-form {
+  background-color: #ffffff;
+  padding: 5px 10px;
+  margin-bottom: 10px;
+}
+
+.smart-table-operate {
+  .ant-btn {
+    padding: 0px 3px !important;
+  }
+}
+
+.smart-query-form-row:not(:first-child) {
+  margin-top: 1px;
+}
+
+.smart-query-form-row .smart-query-form-item {
+  margin-right: 8px;
+  margin-top: 1px;
+  margin-bottom: 1px;
+}
+
+.smart-query-table-page {
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.smart-table-btn-block {
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  .smart-table-operate-block {
+    .ant-btn {
+      margin-right: 12px;
+    }
+  }
+}
+
+.smart-statistics {
+  .amount {
+    color: red
+  }
+}

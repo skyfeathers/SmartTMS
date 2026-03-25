@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.fixedasset.module.business.scrap.dao.ScrapDao">
+
+    <insert id="batchInsertScrapAsset">
+        insert into t_asset_scrap_relate_asset
+        (scrap_id, asset_id)
+        values
+        <foreach collection="assetIdList" separator="," item="assetId">
+            ( #{scrapId} , #{assetId} )
+        </foreach>
+    </insert>
+
+
+    <update id="batchUpdateStatus">
+        update  t_asset_scrap
+            set status = #{status}
+            where scrap_id in
+        <foreach collection="scrapIdList" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+
+    </update>
+
+    <!-- 分页查询 -->
+    <select id="queryPage" resultType="net.lab1024.tms.fixedasset.module.business.scrap.domain.vo.ScrapVO">
+        SELECT
+            t_asset_scrap.*,
+            t_employee.actual_name as applyUserName,
+            t_employee.department_id as department_id,
+            t_department.name as department_name
+        FROM t_asset_scrap
+        left join t_employee on t_asset_scrap.apply_user_id = t_employee.employee_id
+        left join t_department on t_employee.department_id = t_department.department_id
+        <where>
+            <!--关键字-->
+            <if test="queryForm.keywords != null and queryForm.keywords != ''">
+                AND ( INSTR(t_asset_scrap.scrap_code,#{queryForm.keywords}) or INSTR(t_employee.actual_name,#{queryForm.keywords}) )
+            </if>
+            <!--部门-->
+            <if test="queryForm.departmentIdList != null and queryForm.departmentIdList.size > 0">
+                AND t_employee.department_id in
+                <foreach collection="queryForm.departmentIdList" open="(" close=")" separator="," item="item">
+                    #{item}
+                </foreach>
+            </if>
+            <!--业务日期-->
+            <if test="queryForm.scrapTimeBegin != null">
+                AND DATE_FORMAT(t_asset_scrap.scrap_time, '%Y-%m-%d') &gt;= #{queryForm.scrapTimeBegin}
+            </if>
+            <if test="queryForm.scrapTimeEnd != null">
+                AND DATE_FORMAT(t_asset_scrap.scrap_time, '%Y-%m-%d') &lt;= #{queryForm.scrapTimeEnd}
+            </if>
+            <if test="queryForm.enterpriseId != null">
+                AND t_asset_scrap.enterprise_id = #{queryForm.enterpriseId}
+            </if>
+        </where>
+        order by t_asset_scrap.create_time desc
+    </select>
+
+    <select id="selectRelateAssetIdList" resultType="java.lang.Long">
+        select asset_id from   t_asset_scrap_relate_asset where scrap_id = #{scrapId}
+    </select>
+
+    <select id="selectRelateAssetList" resultType="net.lab1024.tms.fixedasset.module.business.scrap.domain.vo.ScrapAssetVO">
+        select
+        *
+        from t_asset_scrap_relate_asset
+        left join t_asset on t_asset_scrap_relate_asset.asset_id = t_asset.asset_id
+        where scrap_id in
+        <foreach collection="scrapIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </select>
+
+
+</mapper>

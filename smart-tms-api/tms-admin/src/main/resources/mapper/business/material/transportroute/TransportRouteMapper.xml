@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.material.transportroute.TransportRouteDao">
+    <update id="deleteTransportRoute">
+        UPDATE t_transport_route
+        SET deleted_flag = #{deletedFlag}
+        WHERE transport_route_id = #{transportRouteId}
+    </update>
+
+    <select id="queryPage"
+            resultType="net.lab1024.tms.admin.module.business.material.transportroute.domain.vo.TransportRouteVO">
+        SELECT
+        tr.*
+        FROM
+        t_transport_route tr
+        <where>
+            tr.deleted_flag = #{queryForm.deletedFlag} AND tr.transport_route_type = #{queryForm.transportRouteType}
+            <if test="queryForm.enterpriseId != null">
+                and tr.enterprise_id = #{queryForm.enterpriseId}
+            </if>
+            <if test="queryForm.keywords != null and queryForm.keywords != ''">
+                AND (INSTR(tr.transport_route_name,#{queryForm.keywords}) OR INSTR(tr.create_user_name,#{queryForm.keywords}))
+            </if>
+            <if test="queryForm.startTime != null">
+                AND DATE_FORMAT(tr.create_time, '%Y-%m-%d') &gt;= #{queryForm.startTime}
+            </if>
+            <if test="queryForm.endTime != null">
+                AND DATE_FORMAT(tr.create_time, '%Y-%m-%d') &lt;= #{queryForm.endTime}
+            </if>
+            <if test="queryForm.disabledFlag != null">
+                AND tr.disabled_flag = #{queryForm.disabledFlag}
+            </if>
+        </where>
+        <if test="queryForm.sortItemList == null or queryForm.sortItemList.size == 0">
+            ORDER BY tr.create_time DESC
+        </if>
+    </select>
+
+    <select id="getDetail"
+            resultType="net.lab1024.tms.admin.module.business.material.transportroute.domain.vo.TransportRouteVO">
+        SELECT tr.*
+        FROM t_transport_route tr
+        WHERE tr.transport_route_id = #{transportRouteId}
+          AND tr.deleted_flag = #{deletedFlag}
+    </select>
+
+    <select id="queryList"
+            resultType="net.lab1024.tms.admin.module.business.material.transportroute.domain.vo.TransportRouteVO">
+        SELECT *
+        FROM t_transport_route
+        WHERE deleted_flag = #{deletedFlag} AND disabled_flag = #{disabledFlag}
+          and enterprise_id = #{enterpriseId}
+        order by default_flag desc,transport_route_id desc
+    </select>
+
+    <select id="selectByTransportNameList" resultType="net.lab1024.tms.common.module.business.material.transportroute.domain.TransportRouteEntity">
+        SELECT *
+        FROM t_transport_route
+        WHERE deleted_flag = #{deletedFlag} AND disabled_flag = #{disabledFlag}
+          and enterprise_id = #{enterpriseId}
+        AND trim(transport_route_name) in
+        <foreach collection="transportRouteNameList" open="(" close=")" item="item" separator=",">
+            #{item}
+        </foreach>
+    </select>
+
+</mapper>

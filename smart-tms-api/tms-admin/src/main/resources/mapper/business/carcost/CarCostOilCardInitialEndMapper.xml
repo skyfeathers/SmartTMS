@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.carcost.oilcardinitialend.CarCostOilCardInitialEndDao">
+
+    <select id="selectByWaybillIdAndOilCardId"
+            resultType="net.lab1024.tms.common.module.business.carcost.domain.entity.CarCostOilCardInitialEndEntity">
+        SELECT *
+        FROM t_car_cost_oil_card_initial_end
+        WHERE waybill_id = #{waybillId} AND oil_card_id = #{oilCardId}
+    </select>
+
+    <select id="selectByWaybillId"
+            resultType="net.lab1024.tms.common.module.business.carcost.domain.vo.CarCostOilCardInitialEndVO">
+        SELECT ie.*,oil.oil_card_no
+        FROM t_car_cost_oil_card_initial_end ie left join t_oil_card oil on oil.oil_card_id = ie.oil_card_id
+        WHERE waybill_id = #{waybillId}
+    </select>
+
+    <select id="selectByIdAfter"
+            resultType="net.lab1024.tms.common.module.business.carcost.domain.entity.CarCostOilCardInitialEndEntity">
+        SELECT *
+        FROM t_car_cost_oil_card_initial_end
+        WHERE oil_card_initial_end_id > #{oilCardInitialEndId} AND oil_card_id = #{oilCardId}
+    </select>
+
+    <select id="selectByWaybillIdList"
+            resultType="net.lab1024.tms.common.module.business.carcost.domain.vo.CarCostOilCardInitialEndVO">
+        SELECT ie.*,oil.oil_card_no,oil.fuel_type
+        FROM t_car_cost_oil_card_initial_end ie left join t_oil_card oil on oil.oil_card_id = ie.oil_card_id
+        WHERE waybill_id in
+        <foreach collection="waybillIdList" open="(" close=")" item="item" separator=",">
+            #{item}
+        </foreach>
+    </select>
+
+
+</mapper>

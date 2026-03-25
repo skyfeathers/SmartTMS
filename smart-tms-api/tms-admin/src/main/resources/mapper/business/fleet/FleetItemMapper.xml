@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.fleet.dao.FleetItemDao">
+
+    <select id="queryDriverByPage" resultType="net.lab1024.tms.admin.module.business.fleet.domain.vo.FleetDriverVO">
+        SELECT
+            fi.fleet_item_id,d.*
+        FROM
+        t_fleet_item fi
+        LEFT JOIN t_driver d ON fi.item_id = d.driver_id
+        WHERE
+        fi.fleet_id = #{queryForm.fleetId} AND fi.item_type = #{queryForm.itemType}
+        <if test="queryForm.keyWords != null and queryForm.keyWords != ''">
+            AND (INSTR(d.driver_name,#{queryForm.keyWords})
+            or INSTR(d.telephone,#{queryForm.keyWords})
+            or INSTR(fi.create_user_name ,#{queryForm.keyWords})
+            )
+        </if>
+        <if test="queryForm.sortItemList == null or queryForm.sortItemList.size == 0">
+            ORDER BY fi.create_time DESC
+        </if>
+    </select>
+
+    <select id="queryVehicleByPage" resultType="net.lab1024.tms.admin.module.business.fleet.domain.vo.FleetVehicleVO">
+        SELECT
+        fi.fleet_item_id,v.*
+        FROM
+        t_fleet_item fi
+        LEFT JOIN t_vehicle v ON fi.item_id = v.vehicle_id
+        WHERE
+        fi.fleet_id = #{queryForm.fleetId} AND fi.item_type = #{queryForm.itemType}
+        <if test="queryForm.keyWords != null and queryForm.keyWords != ''">
+            AND (INSTR(v.vehicle_number,#{queryForm.keyWords})
+            or INSTR(v.owner,#{queryForm.keyWords})
+            or INSTR(fi.create_user_name ,#{queryForm.keyWords})
+            )
+        </if>
+        <if test="queryForm.sortItemList == null or queryForm.sortItemList.size == 0">
+            ORDER BY fi.create_time DESC
+        </if>
+    </select>
+
+    <select id="selectByFleetIdAndType" resultType="java.lang.Long">
+        select item_id from t_fleet_item where fleet_id = #{fleetId} AND item_type = #{itemType}
+    </select>
+
+</mapper>

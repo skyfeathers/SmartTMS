@@ -1,0 +1,15 @@
+server:
+  servlet:
+    context-path: '/'
+  port: 60002
+spring:
+  profiles:
+    active: '@profiles.active@'
+project:
+  name: tms-fixed-asset
+  module: net.lab1024.tms.fixedasset.module
+swagger:
+  host: www.xxxx.cn/api/
+  tag-class: net.lab1024.tms.fixedasset.constant.FixedAssetSwaggerTagConst
+redis:
+  project-name: tms-admin

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.driver.module.business.carcost.oilcardreceive.CarCostOilCardReceiveDao">
+
+    <select id="selectDetail"
+            resultType="net.lab1024.tms.common.module.business.carcost.domain.vo.CarCostTabulationDetailVO">
+        SELECT ccocr.*,
+               w.waybill_number,
+               w.container_number,
+               w.route_name,
+               w.business_date,
+               w.load_time,
+               v.vehicle_number,
+               s.short_name,
+               o.order_no,
+               oc.oil_card_no
+        FROM t_car_cost_oil_card_receive ccocr
+        LEFT JOIN t_waybill w ON ccocr.waybill_id = w.waybill_id
+        LEFT JOIN t_vehicle v ON w.vehicle_id = v.vehicle_id
+        LEFT JOIN t_shipper s ON w.shipper_id = s.shipper_id
+        LEFT JOIN t_order o ON w.order_id = o.order_id
+        LEFT JOIN t_oil_card oc ON ccocr.oil_card_id = oc.oil_card_id
+        WHERE ccocr.oil_card_receive_id = #{moduleId}
+    </select>
+
+    <select id="selectByWaybillId"
+            resultType="net.lab1024.tms.driver.module.business.carcost.oilcardreceive.domain.CarCostOilCardReceiveVO">
+        SELECT ccocr.*,
+               oc.oil_card_no,
+               v.vehicle_number
+        FROM t_car_cost_oil_card_receive ccocr
+        LEFT JOIN t_oil_card oc ON ccocr.oil_card_id = oc.oil_card_id
+        LEFT JOIN t_vehicle v ON ccocr.vehicle_id = v.vehicle_id
+        WHERE waybill_id = #{waybillId}
+        ORDER BY ccocr.create_time DESC
+    </select>
+</mapper>

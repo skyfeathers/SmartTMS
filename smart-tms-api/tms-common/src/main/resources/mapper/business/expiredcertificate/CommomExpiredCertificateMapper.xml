@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.common.module.business.expiredcertificate.CommomExpiredCertificateDao">
+
+    <select id="selectByModule"
+            resultType="net.lab1024.tms.common.module.business.expiredcertificate.domain.ExpiredCertificateEntity">
+        SELECT * FROM t_expired_certificate
+        WHERE module_type = #{moduleType} AND module_id = #{moduleId} AND type = #{type}
+            LIMIT 1
+    </select>
+
+</mapper>

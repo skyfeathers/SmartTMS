@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.shipper.dao.ShipperPaymentWayDao">
+
+    <update id="updateDeletedFlagById">
+        update t_shipper_payment_way set deleted_flag = #{deletedFlag} where payment_way_id = #{paymentWayId}
+    </update>
+
+    <update id="updateDeletedFlag">
+        update t_shipper_payment_way set deleted_flag = #{deletedFlag} where  shipper_id in
+        <foreach collection="shipperIdList" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </update>
+
+    <update id="setDefaultFlag">
+        update t_shipper_payment_way set default_flag = #{defaultFlag} where payment_way_id = #{paymentWayId}
+    </update>
+
+    <update id="batchSetDefaultFlag">
+        update t_shipper_payment_way set default_flag = #{defaultFlag} where shipper_id = #{shipperId}
+    </update>
+
+    <delete id="deleteByShipperId">
+        delete from t_shipper_payment_way where shipper_id = #{shipperId}
+    </delete>
+
+    <select id="selectByShipperId"
+            resultType="net.lab1024.tms.admin.module.business.shipper.domain.dto.ShipperPaymentWayDTO">
+        select *,receive_image as receiveImageUrl from t_shipper_payment_way where shipper_id = #{shipperId} and deleted_flag = #{deletedFlag}
+    </select>
+
+
+    <select id="selectEntityByShipperId"
+            resultType="net.lab1024.tms.common.module.business.shipper.domain.ShipperPaymentWayEntity">
+        select *,receive_image as receiveImageUrl from t_shipper_payment_way where shipper_id = #{shipperId} and deleted_flag = #{deletedFlag}
+    </select>
+
+
+
+    <select id="selectByShipperIdAndType"
+            resultType="net.lab1024.tms.admin.module.business.shipper.domain.dto.ShipperPaymentWayDTO">
+        select
+        *,
+        receive_image as receiveImageUrl
+        from t_shipper_payment_way
+        where shipper_id = #{shipperId}
+        and deleted_flag = #{deletedFlag}
+        <if test="paymentType != null">
+            AND payment_type = #{paymentType}
+        </if>
+    </select>
+
+</mapper>

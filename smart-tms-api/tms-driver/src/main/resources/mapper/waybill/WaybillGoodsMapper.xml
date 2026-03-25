@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.driver.module.business.waybill.dao.WaybillGoodsDao">
+
+    <select id="selectByWaybillIdList"
+            resultType="net.lab1024.tms.common.module.business.waybill.domain.entity.WaybillGoodsEntity">
+        SELECT *
+        FROM t_waybill_goods
+        WHERE waybill_id IN
+        <foreach collection="waybillIdList" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </select>
+
+</mapper>

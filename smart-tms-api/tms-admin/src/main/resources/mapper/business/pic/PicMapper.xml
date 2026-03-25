@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.pic.dao.PicDao">
+
+    <update id="updateSeq">
+        update t_pic
+        set seq = #{seq}
+        where id = #{picId}
+    </update>
+
+    <select id="query" resultType="net.lab1024.tms.common.module.business.pic.domain.vo.PicVO">
+        select
+        *
+        from t_pic
+        <where>
+            <if test="queryForm.enterpriseId !=null">
+                and t_pic.enterprise_id = #{queryForm.enterpriseId}
+            </if>
+            <if test="queryForm.type !=null">
+                and t_pic.type = #{queryForm.type}
+            </if>
+
+            <if test="queryForm.keywords != null and queryForm.keywords != ''">
+                AND (
+                INSTR(t_pic.title,#{queryForm.keywords})
+                or
+                INSTR(t_pic.remark,#{queryForm.keywords})
+                )
+            </if>
+        </where>
+        <if test="queryForm.sortItemList == null or queryForm.sortItemList.size == 0">
+            order by seq desc, t_pic.create_time desc
+        </if>
+    </select>
+
+
+</mapper>

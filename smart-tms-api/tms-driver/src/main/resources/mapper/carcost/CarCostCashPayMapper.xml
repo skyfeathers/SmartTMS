@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.driver.module.business.carcost.cashpay.CarCostCashPayDao">
+
+    <select id="selectDetail"
+            resultType="net.lab1024.tms.common.module.business.carcost.domain.vo.CarCostTabulationDetailVO">
+        SELECT cccp.*,
+               w.waybill_number,
+               w.container_number,
+               w.route_name,
+               w.business_date,
+               w.load_time,
+               v.vehicle_number,
+               s.short_name,
+               o.order_no
+        FROM t_car_cost_cash_pay cccp
+        LEFT JOIN t_waybill w ON cccp.waybill_id = w.waybill_id
+        LEFT JOIN t_vehicle v ON w.vehicle_id = v.vehicle_id
+        LEFT JOIN t_shipper s ON w.shipper_id = s.shipper_id
+        LEFT JOIN t_order o ON w.order_id = o.order_id
+        WHERE cccp.cash_pay_id = #{moduleId}
+    </select>
+
+    <select id="selectByWaybillId"
+            resultType="net.lab1024.tms.driver.module.business.carcost.cashpay.domain.CarCostCashPayVO">
+        SELECT cccp.*,
+               v.vehicle_number
+        FROM t_car_cost_cash_pay cccp
+        LEFT JOIN t_vehicle v ON cccp.vehicle_id = v.vehicle_id
+        WHERE cccp.waybill_id = #{waybillId}
+        ORDER BY cccp.create_time DESC
+    </select>
+
+</mapper>

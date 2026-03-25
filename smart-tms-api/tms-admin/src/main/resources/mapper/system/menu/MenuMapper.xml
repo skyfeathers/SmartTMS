@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.system.menu.dao.MenuDao">
+
+    <delete id="deleteByMenuIdList">
+        <if test="menuIdList != null and menuIdList.size > 0">
+            <foreach collection="menuIdList" item="item" separator=";">
+                update t_menu
+                set deleted_flag = #{deletedFlag},
+                update_user_id = #{updateUserId}
+                where menu_id = #{item}
+            </foreach>
+        </if>
+    </delete>
+
+    <select id="getByMenuName"
+            resultType="net.lab1024.tms.admin.module.system.menu.domain.entity.MenuEntity">
+        select * from t_menu
+        where menu_name=#{menuName} and parent_id = #{parentId} and deleted_flag = #{deletedFlag} limit 1
+    </select>
+    <select id="queryMenuList" resultType="net.lab1024.tms.admin.module.system.menu.domain.vo.MenuVO">
+        select * from t_menu
+        where deleted_flag = #{deletedFlag}
+        <if test="disabledFlag != null">
+            and disabled_flag = #{disabledFlag}
+        </if>
+        <if test="menuTypeList != null and menuTypeList.size > 0">
+            and menu_type in
+            <foreach collection="menuTypeList" open="(" close=")" item="item" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="platformFlag != null">
+            and platform_flag = #{platformFlag}
+        </if>
+        order by parent_id desc,sort asc
+    </select>
+    <select id="getPointListByMenuId"
+            resultType="net.lab1024.tms.admin.module.system.menu.domain.entity.MenuEntity">
+        select * from t_menu
+        where parent_id = #{menuId} and deleted_flag = #{deletedFlag} and menu_type = #{menuType}
+    </select>
+
+    <select id="queryMenuByEmployeeId"
+            resultType="net.lab1024.tms.admin.module.system.menu.domain.vo.MenuVO">
+        select m.* from t_menu m
+        left join t_role_menu rm on rm.menu_id = m.menu_id
+        left join t_role_employee re on re.role_id = rm.role_id
+        where m.disabled_flag = #{disabledFlag} and m.deleted_flag = #{deletedFlag}
+        <if test="employeeId != null">
+            and re.employee_id = #{employeeId}
+        </if>
+    </select>
+
+    <select id="getByPermsIdentifier" resultType="net.lab1024.tms.admin.module.system.menu.domain.entity.MenuEntity">
+        select * from t_menu
+        where perms_identifier=#{permsIdentifier} and deleted_flag = #{deletedFlag} limit 1
+    </select>
+
+    <select id="queryByMenuIdList"
+            resultType="net.lab1024.tms.admin.module.system.menu.domain.vo.MenuVO">
+
+        SELECT
+        *
+        from t_menu
+        <where>
+            <if test="deletedFlag != null">
+                and deleted_flag = #{deletedFlag}
+            </if>
+            <if test="disabledFlag != null">
+                and disabled_flag = #{disabledFlag}
+            </if>
+            <if test="menuIdList != null and menuIdList.size > 0">
+                and menu_id in
+                <foreach collection="menuIdList" open="(" close=")" item="item" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="platformFlag != null">
+                and platform_flag = #{platformFlag}
+            </if>
+
+        </where>
+        group by menu_id
+        ORDER BY sort ASC
+    </select>
+</mapper>

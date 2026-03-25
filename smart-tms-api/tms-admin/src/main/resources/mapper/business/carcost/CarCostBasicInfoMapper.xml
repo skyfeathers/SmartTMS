@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.carcost.basicinfo.CarCostBasicInfoDao">
+
+    <select id="selectByWaybillId"
+            resultType="net.lab1024.tms.admin.module.business.carcost.basicinfo.domain.CarCostBasicInfoVO">
+        SELECT *
+        FROM t_car_cost_basic_info
+        WHERE waybill_id = #{waybillId}
+    </select>
+
+    <select id="selectByWaybillIdAndConfirmFlag"
+            resultType="net.lab1024.tms.common.module.business.carcost.domain.entity.CarCostBasicInfoEntity">
+        SELECT *
+        FROM t_car_cost_basic_info
+        WHERE waybill_id = #{waybillId} and confirm_flag = #{confirmFlag}
+    </select>
+
+    <update id="updateConfirmFlag">
+        UPDATE t_car_cost_basic_info
+        SET confirm_flag = #{confirmFlag}
+        WHERE basic_info_id = #{basicInfoId}
+    </update>
+
+    <select id="selectConfirmFlagByWaybillId" resultType="java.lang.Boolean">
+        SELECT confirm_flag
+        FROM t_car_cost_basic_info
+        WHERE waybill_id = #{waybillId}
+    </select>
+
+    <select id="selectByWaybillIdList"
+            resultType="net.lab1024.tms.admin.module.business.carcost.basicinfo.domain.CarCostBasicInfoVO">
+        SELECT *
+        FROM t_car_cost_basic_info
+        WHERE waybill_id IN
+        <foreach collection="waybillIdList" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="sumCarCostAmountByVehicle"
+            resultType="net.lab1024.tms.admin.module.business.reportform.carcost.domain.dto.CarCostVehicleMonthBasicInfoDTO">
+        SELECT
+            vehicle_id,
+            SUM( high_speed_mileage ) high_speed_mileage,
+            SUM( low_speed_mileage ) low_speed_mileage,
+            SUM( gps_mileage ) gps_mileage,
+            SUM( oil_consumption ) oil_consumption
+        FROM
+            t_car_cost_basic_info ccbi
+            LEFT JOIN t_waybill w ON w.waybill_id = ccbi.waybill_id
+        where DATE_FORMAT(w.create_time, '%Y-%m-%d') &gt;= #{queryForm.startTime}
+        AND DATE_FORMAT(w.create_time, '%Y-%m-%d') &lt;= #{queryForm.endTime}
+        and ccbi.enterprise_id = #{queryForm.enterpriseId}
+        and vehicle_id in
+        <foreach collection="queryForm.vehicleIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+        GROUP BY vehicle_id
+    </select>
+
+    <select id="selectByPage"
+            resultType="net.lab1024.tms.admin.module.business.carcost.basicinfo.domain.CarCostBasicInfoVO">
+        SELECT ccbi.*,
+               w.waybill_number,
+               w.container_number,
+               v.vehicle_number,
+               d.driver_name
+        FROM t_car_cost_basic_info ccbi
+        LEFT JOIN t_waybill w ON w.waybill_id = ccbi.waybill_id
+        LEFT JOIN t_vehicle v ON v.vehicle_id = w.vehicle_id
+        LEFT JOIN t_driver d ON d.driver_id = w.driver_id
+        <where>
+            <if test="queryForm.driverId != null">
+                AND w.driver_id = #{queryForm.driverId}
+            </if>
+            <if test="queryForm.vehicleId != null">
+                AND w.vehicle_id = #{queryForm.vehicleId}
+            </if>
+            <if test="queryForm.confirmFlag != null">
+                AND ccbi.confirm_flag = #{queryForm.confirmFlag}
+            </if>
+            <if test="queryForm.waybillNumber != null and queryForm.waybillNumber != ''">
+                AND INSTR(w.waybill_number, #{queryForm.waybillNumber})
+            </if>
+            <if test="queryForm.containerNumber != null and queryForm.containerNumber != ''">
+                AND INSTR(w.container_number, #{queryForm.containerNumber})
+            </if>
+        </where>
+        ORDER BY ccbi.create_time DESC
+    </select>
+
+</mapper>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.fixedasset.module.business.requisitionrevert.dao.RequisitionRevertItemDao">
+
+    <select id="queryByRequisitionIdList" resultType="net.lab1024.tms.fixedasset.module.business.requisitionrevert.domain.RequisitionRevertItemEntity">
+        SELECT * FROM t_asset_requisition_revert_item
+        where requisition_revert_id IN
+        <foreach collection="requisitionRevertIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </select>
+</mapper>

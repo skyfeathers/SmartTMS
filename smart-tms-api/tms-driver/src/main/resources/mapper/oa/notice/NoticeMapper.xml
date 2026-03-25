@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.driver.module.business.oa.notice.domain.dao.NoticeDao">
+
+    <select id="query" resultType="net.lab1024.tms.driver.module.business.oa.notice.domain.vo.NoticeSimpleVO">
+        SELECT n.*
+        FROM t_notice n
+        WHERE n.notice_push_type = #{queryForm.noticePushType} AND n.deleted_flag = #{queryForm.deletedFlag}
+        <if test="queryForm.keywords != null">
+            AND ( INSTR(n.title, #{queryForm.keywords})
+            OR INSTR(n.source, #{queryForm.keywords})
+            OR INSTR(n.author, #{queryForm.keywords})
+            OR INSTR(n.document_number, #{queryForm.keywords}) )
+        </if>
+        <if test="queryForm.sortItemList == null or queryForm.sortItemList.size == 0">
+            ORDER BY n.publish_time DESC, n.notice_id DESC
+        </if>
+    </select>
+
+    <select id="getDetail" resultType="net.lab1024.tms.common.module.business.oa.news.domain.NoticeEntity">
+        SELECT *
+        FROM t_notice n
+        WHERE n.notice_id = #{noticeId} AND n.notice_push_type = #{pushType}
+    </select>
+
+    <select id="selectCountViewRecord" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM t_notice_view_record
+        WHERE notice_id = #{noticeId} AND employee_id = #{driverId}
+    </select>
+
+    <insert id="insertViewRecord">
+        INSERT INTO t_notice_view_record(notice_id, employee_id, page_view_count, first_ip, first_user_agent, last_ip, last_user_agent)
+        VALUES (#{noticeId}, #{driverId}, #{viewCount}, #{ip}, #{userAgent}, #{ip}, #{userAgent})
+    </insert>
+
+    <update id="updateViewCount">
+        UPDATE t_notice
+        SET page_view_count = page_view_count + #{increasePageViewCount},
+            user_view_count = user_view_count + #{increaseUserViewCount}
+        WHERE notice_id = #{noticeId}
+    </update>
+
+    <update id="updateViewRecord">
+        UPDATE t_notice_view_record
+        SET last_ip = #{ip}, last_user_agent = #{userAgent}, page_view_count = page_view_count + #{viewCount}
+        WHERE notice_id = #{noticeId} AND employee_id = #{driverId}
+    </update>
+
+</mapper>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.flow.waithandle.FlowWaitHandleDao">
+
+
+    <update id="clearZero">
+        update t_flow_wait_handle set num = 0 where employee_id = #{employeeId} and flow_type = #{flowType}
+    </update>
+
+    <update id="increase">
+        update t_flow_wait_handle set num = num + 1 where employee_id = #{employeeId} and flow_type = #{flowType}
+    </update>
+
+    <select id="selectByEmployeeId"
+            resultType="net.lab1024.tms.admin.module.business.flow.waithandle.FlowWaitHandleEntity">
+        select * from t_flow_wait_handle where employee_id = #{employeeId}
+    </select>
+
+    <select id="selectByEmployeeIdAndFlowType"
+            resultType="net.lab1024.tms.admin.module.business.flow.waithandle.FlowWaitHandleEntity">
+        select * from t_flow_wait_handle where employee_id = #{employeeId} and flow_type = #{flowType}
+    </select>
+
+</mapper>

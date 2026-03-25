@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.receive.dao.ReceiveOrderInvoiceDao">
+
+    <select id="selectByReceiveOrderId"
+            resultType="net.lab1024.tms.common.module.business.receive.domain.ReceiveOrderInvoiceEntity">
+        SELECT * FROM t_receive_order_invoice where receive_order_id = #{receiveOrderId}
+    </select>
+
+    <select id="selectByReceiveOrderIdList"
+            resultType="net.lab1024.tms.common.module.business.receive.domain.ReceiveOrderInvoiceEntity">
+        SELECT * FROM t_receive_order_invoice where receive_order_id in
+        <foreach collection="receiveOrderIdList" item="item" open="(" close=")" separator="," >
+            #{item}
+        </foreach>
+    </select>
+
+    <update id="batchUpdateInvoiceStatusByReceiveOrderId">
+        UPDATE t_receive_order_invoice set invoice_status = #{invoiceStatus},invoice_user_id =#{invoiceUserId},invoice_remark = #{remark}
+        where receive_order_id = #{receiveOrderId}
+    </update>
+
+    <select id="sumInvoiceAmountByBusinessDateAndShipper"
+            resultType="net.lab1024.tms.admin.module.business.receive.domain.dto.ReceiveOrderShipperAmountDTO">
+        SELECT shipper_id, SUM(ro.total_amount) amount
+        FROM t_receive_order_invoice  roi
+        left join t_receive_order ro on roi.receive_order_id = ro.receive_order_id
+        left join t_receive_order_waybill trow on trow.receive_order_id = ro.receive_order_id
+        where ro.make_invoice_flag = #{makeInvoiceFlag} and roi.invoice_status = #{invoiceStatus}
+        AND  ro.check_status != #{excludeCheckStatus}
+        and trow.waybill_id in
+        <foreach collection="waybillIdList" separator="," open="(" close=")" item="item">
+            #{item}
+        </foreach>
+        GROUP BY ro.shipper_id
+    </select>
+
+    <select id="selectNoVerificationAmount"
+            resultType="net.lab1024.tms.admin.module.business.receive.domain.dto.ReceiveOrderShipperAmountDTO">
+        SELECT ro.shipper_id,
+               roi.invoice_amount amount
+        FROM t_receive_order_invoice roi
+        left join t_receive_order ro on roi.receive_order_id = ro.receive_order_id
+        left join t_receive_order_cost_item roci on roci.receive_order_id = ro.receive_order_id
+        where ro.verification_flag = #{verificationFlag} and roi.invoice_status = #{invoiceStatus}
+        and roci.waybill_id in
+        <foreach collection="waybillIdList" separator="," open="(" close=")" item="item">
+            #{item}
+        </foreach>
+    </select>
+
+</mapper>

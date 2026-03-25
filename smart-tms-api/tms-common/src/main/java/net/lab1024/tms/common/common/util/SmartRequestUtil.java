@@ -1,0 +1,34 @@
+package net.lab1024.tms.common.common.util;
+
+import lombok.extern.slf4j.Slf4j;
+import net.lab1024.tms.common.common.domain.RequestUser;
+
+/**
+ * @author 罗伊
+ */
+@Slf4j
+public class SmartRequestUtil {
+
+    private static final ThreadLocal<RequestUser> requestThreadLocal = new ThreadLocal<>();
+
+    private static final ThreadLocal<Long> requestCompanyThreadLocal = new ThreadLocal<>();
+
+    public static void setRequestUser(RequestUser requestUser) {
+        requestThreadLocal.set(requestUser);
+    }
+
+    public static RequestUser getRequestUser() {
+        return requestThreadLocal.get();
+    }
+
+    public static Long getRequestUserId() {
+        RequestUser requestUser = getRequestUser();
+        return null == requestUser ? null : requestUser.getUserId();
+    }
+
+    public static void remove() {
+        requestThreadLocal.remove();
+    }
+
+
+}

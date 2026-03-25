@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.shipper.dao.ShipperContactDao">
+
+    <update id="updateDeletedFlagById">
+        update t_shipper_contact set deleted_flag = #{deletedFlag} where contact_id = #{contactId}
+    </update>
+
+    <update id="updateDeletedFlag">
+        update t_shipper_contact set deleted_flag = #{deletedFlag} where shipper_id in
+        <foreach collection="shipperIdList" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </update>
+
+    <update id="updateDefaultFlagById">
+        update t_shipper_contact set default_flag = #{defaultFlag} where contact_id = #{contactId}
+    </update>
+
+    <delete id="deleteByShipperId">
+        delete from t_shipper_contact where shipper_id = #{shipperId}
+    </delete>
+
+    <select id="selectByShipperId"
+            resultType="net.lab1024.tms.common.module.business.shipper.domain.ShipperContactEntity">
+        select * from t_shipper_contact where shipper_id = #{shipperId} and deleted_flag = #{deletedFlag}
+    </select>
+
+    <select id="selectByShipperIdList"
+            resultType="net.lab1024.tms.common.module.business.shipper.domain.ShipperContactEntity">
+        select * from t_shipper_contact where shipper_id in
+        <foreach collection="shipperIdList" open="(" close=")" item="item" separator=",">
+            #{item}
+        </foreach>
+        and deleted_flag = #{deletedFlag}
+        <if test="defaultFlag != null">
+            and default_flag = #{defaultFlag}
+        </if>
+    </select>
+
+    <select id="selectDefault"
+            resultType="net.lab1024.tms.common.module.business.shipper.domain.ShipperContactEntity">
+        select * from t_shipper_contact where default_flag = #{defaultFlag} and shipper_id = #{shipperId}
+    </select>
+
+
+</mapper>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.material.customsbroker.CustomsBrokerDao">
+    <update id="deleteCustomsBroker">
+        UPDATE t_material_customs_broker
+        SET deleted_flag = #{deletedFlag}
+        WHERE customs_broker_id = #{customsBrokerId}
+    </update>
+    <select id="queryByCustomsBrokerCode"
+            resultType="net.lab1024.tms.common.module.business.material.customsbroker.CustomsBrokerEntity">
+        SELECT *
+        FROM t_material_customs_broker
+        WHERE customs_broker_code = #{customsBrokerCode}
+        AND deleted_flag = #{deletedFlag}
+        <if test="excludeCustomsBrokerId != null">
+            AND customs_broker_id != #{excludeCustomsBrokerId}
+        </if>
+    </select>
+    <select id="queryPage"
+            resultType="net.lab1024.tms.admin.module.business.material.customsbroker.domain.CustomsBrokerVO">
+        SELECT cb.*
+        FROM t_material_customs_broker cb
+        <where>
+            cb.deleted_flag = #{queryForm.deletedFlag}
+            <if test="queryForm.keywords != null and queryForm.keywords != ''">
+                AND (INSTR(cb.customs_broker_name,#{queryForm.keywords}) OR INSTR(cb.customs_broker_short_name,#{queryForm.keywords})
+                OR INSTR(cb.customs_broker_code,#{queryForm.keywords}) OR INSTR(cb.contact,#{queryForm.keywords})
+                OR INSTR(cb.contact_phone,#{queryForm.keywords}) OR INSTR(cb.create_user_name,#{queryForm.keywords}))
+            </if>
+            <if test="queryForm.startTime != null">
+                AND DATE_FORMAT(cb.create_time, '%Y-%m-%d') &gt;= #{queryForm.startTime}
+            </if>
+            <if test="queryForm.endTime != null">
+                AND DATE_FORMAT(cb.create_time, '%Y-%m-%d') &lt;= #{queryForm.endTime}
+            </if>
+            <if test="queryForm.disabledFlag != null">
+                AND cb.disabled_flag = #{queryForm.disabledFlag}
+            </if>
+        </where>
+        <if test="queryForm.sortItemList == null or queryForm.sortItemList.size == 0">
+            ORDER BY cb.create_time DESC
+        </if>
+    </select>
+    <select id="getDetail"
+            resultType="net.lab1024.tms.admin.module.business.material.customsbroker.domain.CustomsBrokerVO">
+        SELECT cb.*
+        FROM t_material_customs_broker cb
+        WHERE cb.customs_broker_id = #{customsBrokerId}
+          AND cb.deleted_flag = #{deletedFlag}
+    </select>
+</mapper>

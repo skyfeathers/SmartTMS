@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.common.module.business.oa.enterprise.dao.CommonEnterpriseDao">
+
+
+    <select id="selectAccessKey" resultType="java.lang.String">
+        select access_key from t_oa_enterprise where enterprise_id = #{enterpriseId}
+    </select>
+
+    <select id="selectByDomainName"
+            resultType="net.lab1024.tms.common.module.business.oa.enterprise.domain.EnterpriseEntity">
+        select * from t_oa_enterprise where FIND_IN_SET(#{domainName},domain_name) and deleted_flag = #{deletedFlag} and disabled_flag = #{disabledFlag}
+    </select>
+    <select id="selectEnterpriseList"
+            resultType="net.lab1024.tms.common.module.business.oa.enterprise.domain.EnterpriseEntity">
+        select * from t_oa_enterprise where deleted_flag = #{deletedFlag} and disabled_flag = #{disabledFlag}
+    </select>
+
+</mapper>

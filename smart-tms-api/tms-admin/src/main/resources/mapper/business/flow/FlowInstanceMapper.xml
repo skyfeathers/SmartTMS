@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.flow.instance.dao.FlowInstanceDao">
+
+
+    <select id="query"
+            resultType="net.lab1024.tms.admin.module.business.flow.instance.domain.vo.FlowInstanceVO">
+        select
+        tfi.*,
+        te.actual_name as initiatorName
+        from t_flow_instance tfi
+        left join t_employee te on tfi.initiator_id = te.employee_id
+        <where>
+            <if test="query.enterpriseId != null">
+                and tfi.enterprise_id = #{query.enterpriseId}
+            </if>
+            <if test="query.auditStatusList != null and query.auditStatusList.size > 0">
+                and tfi.audit_status in
+                <foreach collection="query.auditStatusList" item="item" open="(" close=")" index="index" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="query.searchWord != null and query.searchWord != ''">
+                AND (
+                INSTR(tfi.business_id,#{query.searchWord})
+                OR INSTR(tfi.business_code,#{query.searchWord})
+                OR INSTR(tfi.remark,#{query.searchWord})
+                OR INSTR(tfi.extend_field1,#{query.searchWord})
+                OR INSTR(tfi.extend_field2,#{query.searchWord})
+                OR INSTR(tfi.extend_field3,#{query.searchWord})
+                OR INSTR(tfi.extend_field4,#{query.searchWord})
+                OR INSTR(tfi.extend_field5,#{query.searchWord})
+                OR INSTR(te.actual_name,#{query.searchWord})
+                OR INSTR(tfi.current_handler_names,#{query.searchWord})
+                )
+            </if>
+            <if test="query.flowType != null">
+                and tfi.flow_type = #{query.flowType}
+            </if>
+            <if test="query.handlerId != null">
+                and FIND_IN_SET(#{query.handlerId},tfi.current_handlers)
+            </if>
+            <if test="query.initiatorId != null">
+                and tfi.initiator_id = #{query.initiatorId}
+            </if>
+            <if test="query.submitStartDate != null">
+                and DATE_FORMAT(tfi.create_time, '%Y-%m-%d') &gt;= #{query.submitStartDate}
+            </if>
+            <if test="query.submitEndDate != null">
+                and #{query.submitEndDate} &gt;= DATE_FORMAT(tfi.create_time, '%Y-%m-%d')
+            </if>
+            <if test="query.finishStartDate != null">
+                and DATE_FORMAT(tfi.finish_time, '%Y-%m-%d') &gt;= #{query.finishStartDate}
+            </if>
+            <if test="query.finishEndDate != null">
+                and #{query.finishEndDate} &gt;= DATE_FORMAT(tfi.finish_time, '%Y-%m-%d')
+            </if>
+        </where>
+        <if test="query.sortItemList == null or query.sortItemList.size == 0">
+            ORDER BY tfi.instance_id asc
+        </if>
+    </select>
+
+    <select id="queryReceived"
+            resultType="net.lab1024.tms.admin.module.business.flow.instance.domain.vo.FlowInstanceVO">
+        select
+        DISTINCT tfi.*,
+        te.actual_name as initiatorName
+        from t_flow_instance_task_record tfitr
+        left join t_flow_instance tfi on tfitr.instance_id = tfi.instance_id
+        left join t_employee te on tfi.initiator_id = te.employee_id
+        <where>
+            <if test="query.enterpriseId != null">
+                and tfitr.enterprise_id = #{query.enterpriseId}
+            </if>
+            <if test="query.auditStatusList != null and query.auditStatusList.size > 0">
+                and tfi.audit_status in
+                <foreach collection="query.auditStatusList" item="item" open="(" close=")" index="index" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="query.searchWord != null and query.searchWord != ''">
+                AND (
+                INSTR(tfi.business_id,#{query.searchWord})
+                OR INSTR(tfi.business_code,#{query.searchWord})
+                OR INSTR(tfi.remark,#{query.searchWord})
+                OR INSTR(tfi.extend_field1,#{query.searchWord})
+                OR INSTR(tfi.extend_field2,#{query.searchWord})
+                OR INSTR(tfi.extend_field3,#{query.searchWord})
+                OR INSTR(tfi.extend_field4,#{query.searchWord})
+                OR INSTR(tfi.extend_field5,#{query.searchWord})
+                OR INSTR(te.actual_name,#{query.searchWord})
+                OR INSTR(tfi.current_handler_names,#{query.searchWord})
+                )
+            </if>
+            <if test="query.flowType != null">
+                and tfi.flow_type = #{query.flowType}
+            </if>
+            <if test="query.handlerId != null">
+                and tfitr.handler = #{query.handlerId}
+            </if>
+            <if test="query.submitStartDate != null">
+                and DATE_FORMAT(tfi.create_time, '%Y-%m-%d') &gt;= #{query.submitStartDate}
+            </if>
+            <if test="query.submitEndDate != null">
+                and #{query.submitEndDate} &gt;= DATE_FORMAT(tfi.create_time, '%Y-%m-%d')
+            </if>
+            <if test="query.finishStartDate != null">
+                and DATE_FORMAT(tfi.finish_time, '%Y-%m-%d') &gt;= #{query.finishStartDate}
+            </if>
+            <if test="query.finishEndDate != null">
+                and #{query.finishEndDate} &gt;= DATE_FORMAT(tfi.finish_time, '%Y-%m-%d')
+            </if>
+        </where>
+        <if test="query.sortItemList == null or query.sortItemList.size == 0">
+            ORDER BY tfitr.instance_id DESC
+        </if>
+    </select>
+
+    <select id="countByHandlerAndStatus" resultType="java.lang.Integer">
+        select count(1) from t_flow_instance where  audit_status = #{auditStatus} and FIND_IN_SET(#{handlerId},current_handlers)
+    </select>
+</mapper>

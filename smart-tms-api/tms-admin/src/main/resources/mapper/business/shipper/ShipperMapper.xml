@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.shipper.dao.ShipperDao">
+
+    <select id="selectByName"
+            resultType="net.lab1024.tms.admin.module.business.shipper.domain.dto.ShipperBasicDTO">
+        select shipper_id,consignor,short_name from t_shipper where consignor = #{consignor} and deleted_flag = #{deletedFlag} AND enterprise_id = #{enterpriseId}
+    </select>
+
+    <select id="selectByNameExcludeIds"
+            resultType="net.lab1024.tms.admin.module.business.shipper.domain.dto.ShipperBasicDTO">
+        select shipper_id,consignor from t_shipper where consignor = #{consignor} and deleted_flag = #{deletedFlag} AND enterprise_id = #{enterpriseId} and shipper_id not in
+        <foreach collection="excludeIds" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="queryByPage"
+            resultType="net.lab1024.tms.admin.module.business.shipper.domain.vo.ShipperListVO">
+        select
+        co.*,
+        e.actual_name as managerName,
+        cci.invoice_name
+        from t_shipper co
+        left join t_shipper_type cot on cot.shipper_id = co.shipper_id
+        left join t_shipper_invoice cci on cci.shipper_id = co.shipper_id
+        left join t_employee e on co.manager_id = e.employee_id
+        left join t_shipper_principal manager on co.shipper_id = manager.shipper_id
+        <if test="queryDTO.customerServiceId != null">
+            left join t_shipper_principal sp on co.shipper_id = sp.shipper_id
+        </if>
+        <where>
+            <if test="queryDTO.keyWords != null and queryDTO.keyWords != ''">
+            AND (
+            INSTR(co.consignor,#{queryDTO.keyWords})
+            or INSTR(co.short_name,#{queryDTO.keyWords})
+            or INSTR(co.create_user_name,#{queryDTO.keyWords})
+            )
+            </if>
+            <if test="queryDTO.consignor != null and queryDTO.consignor != ''">
+                AND INSTR(co.consignor,#{queryDTO.consignor})
+            </if>
+            <if test="queryDTO.shortName != null and queryDTO.shortName != ''">
+                AND INSTR(co.short_name,#{queryDTO.shortName})
+            </if>
+            <if test="queryDTO.createUserName != null and queryDTO.createUserName != ''">
+                AND INSTR(co.create_user_name,#{queryDTO.createUserName})
+            </if>
+            <if test="queryDTO.shipperTypeList !=null and queryDTO.shipperTypeList.size > 0">
+                AND cot.shipper_type IN
+                <foreach collection="queryDTO.shipperTypeList" item="item" open="(" close=")" index="index" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="queryDTO.gradeList !=null and queryDTO.gradeList.size > 0">
+                AND co.grade IN
+                <foreach collection="queryDTO.gradeList" item="item" open="(" close=")" index="index" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="queryDTO.tagTypeList !=null and queryDTO.tagTypeList.size > 0">
+                AND co.tag_type IN
+                <foreach collection="queryDTO.tagTypeList" item="item" open="(" close=")" index="index" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="queryDTO.enterpriseId != null">
+                AND co.enterprise_id = #{queryDTO.enterpriseId}
+            </if>
+            <if test="queryDTO.verifyFlag != null">
+                AND co.verify_flag = #{queryDTO.verifyFlag}
+            </if>
+            <if test="queryDTO.deletedFlag != null">
+                AND co.deleted_flag = #{queryDTO.deletedFlag}
+            </if>
+            <if test="queryDTO.disableFlag != null">
+                AND co.disable_flag = #{queryDTO.disableFlag}
+            </if>
+            <if test="queryDTO.startTime != null">
+                and DATE_FORMAT(co.create_time, '%Y-%m-%d') &gt;= #{queryDTO.startTime}
+            </if>
+            <if test="queryDTO.endTime != null">
+                and DATE_FORMAT(co.create_time, '%Y-%m-%d') &lt;= #{queryDTO.endTime}
+            </if>
+            <if test="queryDTO.shipperNature != null">
+                and co.shipper_nature = #{queryDTO.shipperNature}
+            </if>
+            <if test="queryDTO.managerId != null">
+                and manager.employee_id = #{queryDTO.managerId}
+            </if>
+            <if test="queryDTO.noManagerFlag != null and queryDTO.noManagerFlag">
+                and manager.employee_id IS NULL
+            </if>
+            <if test="queryDTO.customerServiceId != null">
+                and sp.employee_id = #{queryDTO.customerServiceId}
+            </if>
+            <if test="queryDTO.auditStatus != null">
+                and co.audit_status = #{queryDTO.auditStatus}
+            </if>
+            <if test="queryDTO.areaList !=null and queryDTO.areaList.size > 0">
+                AND co.area IN
+                <foreach collection="queryDTO.areaList" item="item" open="(" close=")" index="index" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+        group by co.shipper_id
+        <if test="queryDTO.sortItemList == null or queryDTO.sortItemList.size == 0">
+            ORDER BY co.create_time desc
+        </if>
+    </select>
+
+    <select id="queryList"
+            resultType="net.lab1024.tms.admin.module.business.shipper.domain.dto.ShipperBasicDTO">
+        select
+        shipper_id,
+        consignor,
+        short_name,
+        disable_flag,
+        area,
+        tax_point
+        from t_shipper
+        where enterprise_id= #{enterpriseId} and deleted_flag = #{deletedFlag}
+        order by create_time desc
+    </select>
+
+    <select id="detailById"
+            resultType="net.lab1024.tms.admin.module.business.shipper.domain.vo.ShipperDetailVO">
+        select
+        co.*,
+        e.actual_name as managerName
+        from t_shipper co
+        left join t_employee e on co.manager_id = e.employee_id
+        where co.shipper_id = #{shipperId}
+    </select>
+
+    <select id="selectBasicById"
+            resultType="net.lab1024.tms.admin.module.business.shipper.domain.dto.ShipperBasicDTO">
+        select shipper_id,consignor,disable_flag from t_shipper where shipper_id = #{shipperId}
+    </select>
+
+
+    <select id="selectBasicByIdList"
+            resultType="net.lab1024.tms.admin.module.business.shipper.domain.dto.ShipperBasicDTO">
+        select shipper_id,consignor,disable_flag,short_name from t_shipper where shipper_id in
+        <foreach collection="shipperIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+        order by create_time desc
+    </select>
+
+    <select id="selectSimpleById"
+            resultType="net.lab1024.tms.admin.module.business.shipper.domain.dto.ShipperBasicDTO">
+        select shipper_id,consignor,short_name,disable_flag from t_shipper where shipper_id = #{shipperId}
+    </select>
+
+    <update id="updateDeletedFlagById">
+        update t_shipper set deleted_flag = #{deletedFlag} where shipper_id in
+        <foreach collection="shipperIdList" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </update>
+
+    <update id="updateNameById">
+        update t_shipper set consignor = #{name} where shipper_id = #{shipperId}
+    </update>
+
+    <update id="updateManager">
+        update t_shipper set manager_id = #{managerId} where shipper_id = #{shipperId}
+    </update>
+
+    <select id="selectShipperList" resultType="net.lab1024.tms.common.module.business.shipper.domain.ShipperEntity">
+        SELECT * FROM t_shipper
+        WHERE shipper_id IN
+        <foreach collection="list" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+        <if test="auditStatus != null">
+            AND audit_status = #{auditStatus}
+        </if>
+        <if test="deletedFlag != null">
+            AND deleted_flag = #{deletedFlag}
+        </if>
+    </select>
+
+    <update id="batchUpdateAuditStatus">
+        UPDATE t_shipper SET audit_status = #{auditStatus},audit_remark = #{auditRemark}
+        WHERE shipper_id IN
+        <foreach collection="list" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </update>
+
+
+    <select id="countByMonth" resultType="net.lab1024.tms.admin.module.business.reportform.shipper.domain.vo.ShipperCountMonthVO">
+        select
+        DATE_FORMAT( ts.create_time, '%Y-%m' ) month,
+        COUNT( DISTINCT ts.shipper_id) count
+        from t_shipper ts
+        left join t_shipper_principal tsp on ts.shipper_id = tsp.shipper_id and tsp.`type` = #{queryForm.managerType}
+        where ts.deleted_flag = #{deletedFlag} AND DATE_FORMAT( ts.create_time, '%Y' ) = #{queryForm.year}
+        <if test="queryForm.enterpriseId != null">
+            AND ts.enterprise_id = #{queryForm.enterpriseId}
+        </if>
+        <if test="queryForm.managerIdList != null and queryForm.managerIdList.size > 0">
+            AND tsp.employee_id in
+            <foreach collection="queryForm.managerIdList" separator="," item="item" open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+        GROUP BY
+            DATE_FORMAT( ts.create_time, '%Y-%m' )
+    </select>
+
+    <select id="selectByConsignorListAndEnterpriseId" resultType="net.lab1024.tms.common.module.business.shipper.domain.ShipperEntity">
+        SELECT * from t_shipper
+        where
+        enterprise_id = #{enterpriseId}
+        AND consignor in
+        <foreach collection="shipperNameList" separator="," item="item" open="(" close=")">
+            #{item}
+        </foreach>
+        AND deleted_flag = #{deletedFlag}
+    </select>
+
+</mapper>

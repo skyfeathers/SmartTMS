@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.oilcard.dao.OilCardEnterpriseDao">
+
+    <delete id="deleteByOilCardId">
+        delete from t_oil_card_enterprise where oil_card_id = #{oilCardId}
+    </delete>
+
+    <delete id="deleteByOilCardIdList">
+        delete from t_oil_card_enterprise where oil_card_id in
+        <foreach collection="oilCardIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="selectByOilCardId" resultType="net.lab1024.tms.admin.module.business.oa.enterprise.domain.vo.EnterpriseVO">
+        select e.* from t_oil_card_enterprise oce left join t_oa_enterprise e on e.enterprise_id = oce.enterprise_id where oil_card_id = #{oilCardId}
+    </select>
+
+    <select id="selectByOilCardIdList" resultType="net.lab1024.tms.admin.module.business.oilcard.domain.vo.OilCardEnterpriseVO">
+        select e.*,oce.oil_card_id from t_oil_card_enterprise oce left join t_oa_enterprise e on e.enterprise_id = oce.enterprise_id
+        where oil_card_id in
+        <foreach collection="oilCardIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </select>
+</mapper>

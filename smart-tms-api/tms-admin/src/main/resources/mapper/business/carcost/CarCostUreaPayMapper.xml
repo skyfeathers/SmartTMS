@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.carcost.ureapay.CarCostUreaPayDao">
+
+    <update id="updateWaybillId">
+        UPDATE t_car_cost_urea_pay
+        SET waybill_id = #{waybillId}
+        WHERE urea_pay_id = #{ureaPayId}
+    </update>
+
+    <select id="selectByWaybillId"
+            resultType="net.lab1024.tms.admin.module.business.carcost.ureapay.domain.CarCostUreaPayVO">
+        SELECT ccup.*, oc.oil_card_no
+        FROM t_car_cost_urea_pay ccup
+        LEFT JOIN t_oil_card oc ON ccup.oil_card_id = oc.oil_card_id
+        WHERE waybill_id = #{waybillId}
+        ORDER BY ccup.create_time DESC
+    </select>
+
+    <select id="selectAmount" resultType="java.math.BigDecimal">
+        SELECT ROUND(IFNULL(SUM(Amount), 0), 4)
+        FROM t_car_cost_urea_pay
+        WHERE waybill_id = #{waybillId} AND pay_mode = #{payMode} AND audit_status = #{auditStatus}
+        <if test="oilCardId != null">
+            AND oil_card_id = #{oilCardId}
+        </if>
+    </select>
+
+    <select id="selectDetail"
+            resultType="net.lab1024.tms.common.module.business.carcost.domain.vo.CarCostTabulationDetailVO">
+        SELECT ccup.*,
+               w.waybill_number,
+               w.container_number,
+               w.route_name,
+               w.business_date,
+               w.load_time,
+               v.vehicle_number,
+               s.short_name,
+               o.order_no,
+               oc.oil_card_no
+        FROM t_car_cost_urea_pay ccup
+        LEFT JOIN t_waybill w ON ccup.waybill_id = w.waybill_id
+        LEFT JOIN t_vehicle v ON w.vehicle_id = v.vehicle_id
+        LEFT JOIN t_shipper s ON w.shipper_id = s.shipper_id
+        LEFT JOIN t_order o ON w.order_id = o.order_id
+        LEFT JOIN t_oil_card oc ON ccup.oil_card_id = oc.oil_card_id
+        WHERE ccup.urea_pay_id = #{moduleId}
+    </select>
+    <select id="selectCostFlowByWaybillIdList"
+            resultType="net.lab1024.tms.admin.module.business.reportform.carcost.domain.vo.CarCostFlowExportVO">
+        SELECT ccup.waybill_id,
+               DATE_FORMAT(ccup.create_time, '%Y%m%d') AS `date`,
+               ccup.remark AS summary,
+               ccup.amount AS payAmount,
+               ccup.category_name,
+               w.driver_id,
+               w.vehicle_id
+        FROM t_car_cost_urea_pay ccup
+        LEFT JOIN t_waybill w ON ccup.waybill_id = w.waybill_id
+        WHERE ccup.audit_status = #{auditStatus} AND ccup.waybill_id IN
+        <foreach collection="waybillIdList" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="selectByWaybillIdListAndAuditStatus"
+            resultType="net.lab1024.tms.common.module.business.carcost.domain.entity.CarCostUreaPayEntity">
+        SELECT *
+        FROM t_car_cost_urea_pay
+        WHERE audit_status = #{auditStatus} AND waybill_id IN
+        <foreach collection="waybillIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </select>
+
+
+    <select id="sumMonthAmountByVehicle"
+            resultType="net.lab1024.tms.admin.module.business.reportform.carcost.domain.dto.CarCostVehicleMonthAmountDTO">
+        SELECT
+        ccup.vehicle_id,
+        SUM(ccup.amount) amount
+        FROM t_car_cost_urea_pay ccup
+        LEFT JOIN t_waybill w ON w.waybill_id = ccup.waybill_id
+        where DATE_FORMAT(w.create_time, '%Y-%m-%d') &gt;= #{queryForm.startTime}
+        AND DATE_FORMAT(w.create_time, '%Y-%m-%d') &lt;= #{queryForm.endTime}
+        and ccup.enterprise_id = #{queryForm.enterpriseId}
+        and ccup.vehicle_id in
+        <foreach collection="queryForm.vehicleIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+        GROUP BY ccup.vehicle_id
+    </select>
+
+    <select id="selectDetailByTabulationIdList"
+            resultType="net.lab1024.tms.common.module.business.carcost.domain.vo.CarCostTabulationVO">
+        SELECT ccup.*,
+               cct.tabulation_id,
+               cct.module_id,
+               cct.module_type,
+               w.waybill_number,
+               w.container_number,
+               v.vehicle_number,
+               d.driver_name,
+               ccc.cost_type,
+               ccc.category_name
+        FROM t_car_cost_tabulation cct
+        LEFT JOIN t_waybill w ON cct.waybill_id = w.waybill_id
+        LEFT JOIN t_vehicle v ON cct.vehicle_id = v.vehicle_id
+        LEFT JOIN t_driver d ON cct.driver_id = d.driver_id
+        LEFT JOIN t_car_cost_category ccc ON cct.category_id = ccc.category_id
+        LEFT JOIN t_car_cost_urea_pay ccup ON cct.module_id = ccup.urea_pay_id
+        <where>
+            cct.tabulation_id IN
+            <foreach collection="tabulationIdList" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </where>
+    </select>
+
+</mapper>

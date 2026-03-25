@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.maintenance.dao.MaintenanceDao">
+
+    <!--保养信息分页查询-->
+    <select id="queryByPage"
+            resultType="net.lab1024.tms.admin.module.business.maintenance.domain.MaintenanceVO">
+        SELECT m.*,
+                v.vehicle_number,
+               oa.enterprise_name
+        FROM t_maintenance m
+        LEFT JOIN t_vehicle v on v.vehicle_id = m.vehicle_id
+        LEFT JOIN t_oa_enterprise oa ON m.enterprise_id = oa.enterprise_id
+        WHERE m.deleted_flag = #{queryForm.deletedFlag}
+        <if test="queryForm.enterpriseId != null">
+            AND m.enterprise_id = #{queryForm.enterpriseId}
+        </if>
+        <if test="queryForm.vehicleId != null">
+            AND m.vehicle_id = #{queryForm.vehicleId}
+        </if>
+        <if test="queryForm.vehicleIdList != null and queryForm.vehicleIdList.size > 0">
+            AND m.vehicle_id IN
+            <foreach collection="queryForm.vehicleIdList" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="queryForm.startDate != null">
+            AND DATE_FORMAT(m.maintenance_date,'%Y-%m-%d') &gt;= #{queryForm.startDate}
+        </if>
+        <if test="queryForm.endDate != null">
+            AND DATE_FORMAT(m.maintenance_date,'%Y-%m-%d') &lt;= #{queryForm.endDate}
+        </if>
+        <if test="queryForm.sortItemList == null or queryForm.sortItemList.size == 0">
+            ORDER BY m.create_time DESC
+        </if>
+    </select>
+
+    <select id="selectByVehicleIds"
+            resultType="java.lang.Long">
+        SELECT MAX(maintenance_id)
+        FROM t_maintenance
+        WHERE deleted_flag = #{deletedFlag} AND vehicle_id IN
+        <foreach collection="vehicleIdList" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+        GROUP BY vehicle_id
+    </select>
+
+    <!--更改保养记录删除状态-->
+    <update id="updateDeletedFlag">
+        UPDATE t_maintenance
+        SET deleted_flag = #{deletedFlag}
+        WHERE maintenance_id = #{maintenanceId}
+    </update>
+
+    <select id="sumByModuleIdListAndType"
+            resultType="net.lab1024.tms.admin.module.business.reportform.carcost.domain.dto.CarCostVehicleMonthAmountDTO">
+        SELECT
+        vehicle_id,SUM(maintenance_amount) amount
+        from t_maintenance m
+        LEFT JOIN t_maintenance_content mc ON mc.maintenance_id = m.maintenance_id
+        where deleted_flag = #{queryForm.deletedFlag}
+        and DATE_FORMAT(m.create_time, '%Y-%m-%d') &gt;= #{queryForm.startTime}
+        and DATE_FORMAT(m.create_time, '%Y-%m-%d') &lt;= #{queryForm.endTime}
+        and m.enterprise_id = #{queryForm.enterpriseId}
+        and vehicle_id in
+        <foreach collection="queryForm.vehicleIdList" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+        GROUP BY vehicle_id
+    </select>
+</mapper>

@@ -1,0 +1,15 @@
+server:
+  servlet:
+    context-path: '/'
+  port: 60001
+  tomcat:
+    basedir: /home/logs/tms/admin/tomcat-logs
+project:
+  name: tms-admin
+  module: net.lab1024.tms.admin.module
+swagger:
+  host: localhost/api/
+  tag-class: net.lab1024.tms.admin.constant.AdminSwaggerTagConst
+redis:
+  project-name: tms-admin
+source-type: 2

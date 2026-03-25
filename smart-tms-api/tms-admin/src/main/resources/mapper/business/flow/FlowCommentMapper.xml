@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.flow.comment.FlowCommentDao">
+    <select id="selectByInstanceId"
+            resultType="net.lab1024.tms.admin.module.business.flow.comment.FlowCommentVO">
+        SELECT f.*,
+               e.actual_name AS creatorName
+        FROM t_flow_insance_comment f
+        LEFT JOIN t_employee e ON e.employee_id = f.creator
+        WHERE f.instance_id = #{instanceId}
+          AND f.deleted_flag = #{deletedFlag}
+        ORDER BY f.create_time DESC
+    </select>
+</mapper>

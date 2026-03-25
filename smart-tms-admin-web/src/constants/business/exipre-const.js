@@ -1,0 +1,97 @@
+export const EXPIRED_CERTIFICATE_MODULE_TYPE_ENUM = {
+    DRIVER:{
+        value:1,
+        desc:'司机模块'
+    },
+    SHIPPER:{
+        value:2,
+        desc:'货主模块'
+    },
+    CAR:{
+        value:3,
+        desc:'车辆模块'
+    },
+    BRACKET:{
+        value:4,
+        desc:'挂车模块'
+    }
+}
+export const EXPIRED_CERTIFICATE_STATUS_ENUM = {
+    EXPIRED:{
+        value:0,
+        desc:'已到期'
+    },
+    EXPIRED_3_DAYS:{
+        value:3,
+        desc:'3天内到期'
+    },
+    EXPIRED_7_DAYS:{
+        value:7,
+        desc:'7天内到期'
+    },
+    EXPIRED_15_DAYS:{
+        value:15,
+        desc:'15天内到期'
+    },
+    EXPIRED_30_DAYS:{
+        value:30,
+        desc:'30天内到期'
+    },
+    UNEXPIRED:{
+        value:99,
+        desc:'未到期'
+    }
+}
+
+export const EXPIRED_CERTIFICATE_TYPE_ENUM ={
+    SHEN_FEN_ZHENG:{
+        value:1,
+        desc:'身份证'
+    },
+    JIA_SHI_ZHENG:{
+        value:2,
+        desc:'驾驶证'
+    },
+    XING_SHI_ZHENG:{
+        value:3,
+        desc:'车辆行驶证'
+    },
+    CONG_YE_ZI_GE_ZHENG:{
+        value:4,
+        desc:'从业资格证'
+    },
+    GUA_CHE_XING_SHI_ZHENG:{
+        value:5,
+        desc:'挂车行驶证'
+    },
+    HUO_ZHU_HE_TONG:{
+        value:6,
+        desc:'货主合同'
+    },
+    SI_JI_HE_TONG:{
+        value:7,
+        desc:'司机合同'
+    },
+    CHE_LIANG_BAO_XIAN:{
+        value:8,
+        desc:'车辆保险'
+    },
+    TUO_JIA_BAO_XIAN:{
+        value:9,
+        desc:'挂车保险'
+    },
+    DAO_LU_YUN_SHU_XU_KE_ZHENG:{
+        value:10,
+        desc:'道路运输许可证'
+    },
+    GUA_KAO_ZHENG:{
+        value:11,
+        desc:'挂靠企业道运证'
+    },
+}
+
+export default {
+    EXPIRED_CERTIFICATE_MODULE_TYPE_ENUM,
+    EXPIRED_CERTIFICATE_STATUS_ENUM,
+    EXPIRED_CERTIFICATE_TYPE_ENUM,
+}

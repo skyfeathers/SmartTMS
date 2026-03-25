@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.receive.dao.ReceiveOrderDao">
+
+    <sql id="query">
+        WHERE ro.deleted_flag = #{queryForm.deletedFlag}
+        <if test="queryForm.keywords != null and queryForm.keywords != ''">
+            AND (INSTR(ro.create_user_name ,#{queryForm.keywords}) OR
+            INSTR(ro.receive_order_number,#{queryForm.keywords}) OR
+            INSTR(roi.invoice_name,#{queryForm.keywords}) OR
+            INSTR(tw.waybill_number,#{queryForm.keywords})
+            )
+        </if>
+        <if test="queryForm.consignor != null and queryForm.consignor != ''">
+            AND (INSTR(s.short_name, #{queryForm.consignor}) OR
+            INSTR(s.consignor, #{queryForm.consignor}))
+        </if>
+        <if test="queryForm.businessDateBegin != null">
+            and DATE_FORMAT(ro.business_date, '%Y-%m-01') &gt;= DATE_FORMAT(#{queryForm.businessDateBegin},'%Y-%m-01')
+        </if>
+        <if test="queryForm.businessDateEnd != null">
+            and DATE_FORMAT(ro.business_date, '%Y-%m-01') &lt;= DATE_FORMAT(#{queryForm.businessDateEnd},'%Y-%m-01')
+        </if>
+        <if test="queryForm.checkStatus != null">
+            AND ro.check_status = #{queryForm.checkStatus}
+        </if>
+        <if test="queryForm.makeInvoiceFlag != null">
+            AND ro.make_invoice_flag = #{queryForm.makeInvoiceFlag}
+        </if>
+        <if test="queryForm.overdue != null and queryForm.overdue">
+            AND ro.account_period_date &lt; DATE_FORMAT(now(),'%Y-%m-%d')
+        </if>
+        <if test="queryForm.overdue != null and !queryForm.overdue">
+            AND ro.account_period_date &gt; DATE_FORMAT(now(),'%Y-%m-%d')
+        </if>
+        <if test="queryForm.shipperId != null">
+            AND ro.shipper_id = #{queryForm.shipperId}
+        </if>
+        <if test="queryForm.invoiceStatus != null">
+            AND ro.invoice_status = #{queryForm.invoiceStatus}
+        </if>
+        <if test="queryForm.accountPeriodStartTime != null">
+            AND DATE_FORMAT(ro.account_period_date, '%Y-%m-%d') &gt;= #{queryForm.accountPeriodStartTime}
+        </if>
+        <if test="queryForm.accountPeriodEndTime != null">
+            AND DATE_FORMAT(ro.account_period_date, '%Y-%m-%d') &lt;= #{queryForm.accountPeriodEndTime}
+        </if>
+        <if test="queryForm.createTime != null">
+            AND DATE_FORMAT(ro.create_time, '%Y-%m-%d') &gt;= #{queryForm.createTime}
+        </if>
+        <if test="queryForm.endTime != null">
+            AND DATE_FORMAT(ro.create_time, '%Y-%m-%d') &lt;= #{queryForm.endTime}
+        </if>
+        <if test="queryForm.enterpriseId != null">
+            AND ro.enterprise_id = #{queryForm.enterpriseId}
+        </if>
+        <if test="queryForm.verificationFlag != null">
+            AND ro.verification_flag = #{queryForm.verificationFlag}
+        </if>
+        <if test="queryForm.shipperIdList != null and queryForm.shipperIdList.size > 0">
+            AND s.shipper_id in
+            <foreach collection="queryForm.shipperIdList" separator="," open="(" close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test="queryForm.employeeIdList != null and queryForm.employeeIdList.size > 0">
+            AND ro.create_user_id in
+            <foreach collection="queryForm.employeeIdList" separator="," open="(" close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test="queryForm.saleIdList != null and queryForm.saleIdList.size > 0">
+            AND sp.employee_id in
+            <foreach collection="queryForm.saleIdList" separator="," open="(" close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test="queryForm.businessStartDate != null">
+            and DATE_FORMAT(ro.business_date, '%Y-%m-01') &gt;= date_format(#{queryForm.businessStartDate},'%Y-%m-01')
+        </if>
+        <if test="queryForm.businessEndDate != null">
+            and DATE_FORMAT(ro.business_date, '%Y-%m-01') &lt;= date_format(#{queryForm.businessEndDate},'%Y-%m-01')
+        </if>
+        group by ro.receive_order_id
+        <if test="queryForm.sortItemList == null or queryForm.sortItemList.size == 0">
+            ORDER BY ro.create_time DESC
+        </if>
+    </sql>
+
+    <select id="queryByPage" resultType="net.lab1024.tms.admin.module.business.receive.domain.vo.ReceiveOrderVO">
+        SELECT
+        ro.receive_order_id,
+        ro.receive_order_number,
+        ro.total_amount,
+        ro.make_invoice_flag,
+        ro.check_status,
+        ro.check_remark,
+        ro.invoice_status,
+        ro.tax_point,
+        ro.remark,
+        ro.verification_flag,
+        ro.check_attachment,
+        ro.create_user_name,
+        ro.enterprise_id,
+        s.shipper_id,
+        s.consignor as shipperName,
+        s.short_name,
+        ro.account_period_date,
+        ro.bill_attachment,
+        ro.create_time,
+        ro.business_date,
+        ro.attachment,
+        roi.invoice_name
+        FROM t_receive_order ro
+        LEFT JOIN t_receive_order_invoice roi ON roi.receive_order_id = ro.receive_order_id
+        LEFT JOIN t_shipper s ON s.shipper_id = ro.shipper_id
+        LEFT JOIN t_shipper_principal sp on s.shipper_id = sp.shipper_id and sp.type = #{queryForm.shipperSaleType}
+        LEFT JOIN t_receive_order_waybill trow on trow.receive_order_id = ro.receive_order_id
+        LEFT JOIN t_waybill tw on tw.waybill_id = trow.waybill_id
+        <include refid="query" />
+    </select>
+
+    <select id="queryInvoiceByPage"
+            resultType="net.lab1024.tms.admin.module.business.receive.domain.vo.ReceiveOrderInvoiceListVO">
+        SELECT
+        ro.receive_order_id,
+        ro.receive_order_number,
+        ro.shipper_id,
+        ro.enterprise_id,
+        ro.total_amount,
+        ro.tax_point,
+        ro.bill_attachment,
+        ro.create_time,
+        ro.create_user_name,
+        roi.invoice_remark,
+        roi.invoice_amount,
+        roi.invoice_number,
+        roi.invoice_no,
+        roi.receive_order_invoice_id,
+        roi.invoice_type,
+        roi.invoice_kind_type ,
+        roi.invoice_user_id ,
+        roi.invoice_user_name ,
+        roi.invoice_name,
+        roi.invoice_phone,
+        roi.invoice_bank_name,
+        roi.invoice_bank_no,
+        roi.invoice_address,
+        roi.invoice_time,
+        roi.courier_number,
+        roi.invoice_attachment,
+        s.consignor,
+        s.short_name,
+        ro.business_date,
+        ro.attachment
+        FROM t_receive_order ro
+        LEFT JOIN t_receive_order_invoice roi ON roi.receive_order_id = ro.receive_order_id
+        LEFT JOIN t_shipper s ON ro.shipper_id = s.shipper_id
+        <where>
+            <if test="queryForm.keywords != null and queryForm.keywords != ''">
+                AND (
+                INSTR(ro.receive_order_number,#{queryForm.keywords})
+                OR INSTR(ro.create_user_name,#{queryForm.keywords})
+                OR INSTR(roi.invoice_name,#{queryForm.keywords})
+                )
+            </if>
+            <if test="queryForm.consignor != null and queryForm.consignor != ''">
+                AND INSTR(s.short_name,#{queryForm.consignor})
+            </if>
+            <if test="queryForm.invoiceStartTime != null">
+                AND DATE_FORMAT(roi.invoice_time, '%Y-%m-%d') &gt;= #{queryForm.invoiceStartTime}
+            </if>
+            <if test="queryForm.invoiceEndTime != null">
+                AND DATE_FORMAT(roi.invoice_time, '%Y-%m-%d') &lt;= #{queryForm.invoiceEndTime}
+            </if>
+            <if test="queryForm.invoiceStatus != null">
+                AND roi.invoice_status = #{queryForm.invoiceStatus}
+            </if>
+            <if test="queryForm.checkStatus != null">
+                AND ro.check_status = #{queryForm.checkStatus}
+            </if>
+            <if test="queryForm.makeInvoiceFlag != null">
+                AND ro.make_invoice_flag = #{queryForm.makeInvoiceFlag}
+            </if>
+            <if test="queryForm.enterpriseId != null">
+                AND ro.enterprise_id = #{queryForm.enterpriseId}
+            </if>
+        </where>
+        <if test="queryForm.sortItemList == null or queryForm.sortItemList.size == 0">
+            ORDER BY ro.create_time DESC
+        </if>
+
+    </select>
+
+
+    <select id="getDetail" resultType="net.lab1024.tms.admin.module.business.receive.domain.vo.ReceiveOrderDetailVO">
+        SELECT
+        ro.receive_order_id,
+        ro.receive_order_number,
+        ro.total_amount,
+        ro.make_invoice_flag,
+        ro.invoice_status,
+        ro.tax_point,
+        ro.remark,
+        ro.invoice_status,
+        ro.check_status,
+        ro.check_attachment,
+        ro.bill_attachment,
+        ro.create_user_name,
+        s.consignor as shipperName,
+        s.short_name,
+        ro.create_time,
+        ro.business_date,
+        ro.attachment
+        FROM
+        t_receive_order ro
+        LEFT JOIN t_shipper s ON s.shipper_id = ro.shipper_id
+        where ro.receive_order_id =#{receiveOrderId}
+    </select>
+
+    <select id="selectByWaybillId"
+            resultType="net.lab1024.tms.common.module.business.receive.domain.ReceiveOrderEntity">
+        select ro.*
+        from t_receive_order ro
+        left join t_receive_order_waybill trow on trow.receive_order_id = ro.receive_order_id
+        where trow.waybill_id = #{waybillId} and ro.check_status != #{excludeCheckStatus}
+    </select>
+
+    <select id="selectValidByWaybillId"
+            resultType="net.lab1024.tms.common.module.business.receive.domain.ReceiveOrderEntity">
+        select ro.*
+        from t_receive_order ro
+        left join t_receive_order_waybill trow on trow.receive_order_id = ro.receive_order_id
+        where trow.waybill_id = #{waybillId} and ro.check_status != #{excludeCheckStatus}
+        and ro.invoice_status != #{excludeInvoiceStatus}
+    </select>
+
+    <select id="selectByWaybillIdList"
+            resultType="net.lab1024.tms.admin.module.business.receive.domain.dto.ReceiveOrderWaybillDTO">
+        select ro.receive_order_id,
+        ro.receive_order_number,
+        trow.waybill_id,
+        ro.attachment,
+        ro.check_user_id,
+        ro.check_user_name
+        from t_receive_order ro
+        left join t_receive_order_waybill trow on trow.receive_order_id = ro.receive_order_id
+        where ro.check_status != #{excludeCheckStatus}
+        and trow.waybill_id in
+        <foreach collection="waybillIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="queryPageByShipper" resultType="net.lab1024.tms.admin.module.business.receive.domain.vo.ReceiveOrderVO">
+        SELECT
+        ro.receive_order_id,
+        ro.receive_order_number,
+        ro.freight,
+        ro.total_amount,
+        ro.abnormal_amount,
+        ro.make_invoice_flag,
+        ro.check_status,
+        ro.check_remark,
+        ro.invoice_status,
+        ro.tax_point,
+        ro.remark,
+        ro.verification_flag,
+        ro.check_attachment,
+        ro.create_user_name,
+        s.shipper_id,
+        s.consignor,
+        s.short_name,
+        oe.enterprise_name,
+        ro.account_period_date,
+        ro.create_time,
+        ro.business_date,
+        ro.attachment
+        FROM t_receive_order ro
+        LEFT JOIN t_shipper s ON s.shipper_id = ro.shipper_id
+        LEFT JOIN t_oa_enterprise oe ON oe.enterprise_id = ro.enterprise_id
+        WHERE ro.deleted_flag = #{queryForm.deletedFlag}
+        <if test="queryForm.enterpriseId != null">
+            AND ro.enterprise_id = #{queryForm.enterpriseId}
+        </if>
+        <if test="queryForm.keywords != null and queryForm.keywords != ''">
+            AND (INSTR(ro.create_user_name , #{queryForm.keywords}) OR
+            INSTR(ro.receive_order_number, #{queryForm.keywords}))
+        </if>
+        <if test="queryForm.checkStatus != null">
+            AND ro.check_status = #{queryForm.checkStatus}
+        </if>
+        <if test="queryForm.shipperId != null">
+            AND ro.shipper_id = #{queryForm.shipperId}
+        </if>
+        <if test="queryForm.invoiceStatus != null">
+            AND ro.invoice_status = #{queryForm.invoiceStatus}
+        </if>
+        <if test="queryForm.accountPeriodStartTime != null">
+            AND DATE_FORMAT(ro.account_period_date, '%Y-%m-%d') &gt;= #{queryForm.accountPeriodStartTime}
+        </if>
+        <if test="queryForm.accountPeriodEndTime != null">
+            AND DATE_FORMAT(ro.account_period_date, '%Y-%m-%d') &lt;= #{queryForm.accountPeriodEndTime}
+        </if>
+        <if test="queryForm.sortItemList == null or queryForm.sortItemList.size == 0">
+            ORDER BY ro.create_time DESC
+        </if>
+    </select>
+
+    <select id="selectBusinessDateByWaybillIdList"
+            resultType="net.lab1024.tms.admin.module.business.receive.domain.vo.WaybillBusinessDateVO">
+        SELECT
+        waybill_id,business_date
+        FROM t_receive_order ro
+        LEFT JOIN t_receive_order_cost_item rooi ON ro.receive_order_id = rooi.receive_order_id
+        where ro.check_status != #{excludeCheckStatus}
+        <if test="waybillIdList != null and waybillIdList.size > 0">
+            AND waybill_id in
+            <foreach collection="waybillIdList" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        GROUP BY waybill_id
+    </select>
+
+    <select id="getReceivableTotalAmount" resultType="java.math.BigDecimal">
+        select IFNULL(SUM(a.total_amount),0) from (
+            SELECT
+            ro.receive_order_id,ro.total_amount
+            FROM t_receive_order ro
+            LEFT JOIN t_receive_order_invoice roi ON roi.receive_order_id = ro.receive_order_id
+            LEFT JOIN t_shipper s ON s.shipper_id = ro.shipper_id
+            LEFT JOIN t_shipper_principal sp on s.shipper_id = sp.shipper_id and sp.type = #{queryForm.shipperSaleType}
+            LEFT JOIN t_oa_enterprise oe ON oe.enterprise_id = ro.enterprise_id
+            LEFT JOIN t_receive_order_waybill trow on trow.receive_order_id = ro.receive_order_id
+            LEFT JOIN t_waybill tw on tw.waybill_id = trow.waybill_id
+            <include refid="query" />
+        ) as a
+    </select>
+
+    <select id="getVerificationTotalAmount" resultType="java.math.BigDecimal">
+        SELECT IFNULL(SUM(rov.verification_amount),0)
+        from (
+            SELECT
+            ro.receive_order_id
+            FROM t_receive_order ro
+            LEFT JOIN t_receive_order_invoice roi ON roi.receive_order_id = ro.receive_order_id
+            LEFT JOIN t_shipper s ON s.shipper_id = ro.shipper_id
+            LEFT JOIN t_shipper_principal sp on s.shipper_id = sp.shipper_id and sp.type = #{queryForm.shipperSaleType}
+            LEFT JOIN t_oa_enterprise oe ON oe.enterprise_id = ro.enterprise_id
+            LEFT JOIN t_receive_order_waybill trow on trow.receive_order_id = ro.receive_order_id
+            LEFT JOIN t_waybill tw on tw.waybill_id = trow.waybill_id
+            <include refid="query" />
+        )as a
+        LEFT JOIN t_receive_order_verification rov ON a.receive_order_id = rov.receive_order_id
+
+    </select>
+
+
+
+
+    <select id="queryWaitReceiveList"
+            resultType="net.lab1024.tms.admin.module.business.receive.domain.vo.ReceiveOrderAmountVO">
+        SELECT receiveList.* FROM (
+        SELECT
+        ro.receive_order_id,
+        ro.receive_order_number,
+        ro.shipper_id,
+        s.consignor,
+        oe.enterprise_id,
+        oe.enterprise_name,
+        ro.make_invoice_flag,
+        ro.total_amount as totalAmount,
+        IFNULL(SUM(ror.verification_amount),0) as verificationAmount,
+        ro.business_date,
+        ro.account_period_date
+        FROM t_receive_order ro
+        LEFT JOIN t_shipper s ON ro.shipper_id = s.shipper_id
+        LEFT JOIN t_shipper_principal sp on s.shipper_id = sp.shipper_id and sp.type = #{queryForm.shipperSaleType}
+        LEFT JOIN t_oa_enterprise oe ON ro.enterprise_id = oe.enterprise_id
+        LEFT JOIN t_receive_order_verification ror ON ror.receive_order_id = ro.receive_order_id
+        WHERE ro.account_period_date IS NOT NULL
+        AND ro.check_status = #{queryForm.checkStatus}
+        AND ro.verification_flag = #{queryForm.verificationFlag}
+        AND ro.invoice_status IN
+        <foreach collection="queryForm.invoiceStatusList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+        <if test="queryForm.keyWords != null and queryForm.keyWords != ''">
+            AND ( INSTR(ro.receive_order_number, #{queryForm.keyWords})
+            OR INSTR(s.consignor, #{queryForm.keyWords})
+            OR INSTR(s.short_name, #{queryForm.keyWords}))
+        </if>
+        <if test="queryForm.saleIdList != null and queryForm.saleIdList.size > 0">
+            AND sp.employee_id in
+            <foreach collection="queryForm.saleIdList" separator="," open="(" close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test="queryForm.shipperId != null">
+            AND ro.shipper_id = #{queryForm.shipperId}
+        </if>
+        <if test="queryForm.startDate != null">
+            AND DATE_FORMAT(ro.account_period_date, '%Y-%m-%d') &gt;= DATE_FORMAT(#{queryForm.startDate}, '%Y-%m-%d')
+        </if>
+        <if test="queryForm.endDate != null">
+            AND DATE_FORMAT(ro.account_period_date, '%Y-%m-%d') &lt;= DATE_FORMAT(#{queryForm.endDate}, '%Y-%m-%d')
+        </if>
+        <if test="queryForm.enterpriseId != null">
+            AND ro.enterprise_id = #{queryForm.enterpriseId}
+        </if>
+        group by  ro.receive_order_id
+        ) as receiveList
+        <where>
+            <if test="queryForm.existWaitVerificationFlag != null and queryForm.existWaitVerificationFlag">
+                receiveList.totalAmount != receiveList.verificationAmount
+            </if>
+        </where>
+    </select>
+
+    <select id="selectTotalAmountByAccountPeriodDate"
+            resultType="net.lab1024.tms.admin.module.business.receive.domain.dto.ReceiveOrderAmountSumDTO">
+        SELECT receive_order_id,
+               shipper_id,
+               total_amount
+        FROM t_receive_order
+        <where>
+            <if test="queryForm.verificationFlag != null">
+                verification_flag = #{queryForm.verificationFlag}
+            </if>
+            <if test="queryForm.accountPeriodDate != null">
+                AND DATE_FORMAT(account_period_date, '%Y-%m-%d') &lt; DATE_FORMAT(#{queryForm.accountPeriodDate}, '%Y-%m-%d')
+            </if>
+            <if test="queryForm.startDate != null">
+                AND DATE_FORMAT(create_time, '%Y-%m-%d') &gt;= DATE_FORMAT(#{queryForm.startDate}, '%Y-%m-%d')
+            </if>
+            <if test="queryForm.endDate != null">
+                AND DATE_FORMAT(create_time, '%Y-%m-%d') &lt;= DATE_FORMAT(#{queryForm.endDate}, '%Y-%m-%d')
+            </if>
+            <if test="queryForm.shipperIdList != null and queryForm.shipperIdList.size > 0">
+                AND shipper_id IN
+                <foreach collection="queryForm.shipperIdList" open="(" close=")" item="item" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+    <select id="selectIdByNumber" resultType="java.lang.Long">
+        select receive_order_id from t_receive_order where receive_order_number = #{receiveOrderNumber}
+    </select>
+
+</mapper>

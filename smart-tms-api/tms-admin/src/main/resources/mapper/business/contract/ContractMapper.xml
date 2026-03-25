@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.contract.basic.ContractDao">
+    <update id="batchUpdateStatus">
+        UPDATE t_contract
+        SET status = #{status},
+            update_user_id = #{operatorId}
+        WHERE contract_id IN
+        <foreach collection="contractIdList" item="item" separator="," open="(" close=")">
+            ${item}
+        </foreach>
+    </update>
+
+
+    <select id="queryPage" resultType="net.lab1024.tms.common.module.business.contract.domain.ContractVO">
+        SELECT tc.*,
+        tct.name as contractTypeName,
+        r.actual_name AS responsibleUserName,
+        e.actual_name AS createUserName,
+        u.actual_name AS updateUserName,
+        oe.enterprise_name
+        FROM t_contract tc
+        LEFT JOIN t_employee r ON r.employee_id = tc.responsible_user_id
+        LEFT JOIN t_employee e ON e.employee_id = tc.create_user_id
+        LEFT JOIN t_employee u ON u.employee_id = tc.update_user_id
+        LEFT JOIN t_contract_type tct ON tct.contract_type_id = tc.contract_type
+        LEFT JOIN t_oa_enterprise oe ON oe.enterprise_id = tc.enterprise_id
+        <where>
+            tc.deleted_flag = #{queryForm.deletedFlag}
+            <if test="queryForm.enterpriseId != null">
+                AND tc.enterprise_id = #{queryForm.enterpriseId}
+            </if>
+            <if test="queryForm.keywords != null and queryForm.keywords != ''">
+                AND (INSTR(tc.contract_code,#{queryForm.keywords}) OR INSTR(tc.contract_name,#{queryForm.keywords}) OR
+                INSTR(tc.order_no,#{queryForm.keywords}) OR INSTR(oe.enterprise_name,#{queryForm.keywords}))
+            </if>
+            <if test="queryForm.createStartTime != null">
+                AND DATE_FORMAT(tc.create_time, '%Y-%m-%d') &gt;= #{queryForm.createStartTime}
+            </if>
+            <if test="queryForm.createEndTime != null">
+                AND DATE_FORMAT(tc.create_time, '%Y-%m-%d') &lt;= #{queryForm.createEndTime}
+            </if>
+            <if test="queryForm.status != null">
+                AND tc.status = #{queryForm.status}
+            </if>
+            <if test="queryForm.signerType != null">
+                AND tc.signer_type = #{queryForm.signerType}
+            </if>
+            <if test="queryForm.signerBelongId != null">
+                AND tc.signer_belong_id = #{queryForm.signerBelongId}
+            </if>
+            <if test="queryForm.waybillId != null">
+                AND tc.waybill_id = #{queryForm.waybillId}
+            </if>
+            <if test="queryForm.orderId != null">
+                AND tc.order_id = #{queryForm.orderId}
+            </if>
+            <if test="queryForm.contractType != null">
+                AND tc.contract_type = #{queryForm.contractType}
+            </if>
+
+        </where>
+        <if test="queryForm.sortItemList == null or queryForm.sortItemList.size == 0">
+            ORDER BY tc.create_time DESC
+        </if>
+    </select>
+
+    <select id="selectByWaybillIdAndExcludeStatus"
+            resultType="net.lab1024.tms.common.module.business.contract.domain.ContractEntity">
+        select * from t_contract where waybill_id = #{waybillId} and `status` != #{exStatus}
+    </select>
+
+    <select id="selectByWaybillIdListAndExcludeStatus"
+            resultType="net.lab1024.tms.common.module.business.contract.domain.ContractEntity">
+        select * from t_contract where `status` != #{exStatus} and waybill_id in
+        <foreach collection="waybillIdList" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="selectByOnlineId"
+            resultType="net.lab1024.tms.common.module.business.contract.domain.ContractEntity">
+        select * from t_contract where online_contract_id = #{onlineId}
+    </select>
+</mapper>

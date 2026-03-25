@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.common.module.system.department.CommonDepartmentDao">
+
+
+    <select id="listByEnterpriseId" resultType="net.lab1024.tms.common.module.system.department.domain.DepartmentVO">
+        SELECT
+        d.*,
+        e.actual_name as managerName,
+        pd.`name` as parentName
+        FROM
+        t_department d
+        left join t_employee e on d.manager_id= e.employee_id
+        left join t_department pd on d.parent_id = pd.department_id
+        where d.enterprise_id = #{enterpriseId}
+        order by sort desc
+    </select>
+    <select id="queryById" resultType="net.lab1024.tms.common.module.system.department.domain.DepartmentVO">
+        SELECT
+            d.*,
+            e.actual_name as managerName,
+            pd.`name` as parentName
+        FROM
+            t_department d
+        left join t_employee e on d.manager_id= e.employee_id
+        left join t_department pd on d.parent_id = pd.department_id
+        where d.department_id = #{departmentId}
+    </select>
+
+
+</mapper>

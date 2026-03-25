@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.system.department.dao.DepartmentDao">
+
+
+    <select id="listAll" resultType="net.lab1024.tms.common.module.system.department.domain.DepartmentVO">
+        SELECT
+        d.*,
+        e.actual_name as managerName,
+        pd.`name` as parentName
+        FROM
+        t_department d
+        left join t_employee e on d.manager_id= e.employee_id
+        left join t_department pd on d.parent_id = pd.department_id
+        order by sort desc
+    </select>
+
+    <select id="countSubDepartment" resultType="java.lang.Integer">
+        SELECT
+        count(*)
+        FROM
+        t_department
+        WHERE
+        parent_id = #{departmentId}
+    </select>
+
+    <select id="selectByParentIdAndName"
+            resultType="net.lab1024.tms.common.module.system.department.domain.DepartmentEntity">
+        select * from t_department
+        where parent_id = #{parentId} and name = #{name}
+    </select>
+
+    <select id="selectMaxSort" resultType="java.lang.Integer">
+        select max(sort) from t_department
+    </select>
+
+    <select id="selectByParentId" resultType="net.lab1024.tms.common.module.system.department.domain.DepartmentEntity">
+        select * from t_department where enterprise_id = #{enterpriseId} and parent_id = #{parentId} limit 1
+    </select>
+
+</mapper>

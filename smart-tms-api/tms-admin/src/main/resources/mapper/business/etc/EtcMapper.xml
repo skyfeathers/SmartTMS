@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.etc.dao.EtcDao">
+
+    <select id="queryByPage" resultType="net.lab1024.tms.admin.module.business.etc.domain.vo.EtcVO">
+        SELECT
+        oc.*,
+        e.actual_name createUserName,
+        v.vehicle_number useVehicleNumber
+        FROM
+        t_etc oc
+        LEFT JOIN t_employee e ON e.employee_id = oc.create_user_id
+        LEFT JOIN t_vehicle v ON v.vehicle_id = oc.use_vehicle_id
+        where
+            oc.deleted_flag = #{queryForm.deletedFlag}
+            <if test="queryForm.enterpriseId != null">
+                and oc.enterprise_id = #{queryForm.enterpriseId}
+            </if>
+            <if test="queryForm.keyWords != null and queryForm.keyWords != ''">
+                AND (INSTR(oc.etc_no,#{queryForm.keyWords})
+                or INSTR(e.actual_name,#{queryForm.keyWords})
+                )
+            </if>
+            <if test="queryForm.disabledFlag != null">
+                AND oc.disabled_flag = #{queryForm.disabledFlag}
+            </if>
+
+            <if test="queryForm.createStartTime != null">
+                and DATE_FORMAT(oc.create_time, '%Y-%m-%d') &gt;= #{queryForm.createStartTime}
+            </if>
+            <if test="queryForm.createEndTime != null">
+                and DATE_FORMAT(oc.create_time, '%Y-%m-%d') &lt;= #{queryForm.createEndTime}
+            </if>
+        <if test="queryForm.sortItemList == null or queryForm.sortItemList.size == 0">
+            ORDER BY oc.create_time DESC
+        </if>
+    </select>
+
+    <update id="updateDeletedFlag">
+        update t_etc set deleted_flag = #{deletedFlag} where etc_id in
+        <foreach collection="list" open="(" close=")" item="item" separator=",">
+            #{item}
+        </foreach>
+    </update>
+
+    <select id="getDetail" resultType="net.lab1024.tms.admin.module.business.etc.domain.vo.EtcVO">
+        SELECT
+        oc.*,
+        oe.enterprise_name,
+        e.actual_name createUserName,
+        v.vehicle_number useVehicleNumber
+        FROM
+        t_etc oc
+        LEFT JOIN t_oa_enterprise oe ON oe.enterprise_id = oc.enterprise_id
+        LEFT JOIN t_employee e ON e.employee_id = oc.create_user_id
+        LEFT JOIN t_vehicle v ON v.vehicle_id = oc.use_vehicle_id
+        WHERE etc_id = #{etcId}
+    </select>
+
+    <select id="selectByEtcNoList" resultType="net.lab1024.tms.common.module.business.etc.domain.EtcEntity">
+        select * from t_etc where enterprise_id = #{enterpriseId} and deleted_flag = #{deletedFlag} and etc_no in
+        <foreach collection="etcNoList" open="(" close=")" item="item" separator=",">
+            #{item}
+        </foreach>
+    </select>
+    <select id="selectByEtcNo" resultType="net.lab1024.tms.common.module.business.etc.domain.EtcEntity">
+        select * from t_etc where enterprise_id = #{enterpriseId} and deleted_flag = #{deletedFlag} and etc_no = #{etcNo}
+    </select>
+
+</mapper>

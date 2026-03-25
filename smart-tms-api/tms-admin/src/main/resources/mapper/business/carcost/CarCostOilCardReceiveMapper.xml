@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.carcost.oilcardreceive.CarCostOilCardReceiveDao">
+
+    <update id="updateWaybillId">
+        UPDATE t_car_cost_oil_card_receive
+        SET waybill_id = #{waybillId}
+        WHERE oil_card_receive_id = #{oilCardReceiveId}
+    </update>
+
+    <select id="selectByWaybillId"
+            resultType="net.lab1024.tms.admin.module.business.carcost.oilcardreceive.domain.CarCostOilCardReceiveVO">
+        SELECT ccocr.*, oc.oil_card_no
+        FROM t_car_cost_oil_card_receive ccocr
+        LEFT JOIN t_oil_card oc ON ccocr.oil_card_id = oc.oil_card_id
+        WHERE waybill_id = #{waybillId}
+        ORDER BY ccocr.create_time DESC
+    </select>
+
+    <select id="selectAmount" resultType="java.math.BigDecimal">
+        SELECT ROUND(IFNULL(SUM(Amount), 0), 4)
+        FROM t_car_cost_oil_card_receive
+        WHERE waybill_id = #{waybillId} AND oil_card_id = #{oilCardId} AND audit_status = #{auditStatus}
+    </select>
+
+    <select id="selectDetail"
+            resultType="net.lab1024.tms.common.module.business.carcost.domain.vo.CarCostTabulationDetailVO">
+        SELECT ccocr.*,
+               w.waybill_number,
+               w.container_number,
+               w.route_name,
+               w.business_date,
+               w.load_time,
+               v.vehicle_number,
+               s.short_name,
+               o.order_no,
+               oc.oil_card_no
+        FROM t_car_cost_oil_card_receive ccocr
+        LEFT JOIN t_waybill w ON ccocr.waybill_id = w.waybill_id
+        LEFT JOIN t_vehicle v ON w.vehicle_id = v.vehicle_id
+        LEFT JOIN t_shipper s ON w.shipper_id = s.shipper_id
+        LEFT JOIN t_order o ON w.order_id = o.order_id
+        LEFT JOIN t_oil_card oc ON ccocr.oil_card_id = oc.oil_card_id
+        WHERE ccocr.oil_card_receive_id = #{moduleId}
+    </select>
+
+    <select id="selectByWaybillIdListAndAuditStatus"
+            resultType="net.lab1024.tms.common.module.business.carcost.domain.entity.CarCostOilCardReceiveEntity">
+        SELECT *
+        FROM t_car_cost_oil_card_receive
+        WHERE audit_status = #{auditStatus} AND waybill_id IN
+        <foreach collection="waybillIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="sumMonthAmountByVehicle"
+            resultType="net.lab1024.tms.admin.module.business.reportform.carcost.domain.dto.CarCostVehicleMonthAmountDTO">
+        SELECT
+        ccocr.vehicle_id,
+        SUM(ccocr.amount) amount
+        FROM
+        t_car_cost_oil_card_receive ccocr
+        LEFT JOIN t_waybill w ON w.waybill_id = ccocr.waybill_id
+        where DATE_FORMAT(w.create_time, '%Y-%m-%d') &gt;= #{queryForm.startTime}
+        AND DATE_FORMAT(w.create_time, '%Y-%m-%d') &lt;= #{queryForm.endTime}
+        and ccocr.enterprise_id = #{queryForm.enterpriseId}
+        and ccocr.vehicle_id in
+        <foreach collection="queryForm.vehicleIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+        GROUP BY ccocr.vehicle_id
+    </select>
+
+    <select id="selectDetailByTabulationIdList"
+            resultType="net.lab1024.tms.common.module.business.carcost.domain.vo.CarCostTabulationVO">
+        SELECT ccocr.*,
+               cct.tabulation_id,
+               cct.module_id,
+               cct.module_type,
+               w.waybill_number,
+               w.container_number,
+               v.vehicle_number,
+               d.driver_name,
+               ccc.cost_type,
+               ccc.category_name
+        FROM t_car_cost_tabulation cct
+        LEFT JOIN t_waybill w ON cct.waybill_id = w.waybill_id
+        LEFT JOIN t_vehicle v ON cct.vehicle_id = v.vehicle_id
+        LEFT JOIN t_driver d ON cct.driver_id = d.driver_id
+        LEFT JOIN t_car_cost_category ccc ON cct.category_id = ccc.category_id
+        LEFT JOIN t_car_cost_oil_card_receive ccocr ON cct.module_id = ccocr.oil_card_receive_id
+        <where>
+            cct.tabulation_id IN
+            <foreach collection="tabulationIdList" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </where>
+    </select>
+</mapper>

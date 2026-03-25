@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.shipper.dao.ShipperPrincipalDao">
+
+    <delete id="deleteByShipperIdAndType">
+        delete from t_shipper_principal   where shipper_id = #{shipperId} and `type` = #{type}
+    </delete>
+
+    <delete id="batchDeleteByShipperIdList">
+        delete from t_shipper_principal where shipper_id in
+        <foreach collection="shipperIdList" separator="," item="item" open="(" close=")">
+            #{item}
+        </foreach>
+        and `type` = #{type}
+    </delete>
+
+    <select id="selectByShipperId"
+            resultType="net.lab1024.tms.admin.module.business.shipper.domain.dto.ShipperPrincipalDTO">
+        SELECT sp.type,sp.shipper_id,sp.employee_id,e.actual_name employeeName
+        FROM t_shipper_principal sp
+        LEFT JOIN t_employee e on e.employee_id = sp.employee_id
+         WHERE shipper_id = #{shipperId}
+    </select>
+
+    <select id="selectByShipperIdListAndType"
+            resultType="net.lab1024.tms.admin.module.business.shipper.domain.dto.ShipperPrincipalDTO">
+        SELECT sp.type,sp.shipper_id,sp.employee_id,e.actual_name employeeName
+        FROM t_shipper_principal sp
+        LEFT JOIN t_employee e on e.employee_id = sp.employee_id
+        WHERE shipper_id IN
+        <foreach collection="shipperIdList" open="(" close=")" item="item" separator=",">
+            #{item}
+        </foreach>
+        and `type` = #{type}
+    </select>
+
+    <select id="selectByShipperIdList"
+            resultType="net.lab1024.tms.admin.module.business.shipper.domain.dto.ShipperPrincipalDTO">
+        SELECT sp.type,sp.shipper_id,sp.employee_id,e.actual_name employeeName
+        FROM t_shipper_principal sp
+        LEFT JOIN t_employee e on e.employee_id = sp.employee_id
+        WHERE shipper_id IN
+        <foreach collection="shipperIdList" open="(" close=")" item="item" separator=",">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="selectByShipperIdAndType"
+            resultType="net.lab1024.tms.admin.module.business.shipper.domain.dto.ShipperPrincipalDTO">
+        SELECT sp.type,
+               sp.shipper_id,
+               sp.employee_id,
+               e.actual_name employeeName
+        FROM t_shipper_principal sp
+        LEFT JOIN t_employee e on e.employee_id = sp.employee_id
+        WHERE shipper_id = #{shipperId} AND `type` = #{type}
+    </select>
+
+    <delete id="deleteByShipperId">
+        delete from t_shipper_principal where shipper_id = #{shipperId}
+    </delete>
+
+</mapper>

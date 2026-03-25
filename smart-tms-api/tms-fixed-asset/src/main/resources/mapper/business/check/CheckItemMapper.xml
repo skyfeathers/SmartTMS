@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.fixedasset.module.business.check.dao.CheckItemDao">
+
+    <select id="queryByCheckId" resultType="net.lab1024.tms.fixedasset.module.business.check.domain.entity.CheckItemEntity">
+        SELECT * FROM t_asset_check_item
+        where check_id = #{checkId}
+    </select>
+
+    <select id="queryByCheckIdList" resultType="net.lab1024.tms.fixedasset.module.business.check.domain.entity.CheckItemEntity">
+        SELECT * FROM t_asset_check_item
+        where check_id IN
+        <foreach collection="checkIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </select>
+</mapper>

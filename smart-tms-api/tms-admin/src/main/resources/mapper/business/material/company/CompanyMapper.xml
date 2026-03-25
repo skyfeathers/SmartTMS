@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.material.company.CompanyDao">
+    <update id="deleteCompany">
+        UPDATE t_material_company
+        SET deleted_flag = #{deletedFlag}
+        WHERE company_id = #{companyId}
+    </update>
+    <select id="queryByCompanyCode"
+            resultType="net.lab1024.tms.common.module.business.material.company.CompanyEntity">
+        SELECT *
+        FROM t_material_company
+        WHERE company_code = #{companyCode}
+        AND deleted_flag = #{deletedFlag}
+        <if test="excludeCompanyId != null">
+            AND company_id != #{excludeCompanyId}
+        </if>
+    </select>
+    <select id="queryPage"
+            resultType="net.lab1024.tms.admin.module.business.material.company.domain.CompanyVO">
+        SELECT mc.*
+        FROM t_material_company mc
+        <where>
+            mc.deleted_flag = #{queryForm.deletedFlag}
+            <if test="queryForm.keywords != null and queryForm.keywords != ''">
+                AND (INSTR(mc.company_name,#{queryForm.keywords}) OR INSTR(mc.company_code,#{queryForm.keywords})
+                OR INSTR(mc.contact,#{queryForm.keywords}) OR INSTR(mc.contact_phone,#{queryForm.keywords})
+                OR INSTR(mc.create_user_name,#{queryForm.keywords}))
+            </if>
+            <if test="queryForm.startTime != null">
+                AND DATE_FORMAT(mc.create_time, '%Y-%m-%d') &gt;= #{queryForm.startTime}
+            </if>
+            <if test="queryForm.endTime != null">
+                AND DATE_FORMAT(mc.create_time, '%Y-%m-%d') &lt;= #{queryForm.endTime}
+            </if>
+            <if test="queryForm.disabledFlag != null">
+                AND mc.disabled_flag = #{queryForm.disabledFlag}
+            </if>
+        </where>
+        <if test="queryForm.sortItemList == null or queryForm.sortItemList.size == 0">
+            ORDER BY mc.create_time DESC
+        </if>
+    </select>
+    <select id="getDetail"
+            resultType="net.lab1024.tms.admin.module.business.material.company.domain.CompanyVO">
+        SELECT mc.*
+        FROM t_material_company mc
+        WHERE mc.company_id = #{companyId}
+          AND mc.deleted_flag = #{deletedFlag}
+    </select>
+</mapper>

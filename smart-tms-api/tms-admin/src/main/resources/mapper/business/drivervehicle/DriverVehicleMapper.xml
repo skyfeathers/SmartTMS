@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.drivervehicle.DriverVehicleDao">
+    <delete id="deleteByDriverId">
+        DELETE
+        FROM t_driver_vehicle
+        WHERE driver_id IN
+        <foreach collection="driverIdList" separator="," item="item" open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <delete id="deleteByVehicleId">
+        DELETE
+        FROM t_driver_vehicle
+        WHERE vehicle_id IN
+        <foreach collection="vehicleIdList" separator="," item="item" open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="selectByDriverAndVehicle" resultType="net.lab1024.tms.common.module.business.drivervehicle.DriverVehicleEntity">
+        SELECT * FROM t_driver_vehicle where driver_id = #{driverId} and vehicle_id = #{vehicleId}
+    </select>
+
+    <select id="selectByDriverId"
+            resultType="net.lab1024.tms.admin.module.business.drivervehicle.domain.DriverVehicleVO">
+        SELECT dv.driver_id,
+               d.driver_name,
+               d.telephone,
+               dv.vehicle_id,
+               v.vehicle_number
+        FROM t_driver_vehicle dv
+        LEFT JOIN t_driver d ON d.driver_id = dv.driver_id
+        LEFT JOIN t_vehicle v ON v.vehicle_id = dv.vehicle_id
+        WHERE dv.driver_id = #{driverId}
+          AND d.deleted_flag = #{deletedFlag}
+          AND v.deleted_flag = #{deletedFlag}
+          AND v.disabled_flag = #{disableFlag}
+          <if test="auditStatus != null">
+              and v.audit_status = #{auditStatus}
+          </if>
+    </select>
+
+
+    <select id="selectByDriverIdList"
+            resultType="net.lab1024.tms.admin.module.business.drivervehicle.domain.DriverVehicleVO">
+        SELECT dv.driver_id,
+               d.driver_name,
+               d.telephone,
+               dv.vehicle_id,
+               v.vehicle_number
+        FROM t_driver_vehicle dv
+        LEFT JOIN t_driver d ON d.driver_id = dv.driver_id
+        LEFT JOIN t_vehicle v ON v.vehicle_id = dv.vehicle_id
+        WHERE dv.driver_id in
+        <foreach collection="driverIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+          AND d.deleted_flag = #{deletedFlag}
+          AND v.deleted_flag = #{deletedFlag}
+          AND v.disabled_flag = #{disableFlag}
+    </select>
+
+    <select id="selectByVehicleIdList"
+            resultType="net.lab1024.tms.admin.module.business.drivervehicle.domain.DriverVehicleVO">
+        SELECT dv.driver_id,
+        d.driver_name,
+        d.telephone,
+        dv.vehicle_id,
+        v.vehicle_number
+        FROM t_driver_vehicle dv
+        LEFT JOIN t_driver d ON d.driver_id = dv.driver_id
+        LEFT JOIN t_vehicle v ON v.vehicle_id = dv.vehicle_id
+        WHERE dv.vehicle_id in
+        <foreach collection="vehicleIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+        AND v.deleted_flag = #{deletedFlag}
+        AND d.deleted_flag = #{deletedFlag}
+    </select>
+
+
+    <select id="selectByVehicleId"
+            resultType="net.lab1024.tms.admin.module.business.drivervehicle.domain.DriverVehicleVO">
+        SELECT dv.driver_id,
+               d.driver_name,
+               d.telephone,
+               dv.vehicle_id,
+               v.vehicle_number
+        FROM t_driver_vehicle dv
+        LEFT JOIN t_driver d ON d.driver_id = dv.driver_id
+        LEFT JOIN t_vehicle v ON v.vehicle_id = dv.vehicle_id
+        WHERE dv.vehicle_id = #{vehicleId}
+            <if test="status != null">
+                AND d.status = #{status}
+            </if>
+            AND d.deleted_flag = #{deletedFlag}
+            AND v.deleted_flag = #{deletedFlag}
+    </select>
+
+</mapper>

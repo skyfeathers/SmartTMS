@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.material.businesstype.BusinessTypeDao">
+    <update id="deleteBusinessType">
+        UPDATE t_material_business_type
+        SET deleted_flag = #{deletedFlag}
+        WHERE business_type_id = #{businessTypeId}
+    </update>
+    <select id="queryByBusinessTypeCode"
+            resultType="net.lab1024.tms.common.module.business.material.businesstype.BusinessTypeEntity">
+        SELECT *
+        FROM t_material_business_type
+        WHERE business_type_code = #{businessTypeCode}
+        AND deleted_flag = #{deletedFlag}
+        and enterprise_id = #{enterpriseId}
+        <if test="excludeBusinessTypeId != null">
+            AND business_type_id != #{excludeBusinessTypeId}
+        </if>
+    </select>
+
+    <select id="queryByBusinessTypeName"
+            resultType="net.lab1024.tms.common.module.business.material.businesstype.BusinessTypeEntity">
+        SELECT *
+        FROM t_material_business_type
+        WHERE business_type_name = #{businessTypeName}
+        AND deleted_flag = #{deletedFlag}
+        and enterprise_id = #{enterpriseId}
+        <if test="excludeBusinessTypeId != null">
+            AND business_type_id != #{excludeBusinessTypeId}
+        </if>
+    </select>
+
+    <select id="queryPage"
+            resultType="net.lab1024.tms.admin.module.business.material.businesstype.domain.BusinessTypeVO">
+        SELECT bt.*
+        FROM t_material_business_type bt
+        <where>
+            bt.deleted_flag = #{queryForm.deletedFlag}
+            <if test="queryForm.keywords != null and queryForm.keywords != ''">
+                AND (INSTR(bt.business_type_name,#{queryForm.keywords})
+                OR INSTR(bt.business_type_code,#{queryForm.keywords})
+                OR INSTR(bt.create_user_name,#{queryForm.keywords}))
+            </if>
+            <if test="queryForm.tripType != null">
+                AND bt.trip_type = #{queryForm.tripType}
+            </if>
+            <if test="queryForm.enterpriseId != null">
+                AND bt.enterprise_id = #{queryForm.enterpriseId}
+            </if>
+            <if test="queryForm.startTime != null">
+                AND DATE_FORMAT(bt.create_time, '%Y-%m-%d') &gt;= #{queryForm.startTime}
+            </if>
+            <if test="queryForm.endTime != null">
+                AND DATE_FORMAT(bt.create_time, '%Y-%m-%d') &lt;= #{queryForm.endTime}
+            </if>
+            <if test="queryForm.disabledFlag != null">
+                AND bt.disabled_flag = #{queryForm.disabledFlag}
+            </if>
+        </where>
+        <if test="queryForm.sortItemList == null or queryForm.sortItemList.size == 0">
+            ORDER BY bt.create_time DESC
+        </if>
+    </select>
+    <select id="getDetail"
+            resultType="net.lab1024.tms.admin.module.business.material.businesstype.domain.BusinessTypeVO">
+        SELECT bt.*
+        FROM t_material_business_type bt
+        WHERE bt.business_type_id = #{businessTypeId}
+          AND bt.deleted_flag = #{deletedFlag}
+    </select>
+    <select id="queryByDefault"
+            resultType="net.lab1024.tms.common.module.business.material.businesstype.BusinessTypeEntity">
+        SELECT *
+        FROM t_material_business_type
+        WHERE default_flag = #{defaultFlag}
+          AND deleted_flag = #{deletedFlag}
+        and enterprise_id = #{enterpriseId}
+        <if test="excludeBusinessTypeId != null">
+            AND business_type_id != #{excludeBusinessTypeId}
+        </if>
+    </select>
+
+    <select id="queryList"
+            resultType="net.lab1024.tms.admin.module.business.material.businesstype.domain.BusinessTypeVO">
+        SELECT *
+        FROM t_material_business_type
+        WHERE deleted_flag = #{deletedFlag} AND disabled_flag = #{disabledFlag}
+        and enterprise_id = #{enterpriseId}
+        order by default_flag desc,business_type_id desc
+    </select>
+
+    <select id="selectByBusinessTypeNameList"
+            resultType="net.lab1024.tms.common.module.business.material.businesstype.BusinessTypeEntity">
+        SELECT *
+        FROM t_material_business_type
+        WHERE disabled_flag = #{disabledFlag}
+        AND deleted_flag = #{deletedFlag}
+        and enterprise_id = #{enterpriseId}
+        AND trim(business_type_name) in
+        <foreach collection="businessTypeNameList" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
+</mapper>

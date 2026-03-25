@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.driver.module.business.driver.dao.DriverDao">
+
+    <select id="selectByPhone" resultType="net.lab1024.tms.common.module.business.driver.domain.DriverEntity">
+        SELECT *
+        FROM t_driver
+        WHERE enterprise_id = #{enterpriseId} and telephone = #{phone} AND deleted_flag = #{deletedFlag}
+    </select>
+
+    <select id="selectByPhoneExcludeIds"
+            resultType="net.lab1024.tms.common.module.business.driver.domain.DriverEntity">
+        SELECT *
+        FROM t_driver
+        WHERE enterprise_id = #{enterpriseId} and telephone = #{telephone} AND deleted_flag = #{deletedFlag}
+        <if test="excludeIds != null and excludeIds.size > 0">
+            AND driver_id NOT IN
+            <foreach collection="excludeIds" open="(" close=")" separator="," item="id">
+                #{id}
+            </foreach>
+        </if>
+    </select>
+
+</mapper>

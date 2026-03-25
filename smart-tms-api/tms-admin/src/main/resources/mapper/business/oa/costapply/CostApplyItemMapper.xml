@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.oa.cost.dao.CostApplyItemDao">
+
+    <insert id="batchInsertApplyItem">
+        insert into t_oa_cost_apply_item
+        (apply_id, apply_item_name,apply_amount,remark)
+        values
+        <foreach collection="itemList" separator="," item="item">
+            ( #{applyId} , #{item.applyItemName},#{item.applyAmount},#{item.remark} )
+        </foreach>
+    </insert>
+
+    <select id="selectByApplyIdList" resultType="net.lab1024.tms.admin.module.business.oa.cost.domain.entity.CostApplyItemEntity">
+        select * from t_oa_cost_apply_item 
+        where apply_id in 
+        <foreach collection="applyIdList" open="(" close=")" item="item" separator=",">
+            #{item}
+        </foreach>
+    </select>
+</mapper>

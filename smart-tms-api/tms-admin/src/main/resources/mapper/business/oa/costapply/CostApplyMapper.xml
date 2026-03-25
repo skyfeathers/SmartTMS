@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.oa.cost.dao.CostApplyDao">
+
+    <select id="queryPage"
+            resultType="net.lab1024.tms.admin.module.business.oa.cost.domain.entity.CostApplyEntity">
+        SELECT *
+        FROM t_oa_cost_apply
+        <where>
+            <if test="queryForm.keywords != null and queryForm.keywords != ''">
+                AND (INSTR(apply_no,#{queryForm.keywords})
+                OR INSTR(create_user_name,#{queryForm.keywords}))
+            </if>
+            <if test="queryForm.applyDateBegin != null">
+                AND DATE_FORMAT(apply_date, '%Y-%m-%d') &gt;= #{queryForm.applyDateBegin}
+            </if>
+            <if test="queryForm.applyDateEnd != null">
+                AND DATE_FORMAT(apply_date, '%Y-%m-%d') &lt;= #{queryForm.applyDateEnd}
+            </if>
+            <if test="queryForm.departmentId != null">
+                AND department_id = #{queryForm.departmentId}
+            </if>
+            <if test="queryForm.enterpriseId != null">
+                AND enterprise_id = #{queryForm.enterpriseId}
+            </if>
+        </where>
+        <if test="queryForm.sortItemList == null or queryForm.sortItemList.size == 0">
+            ORDER BY create_time DESC
+        </if>
+    </select>
+
+    <update id="batchUpdateStatus">
+        update  t_oa_cost_apply
+        set status = #{status}
+        where apply_id in
+        <foreach collection="applyIdList" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+
+    </update>
+</mapper>

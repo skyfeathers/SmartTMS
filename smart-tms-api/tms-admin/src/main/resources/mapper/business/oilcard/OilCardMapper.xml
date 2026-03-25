@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.oilcard.dao.OilCardDao">
+
+    <select id="queryByPage" resultType="net.lab1024.tms.admin.module.business.oilcard.domain.vo.OilCardVO">
+        SELECT
+        oc.*
+        FROM
+        t_oil_card oc
+        <if test="queryForm.keyWords != null and queryForm.keyWords != ''">
+            LEFT JOIN t_employee receiveUser ON receiveUser.employee_id = oc.receive_user_id
+            LEFT JOIN t_vehicle v ON v.vehicle_id = oc.use_vehicle_id
+            LEFT JOIN t_driver d ON d.driver_id = oc.use_driver_id
+        </if>
+        where
+            oc.deleted_flag = #{queryForm.deletedFlag}
+            <if test="queryForm.keyWords != null and queryForm.keyWords != ''">
+                AND (INSTR(oc.oil_card_no,#{queryForm.keyWords})
+                or INSTR(oc.create_user_name,#{queryForm.keyWords})
+                or INSTR(d.driver_name,#{queryForm.keyWords})
+                or INSTR(v.vehicle_number,#{queryForm.keyWords})
+                )
+            </if>
+            <if test="queryForm.masterOilCardId != null">
+                AND oc.master_oil_card_id = #{queryForm.masterOilCardId}
+            </if>
+            <if test="queryForm.disabledFlag != null">
+                AND oc.disabled_flag = #{queryForm.disabledFlag}
+            </if>
+            <if test="queryForm.type != null">
+                AND oc.type = #{queryForm.type}
+            </if>
+            <if test="queryForm.fuelType != null">
+                AND oc.fuel_type = #{queryForm.fuelType}
+            </if>
+            <if test="queryForm.enterpriseId != null">
+                AND oc.enterprise_id = #{queryForm.enterpriseId}
+            </if>
+            <if test="queryForm.enterpriseIdList != null and queryForm.enterpriseIdList.size > 0">
+                AND oc.enterprise_id in
+                <foreach collection="queryForm.enterpriseIdList" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="queryForm.startTime != null">
+                and DATE_FORMAT(oc.create_time, '%Y-%m-%d') &gt;= #{queryForm.startTime}
+            </if>
+            <if test="queryForm.endTime != null">
+                and DATE_FORMAT(oc.create_time, '%Y-%m-%d') &lt;= #{queryForm.endTime}
+            </if>
+        group by oc.oil_card_id
+        <if test="queryForm.sortItemList == null or queryForm.sortItemList.size == 0">
+            ORDER BY oc.create_time DESC
+        </if>
+    </select>
+
+    <select id="querySummary" resultType="java.math.BigDecimal">
+        SELECT
+        IFNULL(SUM(recordList.amount ),0)
+        FROM (
+            SELECT
+            ocbr.change_balance as amount
+            FROM t_oil_card_balance_record ocbr
+            LEFT JOIN t_oil_card oc on oc.oil_card_id = ocbr.oil_card_id
+            <if test="queryForm.keyWords != null and queryForm.keyWords != ''">
+                LEFT JOIN t_employee receiveUser ON receiveUser.employee_id = oc.receive_user_id
+                LEFT JOIN t_vehicle v ON v.vehicle_id = oc.use_vehicle_id
+                LEFT JOIN t_driver d ON d.driver_id = oc.use_driver_id
+            </if>
+            where
+            oc.deleted_flag = #{queryForm.deletedFlag}
+            <if test="queryForm.keyWords != null and queryForm.keyWords != ''">
+                AND (INSTR(oc.oil_card_no,#{queryForm.keyWords})
+                or INSTR(oc.create_user_name,#{queryForm.keyWords})
+                or INSTR(d.driver_name,#{queryForm.keyWords})
+                or INSTR(v.vehicle_number,#{queryForm.keyWords})
+                )
+            </if>
+            <if test="queryForm.masterOilCardId != null">
+                AND oc.master_oil_card_id = #{queryForm.masterOilCardId}
+            </if>
+            <if test="queryForm.disabledFlag != null">
+                AND oc.disabled_flag = #{queryForm.disabledFlag}
+            </if>
+            <if test="queryForm.type != null">
+                AND oc.type = #{queryForm.type}
+            </if>
+            <if test="queryForm.fuelType != null">
+                AND oc.fuel_type = #{queryForm.fuelType}
+            </if>
+            <if test="queryForm.enterpriseId != null">
+                AND oc.enterprise_id = #{queryForm.enterpriseId}
+            </if>
+            <if test="queryForm.startTime != null">
+                and DATE_FORMAT(oc.create_time, '%Y-%m-%d') &gt;= #{queryForm.startTime}
+            </if>
+            <if test="queryForm.endTime != null">
+                and DATE_FORMAT(oc.create_time, '%Y-%m-%d') &lt;= #{queryForm.endTime}
+            </if>
+            <if test="queryForm.recordType != null">
+                and ocbr.record_type = #{queryForm.recordType}
+            </if>
+            <if test="queryForm.balanceRecordStartTime != null">
+                and DATE_FORMAT(transaction_time, '%Y-%m-%d') &gt;= #{queryForm.balanceRecordStartTime}
+            </if>
+            <if test="queryForm.balanceRecordEndTime != null">
+                and DATE_FORMAT(transaction_time, '%Y-%m-%d') &lt;= #{queryForm.balanceRecordEndTime}
+            </if>
+            group by ocbr.balance_record_id
+        ) as recordList
+    </select>
+
+
+    <update id="updateDeletedFlag">
+        update t_oil_card set deleted_flag = #{deletedFlag} where oil_card_id in
+        <foreach collection="list" open="(" close=")" item="item" separator=",">
+            #{item}
+        </foreach>
+    </update>
+
+    <select id="getDetail" resultType="net.lab1024.tms.admin.module.business.oilcard.domain.vo.OilCardVO">
+        SELECT
+        oc.*,
+        oe.enterprise_name,
+        receiveUser.actual_name receiveUserName,
+        receiveUser.phone receiveUserPhone,
+        v.vehicle_number useVehicleNumber,
+        d.driver_name useDriverName,
+        d.telephone useDriverPhone
+        FROM
+        t_oil_card oc
+        LEFT JOIN t_oa_enterprise oe ON oe.enterprise_id = oc.enterprise_id
+        LEFT JOIN t_employee receiveUser ON receiveUser.employee_id = oc.receive_user_id
+        LEFT JOIN t_vehicle v ON v.vehicle_id = oc.use_vehicle_id
+        LEFT JOIN t_driver d ON d.driver_id = oc.use_driver_id
+        WHERE oil_card_id = #{oilCardId}
+    </select>
+
+    <select id="selectByNoExcludeIds"
+            resultType="net.lab1024.tms.common.module.business.oilcard.domain.OilCardEntity">
+        select * from t_oil_card where oil_card_no = #{oilCardNo} and deleted_flag = #{deletedFlag}
+        <if test="excludeIds != null and excludeIds.size > 0">
+            and oil_card_id not in
+            <foreach collection="excludeIds" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <update id="updateDisabledFlagByMasterOilId">
+        UPDATE t_oil_card set disabled_flag = #{disabledFlag} where master_oil_card_id = #{masterOilCardId} AND deleted_flag = #{deletedFlag}
+    </update>
+
+    <update id="updatePreDistributionBalance">
+        UPDATE t_oil_card set pre_distribution_balance = pre_distribution_balance + #{changeAmount} where oil_card_id = #{oilCardId}
+    </update>
+
+    <select id="selectByMasterOilCardId"
+            resultType="net.lab1024.tms.common.module.business.oilcard.domain.OilCardEntity">
+        SELECT * from t_oil_card where master_oil_card_id = #{masterOilCardId} AND deleted_flag = #{deletedFlag}
+    </select>
+
+    <select id="selectByTypeAndEnterprise"
+            resultType="net.lab1024.tms.common.module.business.oilcard.domain.OilCardEntity">
+        SELECT
+            oc.*
+        FROM
+            t_oil_card oc
+            where deleted_flag = #{deletedFlag} AND type = #{type} and oc.enterprise_id not in
+            <foreach collection="excludeEnterpriseIdList" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+            GROUP BY oc.oil_card_id
+    </select>
+
+    <select id="selectByOilCardNo" resultType="net.lab1024.tms.common.module.business.oilcard.domain.OilCardEntity">
+        select * from t_oil_card where deleted_flag = #{deletedFlag}
+        and oil_card_no in
+        <foreach collection="oilCardNoList" separator="," open="(" close=")" item="item">
+            #{item}
+        </foreach>
+        <if test="masterOilCardId != null">
+            and master_oil_card_id = #{masterOilCardId}
+        </if>
+        <if test="excludeMasterOilCardId != null">
+            and master_oil_card_id != #{excludeMasterOilCardId}
+        </if>
+    </select>
+
+    <select id="queryListByVehicleId" resultType="net.lab1024.tms.admin.module.business.oilcard.domain.vo.OilCardSimpleVO">
+        select * from t_oil_card where deleted_flag = #{deletedFlag}
+        and disabled_flag = #{disabledFlag}
+        and type = #{type}
+        and (use_vehicle_id = #{vehicleId} or fixed_point_flag = #{fixedPointFlag})
+    </select>
+
+    <select id="selectFuelType" resultType="java.lang.Integer">
+        SELECT fuel_type
+        FROM t_oil_card
+        WHERE oil_card_id = #{oilCardId}
+    </select>
+
+    <update id="updateBalance">
+        UPDATE t_oil_card
+        SET balance = ROUND(balance + #{changeAmount}, 4)
+        WHERE oil_card_id = #{moduleId}
+    </update>
+
+</mapper>

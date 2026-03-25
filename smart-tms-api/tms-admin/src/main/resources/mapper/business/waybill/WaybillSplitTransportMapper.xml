@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.waybill.dao.WaybillSplitTransportDao">
+
+    <select id="selectByWaybillId"
+            resultType="net.lab1024.tms.admin.module.business.waybill.domain.vo.WaybillSplitTransportVO">
+        SELECT
+            twst.*,
+            td.driver_name,
+            td.telephone driverTelephone
+        FROM t_waybill_split_transport twst
+        left join t_driver td on twst.driver_id = td.driver_id
+        WHERE twst.waybill_id = #{waybillId}
+    </select>
+    <select id="detail"
+            resultType="net.lab1024.tms.admin.module.business.waybill.domain.vo.WaybillSplitTransportVO">
+        SELECT
+            twst.*,
+            td.driver_name,
+            td.telephone driverTelephone
+        FROM t_waybill_split_transport twst
+        left join t_driver td on twst.driver_id = td.driver_id
+        WHERE twst.split_transport_id = #{splitTransportId}
+    </select>
+    <select id="selectDriverIdByWaybillIdList" resultType="java.lang.Long">
+        SELECT
+            twst.driver_id
+        FROM t_waybill_split_transport twst
+        WHERE twst.waybill_id in
+        <foreach collection="waybillIdList" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </select>
+
+</mapper>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.fixedasset.module.business.consumables.stockrecord.ConsumablesStockRecordDao">
+
+    <select id="queryPage"
+            resultType="net.lab1024.tms.fixedasset.module.business.consumables.stockrecord.domain.entity.ConsumablesStockRecordEntity">
+        select * from t_consumables_stock_record
+        where consumables_id = #{queryForm.consumablesId}
+        <if test="queryForm.locationId != null">
+            AND location_id = #{queryForm.locationId}
+        </if>
+        <if test="queryForm.sortItemList == null or queryForm.sortItemList.size == 0">
+            ORDER BY create_time DESC
+        </if>
+    </select>
+</mapper>

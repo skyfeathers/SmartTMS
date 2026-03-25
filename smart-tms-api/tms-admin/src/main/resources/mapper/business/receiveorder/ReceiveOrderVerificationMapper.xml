@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.receive.dao.ReceiveOrderVerificationDao">
+
+    <select id="sumByReceiveOrderId" resultType="java.math.BigDecimal">
+        SELECT IFNULL(SUM(verification_amount),0) FROM t_receive_order_verification ror
+        where receive_order_id = #{receiveOrderId}
+    </select>
+
+    <select id="sumByReceiveOrderIdList" resultType="net.lab1024.tms.admin.module.business.receive.domain.dto.ReceiveOrderVerificationAmountDTO">
+        SELECT receive_order_id,IFNULL(SUM(verification_amount),0) verificationAmount FROM t_receive_order_verification ror
+        where receive_order_id in
+        <foreach collection="receiveOrderIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="selectByReceiveOrderId"
+            resultType="net.lab1024.tms.admin.module.business.receive.domain.vo.ReceiveOrderVerificationVO">
+        SELECT ror.* FROM t_receive_order_verification ror
+        where receive_order_id = #{receiveOrderId}
+    </select>
+
+    <select id="selectByReceiveOrderIdList"
+            resultType="net.lab1024.tms.admin.module.business.receive.domain.vo.ReceiveOrderVerificationVO">
+        SELECT ror.* FROM t_receive_order_verification ror
+        where receive_order_id in
+        <foreach collection="receiveOrderIdList" open="(" close=")" item="item" separator=",">
+            #{item}
+        </foreach>
+    </select>
+
+
+    <select id="queryByPage"
+            resultType="net.lab1024.tms.common.module.business.receive.domain.ReceiveOrderVerificationEntity">
+        SELECT
+        rov.*
+        FROM t_receive_order_verification rov
+        left join t_receive_order ro on ro.receive_order_id = rov.receive_order_id
+        <where>
+            <if test="queryForm.enterpriseId != null">
+                and rov.enterprise_id = #{queryForm.enterpriseId}
+            </if>
+            <if test="queryForm.verificationStartTime != null">
+                and DATE_FORMAT(rov.verification_time, '%Y-%m-%d') &gt;= #{queryForm.verificationStartTime}
+            </if>
+            <if test="queryForm.verificationEndTime != null">
+                and DATE_FORMAT(rov.verification_time, '%Y-%m-%d') &lt;= #{queryForm.verificationEndTime}
+            </if>
+            <if test="queryForm.startTime != null">
+                and DATE_FORMAT(rov.create_time, '%Y-%m-%d') &gt;= #{queryForm.startTime}
+            </if>
+            <if test="queryForm.endTime != null">
+                and DATE_FORMAT(rov.create_time, '%Y-%m-%d') &lt;= #{queryForm.endTime}
+            </if>
+            <if test="queryForm.receiveOrderExcludeCheckStatus != null">
+                and ro.check_status != #{queryForm.receiveOrderExcludeCheckStatus}
+            </if>
+        </where>
+
+    </select>
+
+    <select id="sumReceiveAmount" resultType="java.math.BigDecimal">
+        SELECT IFNULL(SUM(rov.verification_amount),0)
+        FROM t_receive_order_verification rov
+        left join t_receive_order ro on ro.receive_order_id = rov.receive_order_id
+        <where>
+            <if test="queryForm.enterpriseId != null">
+                and rov.enterprise_id = #{queryForm.enterpriseId}
+            </if>
+            <if test="queryForm.verificationStartTime != null">
+                and DATE_FORMAT(rov.verification_time, '%Y-%m-%d') &gt;= #{queryForm.verificationStartTime}
+            </if>
+            <if test="queryForm.verificationEndTime != null">
+                and DATE_FORMAT(rov.verification_time, '%Y-%m-%d') &lt;= #{queryForm.verificationEndTime}
+            </if>
+            <if test="queryForm.startTime != null">
+                and DATE_FORMAT(rov.create_time, '%Y-%m-%d') &gt;= #{queryForm.startTime}
+            </if>
+            <if test="queryForm.endTime != null">
+                and DATE_FORMAT(rov.create_time, '%Y-%m-%d') &lt;= #{queryForm.endTime}
+            </if>
+            <if test="queryForm.receiveOrderExcludeCheckStatus != null">
+                and ro.check_status != #{queryForm.receiveOrderExcludeCheckStatus}
+            </if>
+        </where>
+
+    </select>
+
+    <select id="selectTotalAmount" resultType="java.math.BigDecimal">
+        SELECT SUM(verification_amount) verificationTotalAmount FROM t_receive_order_verification
+        WHERE receive_order_id IN
+        <foreach collection="receiveOrderIdList" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="selectAmountByReceiveOrderIdList"
+            resultType="net.lab1024.tms.admin.module.business.receive.domain.dto.ReceiveOrderVerificationAmountDTO">
+        SELECT receive_order_id,
+               IFNULL(SUM(verification_amount), 0) verificationAmount
+        FROM t_receive_order_verification
+        WHERE receive_order_id IN
+        <foreach collection="receiveOrderIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+        GROUP BY receive_order_id
+    </select>
+
+</mapper>

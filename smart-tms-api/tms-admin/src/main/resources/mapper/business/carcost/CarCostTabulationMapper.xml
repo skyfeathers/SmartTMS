@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.carcost.tabulation.CarCostTabulationDao">
+
+    <update id="updateAmount">
+        UPDATE t_car_cost_tabulation
+        SET amount = #{amount}
+        WHERE module_id = #{moduleId} AND module_type = #{moduleType}
+    </update>
+
+    <update id="updateAuditInfo">
+        UPDATE t_car_cost_tabulation
+        SET audit_status = #{auditStatus},
+            audit_remark = #{auditRemark}
+        WHERE module_id = #{moduleId} AND module_type = #{moduleType}
+    </update>
+
+    <update id="updateAmountAndCategory">
+        UPDATE t_car_cost_tabulation
+        SET amount = #{amount},
+            category_id = #{categoryId}
+        WHERE module_id = #{moduleId} AND module_type = #{moduleType}
+    </update>
+
+    <update id="updateWaybillIdAndVehicleId">
+        UPDATE t_car_cost_tabulation
+        SET waybill_id = #{waybillId},
+            vehicle_id = #{vehicleId}
+        WHERE tabulation_id = #{tabulationId}
+    </update>
+
+    <update id="updateWaybillId">
+        UPDATE t_car_cost_tabulation
+        SET waybill_id = #{waybillId}
+        WHERE tabulation_id = #{tabulationId}
+    </update>
+
+    <select id="selectTabulationIdByModule" resultType="java.lang.Long">
+        SELECT tabulation_id
+        FROM t_car_cost_tabulation
+        WHERE module_id = #{moduleId} AND module_type = #{moduleType}
+    </select>
+
+    <select id="selectByModule"
+            resultType="net.lab1024.tms.common.module.business.carcost.domain.entity.CarCostTabulationEntity">
+        SELECT *
+        FROM t_car_cost_tabulation
+        WHERE module_id = #{moduleId} AND module_type = #{moduleType}
+    </select>
+
+    <select id="selectByEnterpriseId"
+            resultType="net.lab1024.tms.common.module.business.carcost.domain.vo.CarCostTabulationSimpleVO">
+        SELECT *
+        FROM t_car_cost_tabulation
+        where enterprise_id = #{enterpriseId}
+        ORDER BY create_time DESC
+        LIMIT #{limitNum}
+    </select>
+
+    <select id="selectByPage"
+            resultType="net.lab1024.tms.common.module.business.carcost.domain.vo.CarCostTabulationSimpleVO">
+        SELECT cct.tabulation_id,
+               cct.module_type
+        FROM t_car_cost_tabulation cct
+        LEFT JOIN t_waybill w ON cct.waybill_id = w.waybill_id
+        LEFT JOIN t_car_cost_category ccc ON cct.category_id = ccc.category_id
+        <where>
+            <if test="queryForm.enterpriseId != null">
+                AND cct.enterprise_id = #{queryForm.enterpriseId}
+            </if>
+            <if test="queryForm.auditStatus != null">
+                AND cct.audit_status = #{queryForm.auditStatus}
+            </if>
+            <if test="queryForm.driverId != null">
+                AND cct.driver_id = #{queryForm.driverId}
+            </if>
+            <if test="queryForm.vehicleId != null">
+                AND cct.vehicle_id = #{queryForm.vehicleId}
+            </if>
+            <if test="queryForm.costType != null">
+                AND ccc.cost_type = #{queryForm.costType}
+            </if>
+            <if test="queryForm.categoryId != null">
+                AND cct.category_id = #{queryForm.categoryId}
+            </if>
+            <if test="queryForm.waybillNumber != null and queryForm.waybillNumber != ''">
+                AND INSTR(w.waybill_number, #{queryForm.waybillNumber})
+            </if>
+            <if test="queryForm.containerNumber != null and queryForm.containerNumber != ''">
+                AND INSTR(w.container_number, #{queryForm.containerNumber})
+            </if>
+        </where>
+        ORDER BY cct.create_time DESC,cct.tabulation_id DESC
+    </select>
+
+    <select id="selectByWaybillId"
+            resultType="net.lab1024.tms.common.module.business.carcost.domain.vo.CarCostTabulationSimpleVO">
+        SELECT cct.tabulation_id,
+        cct.module_type
+        FROM t_car_cost_tabulation cct
+        LEFT JOIN t_waybill w ON cct.waybill_id = w.waybill_id
+        LEFT JOIN t_car_cost_category ccc ON cct.category_id = ccc.category_id
+        where cct.waybill_id = #{waybillId}
+        ORDER BY cct.create_time DESC,cct.tabulation_id DESC
+    </select>
+
+    <select id="selectByWaybillIdAndAuditStatus"
+            resultType="net.lab1024.tms.common.module.business.carcost.domain.entity.CarCostTabulationEntity">
+        SELECT *
+        FROM t_car_cost_tabulation
+        where waybill_id = #{waybillId} AND audit_status = #{auditStatus}
+    </select>
+
+    <select id="selectWaitAuditCount" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM t_car_cost_tabulation
+        WHERE waybill_id = #{waybillId} AND audit_status = #{auditStatus}
+    </select>
+
+    <select id="selectCarCostItem"
+            resultType="net.lab1024.tms.admin.module.business.reportform.carcost.domain.vo.CarCostItemInfoVO">
+        SELECT cct.*,
+               ccc.cost_type,
+               ccc.category_name,
+               ccc.pay_mode
+        FROM t_car_cost_tabulation cct
+        LEFT JOIN t_car_cost_category ccc ON cct.category_id = ccc.category_id
+        WHERE cct.waybill_id IN
+        <foreach collection="waybillIdList" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+        AND cct.module_type IN
+        <foreach collection="moduleTypeList" open="(" close=")" separator="," item="type">
+            #{type}
+        </foreach>
+        AND cct.audit_status = #{auditStatus}
+    </select>
+
+    <select id="selectVehicleIdByTime" resultType="java.lang.Long">
+        SELECT vehilce_id from t_car_cost_tabulation where
+    </select>
+
+
+</mapper>

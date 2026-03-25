@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.vehicle.dao.VehicleDao">
+
+    <select id="queryByPage" resultType="net.lab1024.tms.admin.module.business.vehicle.domain.vo.VehicleVO">
+        SELECT v.*,b.bracket_no
+        FROM t_vehicle v
+        LEFT JOIN t_bracket b on v.bracket_id = b.bracket_id
+        WHERE v.deleted_flag = #{queryDTO.deletedFlag}
+        <if test="queryDTO.vehicleKeyWords != null and queryDTO.vehicleKeyWords != ''">
+        AND (INSTR(v.vehicle_number,#{queryDTO.vehicleKeyWords})
+        or INSTR(v.shorthand,#{queryDTO.vehicleKeyWords})
+        )
+        </if>
+        <if test="queryDTO.vehicleNumber != null and queryDTO.vehicleNumber != ''">
+            AND INSTR(v.vehicle_number,#{queryDTO.vehicleNumber})
+        </if>
+        <if test="queryDTO.shorthand != null and queryDTO.shorthand != ''">
+            AND INSTR(v.shorthand,#{queryDTO.shorthand})
+        </if>
+        <if test="queryDTO.bracketNo != null and queryDTO.bracketNo != ''">
+            AND INSTR(b.bracket_no,#{queryDTO.bracketNo})
+        </if>
+        <if test="queryDTO.roadTransportCertificateNumber != null and queryDTO.roadTransportCertificateNumber != ''">
+            AND INSTR(v.road_transport_certificate_number,#{queryDTO.roadTransportCertificateNumber})
+        </if>
+        <if test="queryDTO.relyEnterpriseName != null and queryDTO.relyEnterpriseName != ''">
+            AND (INSTR(v.rely_enterprise_name,#{queryDTO.relyEnterpriseName}))
+        </if>
+        <if test="queryDTO.vehicleType != null and queryDTO.vehicleType != ''">
+            AND v.vehicle_type = #{queryDTO.vehicleType}
+        </if>
+        <if test="queryDTO.auditStatus != null">
+            AND v.audit_status = #{queryDTO.auditStatus}
+        </if>
+        <if test="queryDTO.disabledFlag != null">
+            AND v.disabled_flag = #{queryDTO.disabledFlag}
+        </if>
+        <if test="queryDTO.ownerType != null">
+            AND v.owner_type = #{queryDTO.ownerType}
+        </if>
+        <if test="queryDTO.enterpriseId != null">
+            AND v.enterprise_id = #{queryDTO.enterpriseId}
+        </if>
+        <if test="queryDTO.createStartTime != null">
+            and DATE_FORMAT(v.create_time, '%Y-%m-%d') &gt;= #{queryDTO.createStartTime}
+        </if>
+        <if test="queryDTO.createEndTime != null">
+            and DATE_FORMAT(v.create_time, '%Y-%m-%d') &lt;= #{queryDTO.createEndTime}
+        </if>
+
+        <if test="queryDTO.vehicleAuditExpireStartTime != null">
+            and DATE_FORMAT(v.vehicle_audit_expire_date, '%Y-%m-%d') &gt;= #{queryDTO.vehicleAuditExpireStartTime}
+        </if>
+        <if test="queryDTO.vehicleAuditExpireEndTime != null">
+            and DATE_FORMAT(v.vehicle_audit_expire_date, '%Y-%m-%d') &lt;= #{queryDTO.vehicleAuditExpireEndTime}
+        </if>
+
+        <if test="queryDTO.drivingLicenseExpireStartTime != null">
+            and DATE_FORMAT(v.expire_date, '%Y-%m-%d') &gt;= #{queryDTO.drivingLicenseExpireStartTime}
+        </if>
+        <if test="queryDTO.drivingLicenseExpireEndTime != null">
+            and DATE_FORMAT(v.expire_date, '%Y-%m-%d') &lt;= #{queryDTO.drivingLicenseExpireEndTime}
+        </if>
+
+        <if test="queryDTO.relyEnterpriseStartTime != null">
+            and DATE_FORMAT(v.rely_enterprise_expire_date, '%Y-%m-%d') &gt;= #{queryDTO.relyEnterpriseStartTime}
+        </if>
+        <if test="queryDTO.relyEnterpriseEndTime != null">
+            and DATE_FORMAT(v.rely_enterprise_expire_date, '%Y-%m-%d') &lt;= #{queryDTO.relyEnterpriseEndTime}
+
+        </if>
+        <if test="queryDTO.roadTransportCertificateExpireDateStartTime != null">
+            and DATE_FORMAT(v.road_transport_certificate_expire_date, '%Y-%m-%d') &gt;=
+            #{queryDTO.roadTransportCertificateExpireDateStartTime}
+        </if>
+        <if test="queryDTO.roadTransportCertificateExpireDateEndTime != null">
+            and DATE_FORMAT(v.road_transport_certificate_expire_date, '%Y-%m-%d') &lt;=
+            #{queryDTO.roadTransportCertificateExpireDateEndTime}
+        </if>
+        <if test="queryDTO.excludeIdList != null and queryDTO.excludeIdList.size > 0">
+            AND v.vehicle_id not in
+            <foreach collection="queryDTO.excludeIdList" item="item" open="(" close=")" index="index" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="queryDTO.includeIdList != null and queryDTO.includeIdList.size > 0">
+            AND v.vehicle_id in
+            <foreach collection="queryDTO.includeIdList" item="item" open="(" close=")" index="index" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="queryDTO.sortItemList == null or queryDTO.sortItemList.size == 0">
+            ORDER BY v.create_time DESC
+        </if>
+    </select>
+
+    <select id="getDetail" resultType="net.lab1024.tms.admin.module.business.vehicle.domain.vo.VehicleDetailVO">
+        select v.*,e.actual_name createUserName from t_vehicle v left join t_employee e on e.employee_id = v.create_user_id
+         where v.deleted_flag = #{deletedFlag} and v.vehicle_id = #{vehicleId}
+    </select>
+
+    <update id="updateDeletedFlagByVehicleId">
+        update t_vehicle set deleted_flag = #{deletedFlag}
+        where
+        vehicle_id in
+        <foreach collection="vehicleIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </update>
+
+    <select id="selectByBusinessModeAndDisableFlag" resultType="net.lab1024.tms.admin.module.business.vehicle.domain.vo.VehicleSimpleVO">
+        SELECT *
+        FROM t_vehicle
+        WHERE enterprise_id = #{enterpriseId} and business_mode = #{businessMode} and deleted_flag = #{deletedFlag} and disabled_flag = #{disableFlag}
+        order by vehicle_id desc
+    </select>
+
+    <update id="batchUpdateDisabled">
+        update t_vehicle set disabled_flag = #{disabledFlag}
+        where
+        vehicle_id in
+        <foreach collection="vehicleIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </update>
+
+    <select id="selectVehicleList" resultType="net.lab1024.tms.common.module.business.vehicle.domain.VehicleEntity">
+        SELECT * FROM t_vehicle
+        WHERE vehicle_id IN
+        <foreach collection="list" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+        <if test="auditStatus != null">
+            AND audit_status = #{auditStatus}
+        </if>
+        <if test="deletedFlag != null">
+            AND deleted_flag = #{deletedFlag}
+        </if>
+    </select>
+
+    <select id="selectByDisableFlagAndAuditStatus" resultType="net.lab1024.tms.admin.module.business.vehicle.domain.vo.VehicleSimpleVO">
+        SELECT v.*
+        FROM t_vehicle v
+        WHERE v.enterprise_id = #{enterpriseId} and v.deleted_flag = #{deletedFlag} and disabled_flag = #{disableFlag}
+        <if test="auditStatus != null">
+            and audit_status = #{auditStatus}
+        </if>
+        order by v.create_time desc
+    </select>
+
+    <update id="batchUpdateAuditStatus">
+        UPDATE t_vehicle SET audit_status = #{auditStatus},audit_remark = #{auditRemark}
+        WHERE vehicle_id IN
+        <foreach collection="list" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </update>
+
+    <select id="selectByNameExcludeIds"
+            resultType="net.lab1024.tms.common.module.business.vehicle.domain.VehicleEntity">
+        select * from t_vehicle where enterprise_id = #{enterpriseId} and vehicle_number = #{vehicleNumber} and deleted_flag = #{deletedFlag}
+        <if test="excludeIds != null and excludeIds.size > 0">
+            and vehicle_id not in
+            <foreach collection="excludeIds" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+    <select id="selectByBracketId" resultType="net.lab1024.tms.common.module.business.vehicle.domain.VehicleEntity">
+        select * from t_vehicle where bracket_id = #{bracketId}
+    </select>
+
+    <select id="selectByVehicleNumber" resultType="net.lab1024.tms.common.module.business.vehicle.domain.VehicleEntity">
+        select * from t_vehicle where enterprise_id = #{enterpriseId} and deleted_flag = #{deletedFlag}
+        and trim(vehicle_number) in
+        <foreach collection="vehicleNumberList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="updateBracketId">
+        update t_vehicle set bracket_id = #{bracketId} where vehicle_id = #{vehicleId}
+    </select>
+
+    <select id="selectByVehicleIdAndKeyword"
+            resultType="net.lab1024.tms.common.module.business.vehicle.domain.VehicleEntity">
+        SELECT *
+        FROM t_vehicle
+        WHERE deleted_flag = #{deletedFlag}
+          and enterprise_id = #{enterpriseId}
+        <if test="keyword != null and keyword != ''">
+            AND INSTR(vehicle_number, #{keyword})
+        </if>
+        <if test="vehicleIdList != null and vehicleIdList.size > 0">
+            and vehicle_id  in
+            <foreach collection="vehicleIdList" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
+        ORDER BY create_time DESC
+    </select>
+    <select id="countVehicle" resultType="java.lang.Integer">
+        select count(1) from t_vehicle where  enterprise_id = #{enterpriseId} and deleted_flag = #{deletedFlag}
+    </select>
+
+</mapper>

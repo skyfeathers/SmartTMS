@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.flow.instance.dao.FlowInstanceTaskDao">
+
+
+    <select id="selectByInstanceId"
+            resultType="net.lab1024.tms.admin.module.business.flow.instance.domain.entity.FlowInstanceTaskEntity">
+        select *
+        from t_flow_instance_task
+        where instance_id = #{instanceId}
+        order by instance_task_id asc
+    </select>
+    <select id="queryMineByInstanceIdListAndTaskType" resultType="java.lang.Long">
+        select instance_id from t_flow_instance_task
+        where task_type = #{taskType}
+        and FIND_IN_SET(#{employeeId},handlers)
+        and instance_id IN
+        <foreach collection="flowInstanceIdList" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </select>
+    <select id="selectByInstanceAndTaskId"
+            resultType="net.lab1024.tms.admin.module.business.flow.instance.domain.entity.FlowInstanceTaskEntity">
+        select *
+        from t_flow_instance_task
+        where instance_id = #{instanceId}
+          and task_id = #{taskId}
+    </select>
+</mapper>

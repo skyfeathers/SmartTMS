@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.repair.dao.RepairContentDao">
+
+    <select id="selectByRepairIds"
+            resultType="net.lab1024.tms.common.module.business.repair.entity.RepairContentEntity">
+        SELECT *
+        FROM t_repair_content
+        WHERE repair_id IN
+        <foreach collection="repairIdList" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="selectSumAmountByRepairIdList" resultType="java.math.BigDecimal">
+        SELECT SUM(repair_amount)
+        FROM t_repair_content
+        WHERE repair_id IN
+        <foreach collection="repairIdList" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </select>
+
+    <delete id="deleteByRepairId">
+        DELETE FROM t_repair_content
+        WHERE repair_id = #{repairId}
+    </delete>
+
+</mapper>

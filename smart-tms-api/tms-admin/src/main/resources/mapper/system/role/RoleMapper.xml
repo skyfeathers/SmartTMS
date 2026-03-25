@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.system.role.dao.RoleDao">
+
+
+
+    <select id="getByRoleName" resultType="net.lab1024.tms.common.module.system.role.domain.entity.RoleEntity">
+        SELECT
+        r.*
+        FROM
+        t_role r
+        WHERE
+        r.role_name = #{roleName} and enterprise_id = #{enterpriseId}
+    </select>
+
+    <select id="selectByEnterpriseId"
+            resultType="net.lab1024.tms.common.module.system.role.domain.entity.RoleEntity">
+        select * from t_role where enterprise_id = #{enterpriseId}
+    </select>
+
+    <select id="getByRoleCode" resultType="net.lab1024.tms.common.module.system.role.domain.entity.RoleEntity">
+        SELECT
+            r.*
+        FROM
+            t_role r
+        WHERE
+            r.role_code = #{roleCode} and enterprise_id = #{enterpriseId}
+    </select>
+
+    <select id="countByEnterpriseId" resultType="java.lang.Integer">
+        SELECT count(1) FROM  t_role where enterprise_id = #{enterpriseId}
+
+    </select>
+
+</mapper>

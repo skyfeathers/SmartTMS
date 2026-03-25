@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.common.module.system.employee.CommonEmployeeDao">
+
+    <select id="getEmployeeIdByDepartmentId" resultType="java.lang.Long">
+        SELECT employee_id
+        FROM t_employee
+        <where>
+            department_id = #{departmentId}
+            <if test="disabledFlag != null">
+                AND disabled_flag = #{disabledFlag}
+            </if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="getEmployeeIdByDepartmentIdList" resultType="java.lang.Long">
+        SELECT employee_id
+        FROM t_employee
+        <where>
+            department_id IN
+            <foreach collection="departmentIds" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+            <if test="disabledFlag != null">
+                AND disabled_flag = #{disabledFlag}
+            </if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectListByDeletedFlag" resultType="net.lab1024.tms.common.module.system.employee.domain.EmployeeEntity">
+        select * from  t_employee
+        where deleted_flag = #{deletedFlag}
+    </select>
+    <select id="selectByIdList" resultType="net.lab1024.tms.common.module.system.employee.domain.EmployeeBO">
+        select employee_id, actual_name, enterprise_id from t_employee
+        where employee_id in
+        <foreach collection="employeeIdList" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
+</mapper>

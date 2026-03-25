@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.common.module.business.carcost.dao.CommonCarCostOilPayDao">
+
+    <select id="selectByWaybillIdAndFuelType"
+            resultType="net.lab1024.tms.common.module.business.oilcard.domain.OilCardEntity">
+        SELECT
+            oil.*
+        FROM
+            t_car_cost_oil_pay pay
+                LEFT JOIN t_oil_card oil ON oil.oil_card_id = pay.oil_card_id
+        where oil.fuel_type = #{fuelType} and pay.waybill_id = #{waybillId}
+          and pay.audit_status != #{excludeAuditStatus}
+        group by oil.oil_card_id
+    </select>
+</mapper>

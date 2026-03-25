@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.fixedasset.module.business.consumables.stock.dao.ConsumablesStockDao">
+
+    <select id="selectByConsumablesIdList"
+            resultType="net.lab1024.tms.fixedasset.module.business.consumables.stock.domain.entity.ConsumablesStockEntity">
+        select * from t_consumables_stock
+        where consumables_id in
+        <foreach collection="consumablesIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="sumByConsumablesIdListAndLocationId"
+            resultType="net.lab1024.tms.fixedasset.module.business.consumables.stock.domain.vo.ConsumablesStockStatisticVO">
+        SELECT
+        consumables_id,
+        SUM( average_price * stock_count ) totalAmount,
+        sum( stock_count ) stockCount,
+        IFNULL(ROUND( SUM( average_price * stock_count ) / sum( stock_count ), 2 ),0) averagePrice
+        FROM
+        t_consumables_stock
+        where consumables_id in
+        <foreach collection="consumablesIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+        <if test="null != locationId">
+            AND location_id = #{locationId}
+        </if>
+        GROUP BY
+        consumables_id
+    </select>
+
+    <select id="selectByConsumablesIdListAndLocationId"
+            resultType="net.lab1024.tms.fixedasset.module.business.consumables.stock.domain.entity.ConsumablesStockEntity">
+        select * from t_consumables_stock
+        where consumables_id in
+        <foreach collection="consumablesIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+        and location_id = #{locationId}
+    </select>
+</mapper>

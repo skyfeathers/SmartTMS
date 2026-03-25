@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.waybill.dao.WaybillGoodsDao">
+
+
+    <select id="selectByWaybillIdList"
+            resultType="net.lab1024.tms.common.module.business.waybill.domain.entity.WaybillGoodsEntity">
+        SELECT * FROM t_waybill_goods WHERE waybill_id IN
+        <foreach collection="waybillIdList" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="selectByOrderGoodsIdList"
+            resultType="net.lab1024.tms.common.module.business.waybill.domain.entity.WaybillGoodsEntity">
+        SELECT
+            *
+        FROM t_waybill_goods twg
+        left join t_waybill tw on twg.waybill_id = tw.waybill_id
+        WHERE order_goods_id IN
+        <foreach collection="orderGoodsIdList" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+        <if test="notEqualStatus != null">
+            AND tw.waybill_status != #{notEqualStatus}
+        </if>
+    </select>
+
+</mapper>

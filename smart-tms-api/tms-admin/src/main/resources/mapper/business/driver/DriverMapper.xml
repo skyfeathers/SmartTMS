@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.driver.dao.DriverDao">
+
+    <select id="queryByPage" resultType="net.lab1024.tms.admin.module.business.driver.domain.vo.DriverVO">
+        SELECT *
+        FROM t_driver
+        WHERE deleted_flag = #{queryForm.deletedFlag}
+        <if test="queryForm.keyWords != null and queryForm.keyWords != ''">
+        AND (INSTR(driver_name,#{queryForm.keyWords})
+        or INSTR(telephone,#{queryForm.keyWords})
+        or INSTR(driving_license,#{queryForm.keyWords})
+        or INSTR(shorthand_code,#{queryForm.keyWords})
+        or INSTR(create_user_name,#{queryForm.keyWords})
+        )
+        </if>
+        <if test="queryForm.driverName != null and queryForm.driverName != ''">
+            AND ( INSTR(driver_name, #{queryForm.driverName})
+            OR INSTR(telephone, #{queryForm.driverName}) )
+        </if>
+        <if test="queryForm.drivingLicense != null and queryForm.drivingLicense != ''">
+            AND INSTR(driving_license, #{queryForm.drivingLicense})
+        </if>
+        <if test="queryForm.shorthandCode != null and queryForm.shorthandCode != ''">
+            AND INSTR(shorthand_code, #{queryForm.shorthandCode})
+        </if>
+        <if test="queryForm.createUserType != null">
+            AND create_user_type = #{queryForm.createUserType}
+        </if>
+        <if test="queryForm.createUserName != null and queryForm.createUserName != ''">
+            AND INSTR(create_user_name, #{queryForm.createUserName})
+        </if>
+        <if test="queryForm.enterpriseId != null">
+            AND enterprise_id = #{queryForm.enterpriseId}
+        </if>
+        <if test="queryForm.status != null">
+            AND status = #{queryForm.status}
+        </if>
+        <if test="queryForm.auditStatus != null">
+            AND audit_status = #{queryForm.auditStatus}
+        </if>
+        <if test="queryForm.createStartTime != null">
+            and DATE_FORMAT(create_time, '%Y-%m-%d') &gt;= #{queryForm.createStartTime}
+        </if>
+        <if test="queryForm.createEndTime != null">
+            and DATE_FORMAT(create_time, '%Y-%m-%d') &lt;= #{queryForm.createEndTime}
+        </if>
+        <if test="queryForm.idCardStartTime != null">
+            and DATE_FORMAT(id_card_effective_end_date, '%Y-%m-%d') &gt;= #{queryForm.idCardStartTime}
+        </if>
+        <if test="queryForm.idCardEndTime != null">
+            and DATE_FORMAT(id_card_effective_end_date, '%Y-%m-%d') &lt;= #{queryForm.idCardEndTime}
+        </if>
+        <if test="queryForm.birthdayStartTime != null">
+            and DATE_FORMAT(birthday, '%Y-%m-%d') &gt;= #{queryForm.birthdayStartTime}
+        </if>
+        <if test="queryForm.birthdayEndTime != null">
+            and DATE_FORMAT(birthday, '%Y-%m-%d') &lt;= #{queryForm.birthdayEndTime}
+        </if>
+        <if test="queryForm.excludeIdList != null and queryForm.excludeIdList.size > 0">
+            AND driver_id not in
+            <foreach collection="queryForm.excludeIdList" item="item" open="(" close=")" index="index" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="queryForm.includeIdList != null and queryForm.includeIdList.size > 0">
+            AND driver_id in
+            <foreach collection="queryForm.includeIdList" item="item" open="(" close=")" index="index" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="queryForm.sortItemList == null or queryForm.sortItemList.size == 0">
+            ORDER BY create_time DESC
+        </if>
+    </select>
+
+    <update id="updateDeletedFlagByDriverId">
+        update t_driver
+        set deleted_flag   = #{deletedFlag},
+            update_user_id = #{updateUserId}
+        where driver_id in
+        <foreach collection="driverIdList" separator="," open="(" close=")" item="item">
+            #{item}
+        </foreach>
+    </update>
+
+    <select id="selectList" resultType="net.lab1024.tms.common.module.business.driver.domain.DriverEntity">
+        SELECT * FROM t_driver
+        WHERE driver_id IN
+        <foreach collection="list" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+        <if test="auditStatus != null">
+            AND audit_status = #{auditStatus}
+        </if>
+        <if test="status != null">
+            AND status = #{status}
+        </if>
+        <if test="deletedFlag != null">
+            AND deleted_flag = #{deletedFlag}
+        </if>
+    </select>
+
+    <select id="queryExpireList" resultType="net.lab1024.tms.admin.module.business.driver.domain.form.DriverNoticeForm">
+        SELECT driver_id, driver_name, DATEDIFF(${columnName}, now()) expireDay
+        FROM t_driver;
+    </select>
+
+    <select id="queryDriverSelect"
+            resultType="net.lab1024.tms.admin.module.business.driver.domain.vo.DriverSelectVO">
+        SELECT driver_id, driver_name, telephone, shorthand_code, driving_license
+        FROM t_driver
+        WHERE enterprise_id = #{enterpriseId}
+          AND status = #{status}
+          AND deleted_flag = #{deletedFlag}
+          <if test="auditStatus!=null">
+             AND audit_status = #{auditStatus}
+          </if>
+    </select>
+
+    <select id="getDetail" resultType="net.lab1024.tms.admin.module.business.driver.domain.vo.DriverDetailVO">
+        SELECT *
+        FROM t_driver
+        WHERE driver_id = #{driverId} AND deleted_flag = #{deletedFlag}
+    </select>
+
+    <select id="selectByPhoneExcludeIds"
+            resultType="net.lab1024.tms.common.module.business.driver.domain.DriverEntity">
+        select * from t_driver where enterprise_id = #{enterpriseId} and telephone = #{phone} and deleted_flag = #{deletedFlag}
+        <if test="excludeIds != null">
+            and driver_id not in
+            <foreach collection="excludeIds" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
+
+    </select>
+
+    <select id="selectByName"
+            resultType="net.lab1024.tms.common.module.business.driver.domain.DriverEntity">
+        select * from t_driver where enterprise_id = #{enterpriseId} and driver_name = #{driverName} and deleted_flag = #{deletedFlag}
+    </select>
+
+    <select id="selectByPhone" resultType="net.lab1024.tms.common.module.business.driver.domain.DriverEntity">
+        select * from t_driver where enterprise_id = #{enterpriseId} and deleted_flag = #{deletedFlag}
+        and trim(telephone) in
+        <foreach collection="phoneList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </select>
+    <select id="countDriver" resultType="java.lang.Integer">
+        select count(1) from t_driver where enterprise_id = #{enterpriseId} and deleted_flag = #{deletedFlag}
+    </select>
+
+</mapper>

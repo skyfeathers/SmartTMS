@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.maintenance.dao.MaintenanceContentDao">
+
+    <select id="selectByMaintenanceIds"
+            resultType="net.lab1024.tms.common.module.business.maintenance.MaintenanceContentEntity">
+        SELECT *
+        FROM t_maintenance_content
+        WHERE maintenance_id IN
+        <foreach collection="maintenanceIdList" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </select>
+
+    <delete id="deleteByMaintenanceId">
+        DELETE FROM t_maintenance_content
+        WHERE maintenance_id = #{maintenanceId}
+    </delete>
+
+</mapper>

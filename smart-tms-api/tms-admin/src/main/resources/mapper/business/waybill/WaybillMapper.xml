@@ -1,0 +1,1099 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.waybill.dao.WaybillDao">
+
+
+    <update id="updateFlowInstanceId">
+        update t_waybill
+        set flow_instance_id = #{flowInstanceId}
+        where waybill_id = #{waybillId}
+    </update>
+
+    <update id="updateWaybillStatus">
+        update t_waybill
+        set waybill_status = #{waybillStatus}
+        where waybill_id = #{waybillId}
+    </update>
+
+    <update id="updateAuditStatus">
+        update t_waybill
+        set audit_status = #{auditStatus}
+        where waybill_id = #{waybillId}
+    </update>
+
+    <update id="updateBasic">
+        update t_waybill
+        set settle_type = #{form.settleType},
+            settle_mode = #{form.settleMode},
+            transport_mode = #{form.transportMode},
+            vehicle_id = #{form.vehicleId},
+            driver_id = #{form.driverId},
+            fleet_id = #{form.fleetId},
+            contract_amount = #{form.contractAmount},
+            remark = #{form.remark},
+            business_date = #{form.businessDate},
+            load_time = #{form.loadTime}
+        where waybill_id = #{form.waybillId}
+    </update>
+
+    <sql id="queryBase">
+        from t_waybill w
+        left join t_order o on w.order_id = o.order_id
+        LEFT JOIN t_vehicle v ON v.vehicle_id = w.vehicle_id
+        LEFT JOIN t_shipper s ON s.shipper_id = w.shipper_id
+        <where>
+            <if test="queryForm.keywords != null and queryForm.keywords != ''">
+            ( INSTR(w.waybill_number,#{queryForm.keywords})
+            or INSTR(o.order_no,#{queryForm.keywords})
+            or INSTR(w.container_number,#{queryForm.keywords})
+            or INSTR(w.lead_seal_number,#{queryForm.keywords})
+            or INSTR(w.create_user_name,#{queryForm.keywords})
+            or INSTR(s.short_name,#{queryForm.keywords})
+            or INSTR(s.consignor,#{queryForm.keywords})
+            )
+            </if>
+            <if test="queryForm.waybillNumber != null and queryForm.waybillNumber != ''">
+                AND INSTR(w.waybill_number,#{queryForm.waybillNumber})
+            </if>
+            <if test="queryForm.orderNo != null and queryForm.orderNo != ''">
+                AND INSTR(o.order_no,#{queryForm.orderNo})
+            </if>
+            <if test="queryForm.shipperOrderNumber != null and queryForm.shipperOrderNumber != ''">
+                AND INSTR(o.shipper_order_number,#{queryForm.shipperOrderNumber})
+            </if>
+            <if test="queryForm.containerNumber != null and queryForm.containerNumber != ''">
+                AND INSTR(w.container_number,#{queryForm.containerNumber})
+            </if>
+            <if test="queryForm.leadSealNumber != null and queryForm.leadSealNumber != ''">
+                AND INSTR(w.lead_seal_number,#{queryForm.leadSealNumber})
+            </if>
+            <if test="queryForm.payStatus != null">
+                AND w.pay_status = #{queryForm.payStatus}
+            </if>
+            <if test="queryForm.cabinetId != null">
+                AND o.cabinet_id = #{queryForm.cabinetId}
+            </if>
+            <if test="queryForm.latestPackingTimeStart != null">
+                and DATE_FORMAT(o.latest_packing_time, '%Y-%m-%d') &gt;= #{queryForm.latestPackingTimeStart}
+            </if>
+            <if test="queryForm.latestPackingTimeEnd != null">
+                and DATE_FORMAT(o.latest_packing_time, '%Y-%m-%d') &lt;= #{queryForm.latestPackingTimeEnd}
+            </if>
+            <if test="queryForm.containerLocation != null and queryForm.containerLocation != ''">
+                AND INSTR(o.container_location,#{queryForm.containerLocation})
+            </if>
+            <if test="queryForm.placingLocation != null and queryForm.placingLocation != ''">
+                AND INSTR(o.placing_location,#{queryForm.placingLocation})
+            </if>
+            <if test="queryForm.unloadingLocation != null and queryForm.unloadingLocation != ''">
+                AND INSTR(o.unloading_location,#{queryForm.unloadingLocation})
+            </if>
+            <if test="queryForm.returnContainerLocation != null and queryForm.returnContainerLocation != ''">
+                AND INSTR(o.return_container_location,#{queryForm.returnContainerLocation})
+            </if>
+            <if test="queryForm.auditStatus != null">
+                and w.audit_status = #{queryForm.auditStatus}
+            </if>
+            <if test="queryForm.deliverGoodsTimeStart != null">
+                and DATE_FORMAT(w.deliver_goods_time, '%Y-%m-%d') &gt;= #{queryForm.deliverGoodsTimeStart}
+            </if>
+            <if test="queryForm.deliverGoodsTimeEnd != null">
+                and DATE_FORMAT(w.deliver_goods_time, '%Y-%m-%d') &lt;= #{queryForm.deliverGoodsTimeEnd}
+            </if>
+            <if test="queryForm.receiveGoodsTimeStart != null">
+                and DATE_FORMAT(w.receive_goods_time, '%Y-%m-%d') &gt;= #{queryForm.receiveGoodsTimeStart}
+            </if>
+            <if test="queryForm.receiveGoodsTimeEnd != null">
+                and DATE_FORMAT(w.receive_goods_time, '%Y-%m-%d') &lt;= #{queryForm.receiveGoodsTimeEnd}
+            </if>
+            <if test="queryForm.waybillIdList != null and  queryForm.waybillIdList.size > 0">
+                AND w.waybill_id IN
+                <foreach collection="queryForm.waybillIdList" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="queryForm.waybillNumberList != null and queryForm.waybillNumberList.size > 0">
+                and w.waybill_number IN
+                <foreach collection="queryForm.waybillNumberList" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="queryForm.splitTransportFlag != null">
+                AND w.split_transport_flag = #{queryForm.splitTransportFlag}
+            </if>
+            <if test="queryForm.startProfitAmount != null">
+                AND w.profit_amount &gt;= #{queryForm.startProfitAmount}
+            </if>
+            <if test="queryForm.endProfitAmount != null">
+                AND w.profit_amount &lt;= #{queryForm.endProfitAmount}
+            </if>
+            <if test="queryForm.shipperId != null">
+                AND w.shipper_id = #{queryForm.shipperId}
+            </if>
+            <if test="queryForm.driverId != null">
+                AND w.driver_id = #{queryForm.driverId}
+            </if>
+            <if test="queryForm.vehicleId != null">
+                AND w.vehicle_id = #{queryForm.vehicleId}
+            </if>
+            <if test="queryForm.vehicleType != null and queryForm.vehicleType != ''">
+                AND v.vehicle_type = #{queryForm.vehicleType}
+            </if>
+            <if test="queryForm.vehicleBusinessMode != null and  queryForm.vehicleBusinessMode.size > 0">
+                and v.business_mode IN
+                <foreach collection="queryForm.vehicleBusinessMode" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="queryForm.fleetId != null">
+                AND w.fleet_id = #{queryForm.fleetId}
+            </if>
+            <if test="queryForm.orderType != null">
+                AND w.order_type = #{queryForm.orderType}
+            </if>
+            <if test="queryForm.settleType != null">
+                AND w.settle_type = #{queryForm.settleType}
+            </if>
+            <if test="queryForm.submitPayFlag != null">
+                AND w.submit_pay_flag = #{queryForm.submitPayFlag}
+            </if>
+            <if test="queryForm.submitReceiveFlag != null">
+                AND w.submit_receive_flag = #{queryForm.submitReceiveFlag}
+            </if>
+            <if test="queryForm.excludeStatus != null">
+                AND w.waybill_status != #{queryForm.excludeStatus}
+            </if>
+            <if test="queryForm.waybillStatus != null">
+                and w.waybill_status = #{queryForm.waybillStatus}
+            </if>
+            <if test="queryForm.startTime != null">
+                and DATE_FORMAT(w.create_time, '%Y-%m-%d') &gt;= #{queryForm.startTime}
+            </if>
+            <if test="queryForm.endTime != null">
+                and DATE_FORMAT(w.create_time, '%Y-%m-%d') &lt;= #{queryForm.endTime}
+            </if>
+            <if test="queryForm.enterpriseId != null">
+                and w.enterprise_id = #{queryForm.enterpriseId}
+            </if>
+            <if test="queryForm.settleMode != null">
+                and w.settle_mode = #{queryForm.settleMode}
+            </if>
+            <if test="queryForm.managerIdList != null and  queryForm.managerIdList.size > 0">
+                AND o.manager_id IN
+                <foreach collection="queryForm.managerIdList" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="queryForm.createUserIdList != null and  queryForm.createUserIdList.size > 0">
+                and w.create_user_id IN
+                <foreach collection="queryForm.createUserIdList" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="queryForm.transportMode != null">
+                and w.transport_mode = #{queryForm.transportMode}
+            </if>
+            <if test="queryForm.exceptionTypeList != null and queryForm.exceptionTypeList.size > 0">
+                AND w.waybill_id IN (
+                SELECT DISTINCT waybill_id FROM t_waybill_exception
+                WHERE exception_type IN
+                <foreach collection="queryForm.exceptionTypeList" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+                AND deleted_flag = 0
+                )
+            </if>
+            <if test="queryForm.startLoadTime != null">
+                and DATE_FORMAT(w.load_time, '%Y-%m-%d') &gt;= #{queryForm.startLoadTime}
+            </if>
+            <if test="queryForm.endLoadTime != null">
+                and DATE_FORMAT(w.load_time, '%Y-%m-%d') &lt;= #{queryForm.endLoadTime}
+            </if>
+            <if test="queryForm.businessStartDate != null">
+                and DATE_FORMAT(w.business_date, '%Y-%m-01') &gt;= date_format(#{queryForm.businessStartDate},'%Y-%m-01')
+            </if>
+            <if test="queryForm.businessEndDate != null">
+                and DATE_FORMAT(w.business_date, '%Y-%m-01') &lt;= date_format(#{queryForm.businessEndDate},'%Y-%m-01')
+            </if>
+            <if test="queryForm.driverIdList != null and  queryForm.driverIdList.size > 0">
+                and (
+                w.driver_id IN
+                <foreach collection="queryForm.driverIdList" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+                or
+                w.waybill_id IN (
+                    SELECT wst.waybill_id FROM t_waybill_split_transport wst
+                    WHERE wst.driver_id IN
+                    <foreach collection="queryForm.driverIdList" item="item" separator="," open="(" close=")">
+                        #{item}
+                    </foreach>
+                    )
+                )
+            </if>
+            <if test="queryForm.vehicleIdList != null and  queryForm.vehicleIdList.size > 0">
+                and w.vehicle_id IN
+                <foreach collection="queryForm.vehicleIdList" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="queryForm.scheduleIdList != null and  queryForm.scheduleIdList.size > 0">
+                and o.schedule_id IN
+                <foreach collection="queryForm.scheduleIdList" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="queryForm.customerIdList != null and  queryForm.customerIdList.size > 0">
+                and o.create_user_id IN
+                <foreach collection="queryForm.customerIdList" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="queryForm.deliverGoodsStartTime != null">
+                and DATE_FORMAT(w.deliver_goods_time, '%Y-%m-%d') &gt;= #{queryForm.deliverGoodsStartTime}
+            </if>
+            <if test="queryForm.deliverGoodsEndTime != null">
+                and DATE_FORMAT(w.deliver_goods_time, '%Y-%m-%d') &lt;= #{queryForm.deliverGoodsEndTime}
+            </if>
+        </where>
+        <if test="queryForm.sortItemList == null or queryForm.sortItemList.size == 0">
+            order by w.waybill_id desc
+        </if>
+    </sql>
+
+    <select id="query" resultType="net.lab1024.tms.admin.module.business.waybill.domain.vo.WaybillVO">
+        select
+        w.*,
+        o.order_no,
+        o.shipper_order_number,
+        o.remark orderRemark,
+        o.business_type_code,
+        o.container_business_type_id,
+        o.container_location,
+        o.placing_location,
+        o.unloading_location,
+        o.return_container_location,
+        o.tax_point,
+        o.cabinet_id,
+        o.create_user_id orderCreateUserId,
+        o.create_user_name orderCreateUserName,
+        o.schedule_id,
+        o.manager_id as orderManagerId,
+        o.latest_packing_time
+        <include refid="queryBase"></include>
+    </select>
+
+    <select id="countWaybill" resultType="java.lang.Integer">
+        select COUNT(1)
+        <include refid="queryBase"></include>
+    </select>
+
+
+    <select id="selectByWaybillIdList" resultType="net.lab1024.tms.admin.module.business.waybill.domain.vo.WaybillVO">
+        select
+        w.*,
+        o.order_no,
+        o.remark orderRemark,
+        o.container_business_type_id,
+        o.container_location,
+        o.placing_location,
+        o.unloading_location,
+        o.return_container_location,
+        o.tax_point,
+        o.cabinet_id,
+        o.manager_id as orderManagerId,
+        o.create_user_id orderCreateUserId,
+        o.create_user_name orderCreateUserName
+        from t_waybill w
+        left join t_order o on w.order_id = o.order_id
+        where w.waybill_id in
+        <foreach collection="waybillIdList" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </select>
+
+
+    <select id="queryByOrderId" resultType="net.lab1024.tms.admin.module.business.waybill.domain.vo.WaybillVO">
+        select
+        w.*,
+        o.order_no,
+        o.remark orderRemark,
+        o.business_type_code,
+        o.container_business_type_id,
+        o.container_location,
+        o.placing_location,
+        o.unloading_location,
+        o.return_container_location,
+        o.tax_point,
+        o.cabinet_id,
+        o.manager_id as orderManagerId,
+        o.create_user_id orderCreateUserId,
+        o.create_user_name orderCreateUserName
+        from t_waybill w
+        left join t_order o on w.order_id = o.order_id
+        where
+        w.order_id = #{orderId}
+        <if test="statusList != null and  statusList.size > 0">
+            and w.waybill_status IN
+            <foreach collection="statusList" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+        order by w.waybill_id desc
+    </select>
+
+
+    <select id="selectIdByOrderId" resultType="java.lang.Long">
+        select
+        waybill_id
+        from t_waybill
+        where
+        order_id = #{orderId}
+        <if test="statusList != null and  statusList.size > 0">
+            and waybill_status IN
+            <foreach collection="statusList" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+
+    <select id="queryByOrderIdList" resultType="net.lab1024.tms.admin.module.business.waybill.domain.vo.WaybillVO">
+        select
+        w.*,
+        o.order_no,
+        o.remark orderRemark,
+        o.container_business_type_id,
+        o.container_location,
+        o.placing_location,
+        o.unloading_location,
+        o.return_container_location,
+        o.tax_point,
+        o.cabinet_id,
+        o.manager_id as orderManagerId,
+        o.create_user_id orderCreateUserId,
+        o.create_user_name orderCreateUserName
+        from t_waybill w
+        left join t_order o on w.order_id = o.order_id
+        where
+        w.order_id in
+        <foreach collection="orderIdList" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+        <if test="statusList != null and  statusList.size > 0">
+            and w.waybill_status IN
+            <foreach collection="statusList" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+        order by w.waybill_id desc
+    </select>
+
+
+    <select id="detail" resultType="net.lab1024.tms.admin.module.business.waybill.domain.vo.WaybillVO">
+        select
+            w.*,
+            o.order_no,
+            o.remark orderRemark,
+            o.business_type_code,
+            o.container_business_type_id,
+            o.container_location,
+            o.placing_location,
+            o.unloading_location,
+            o.return_container_location,
+            o.tax_point,
+            o.cabinet_id,
+            o.manager_id as orderManagerId,
+            o.create_user_id orderCreateUserId,
+            o.create_user_name orderCreateUserName
+        from t_waybill w
+        left join t_order o on w.order_id = o.order_id
+        where
+            w.waybill_id = #{waybillId}
+    </select>
+
+
+    <select id="countByShipperAndYear"
+            resultType="net.lab1024.tms.admin.module.business.reportform.shipper.domain.vo.ShipperCountMonthVO">
+        SELECT
+        shipper_id,
+        DATE_FORMAT( create_time, '%Y-%m' ) month,
+        COUNT( 1 ) count
+        FROM
+        t_waybill
+        WHERE
+        waybill_status != #{queryForm.excludeStatus}
+        AND DATE_FORMAT( create_time, '%Y' ) = #{queryForm.year}
+        AND shipper_id IN
+        <foreach collection="shipperIdList" separator="," open="(" close=")" item="item">
+            #{item}
+        </foreach>
+        GROUP BY
+        shipper_id,
+        DATE_FORMAT( create_time, '%Y-%m' )
+    </select>
+
+    <select id="queryShipperByPage"
+            resultType="net.lab1024.tms.admin.module.business.shipper.domain.vo.ShipperSimpleVO">
+        select
+        w.shipper_id,
+        s.consignor,
+        s.short_name,
+        s.disable_flag
+        from t_waybill w
+        left join t_shipper s on w.shipper_id = s.shipper_id
+        where w.waybill_status != #{queryForm.excludeStatus}
+        <if test="queryForm.keywords != null and queryForm.keywords != ''">
+            AND (
+            INSTR(s.consignor,#{queryForm.keywords})
+            or INSTR(s.short_name,#{queryForm.keywords})
+            )
+        </if>
+        <if test="queryForm.enterpriseId != null">
+            AND s.enterprise_id = #{queryForm.enterpriseId}
+        </if>
+        group by w.shipper_id
+    </select>
+
+    <select id="totalByShipperAndYear"
+            resultType="net.lab1024.tms.admin.module.business.reportform.shipper.domain.vo.ShipperCountMonthVO">
+        SELECT
+        DATE_FORMAT( create_time, '%Y-%m' ) month,
+        COUNT( 1 ) count
+        FROM
+        t_waybill
+        WHERE
+        waybill_status != #{excludeStatus}
+        AND DATE_FORMAT( create_time, '%Y' ) = #{year}
+        <if test="shipperIdList != null and shipperIdList.size > 0">
+            AND shipper_id in
+            <foreach collection="shipperIdList" separator="," item="item" open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+        GROUP BY
+        DATE_FORMAT( create_time, '%Y-%m' )
+    </select>
+
+    <select id="countByDriverIdStatusAndEnterpriseId" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM t_waybill
+        where driver_id = #{driverId} AND nft_enterprise_id IS NOT NULL AND enterprise_id != #{excludeEnterpriseId}
+        AND waybill_status in
+        <foreach collection="statusList" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="sumReceiveAmount" resultType="java.math.BigDecimal">
+        select sum(receive_amount)
+        from t_waybill
+        where waybill_status != #{excludeStatus} and waybill_id in
+        <foreach collection="waybillIdList" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="selectByOrderId"
+            resultType="net.lab1024.tms.common.module.business.waybill.domain.entity.WaybillEntity">
+        select *from t_waybill where order_id = #{orderId} AND waybill_status != #{excludeStatus}
+    </select>
+
+    <sql id="queryShipperProfitWhere">
+        FROM
+        t_waybill w
+        left join t_order o on o.order_id = w.order_id
+        where waybill_status != #{queryForm.excludeStatus}
+        <if test="queryForm.enterpriseId != null">
+            AND w.enterprise_id = #{queryForm.enterpriseId}
+        </if>
+        <if test="queryForm.shipperId != null">
+            AND w.shipper_id = #{queryForm.shipperId}
+        </if>
+        <if test="queryForm.businessStartDate != null">
+            AND DATE_FORMAT(w.business_date, '%Y-%m-01') &gt;= DATE_FORMAT(#{queryForm.businessStartDate}, '%Y-%m-01')
+        </if>
+        <if test="queryForm.businessEndDate != null">
+            AND DATE_FORMAT(w.business_date, '%Y-%m-01') &lt;= DATE_FORMAT(#{queryForm.businessEndDate}, '%Y-%m-01')
+        </if>
+        <if test="queryForm.transportMode != null">
+            AND w.transport_mode = #{queryForm.transportMode}
+        </if>
+        <if test="queryForm.managerIdList != null and queryForm.managerIdList.size > 0">
+            AND o.manager_id in
+            <foreach collection="queryForm.managerIdList" open="(" close=")" item="item" separator=",">
+                #{item}
+            </foreach>
+        </if>
+    </sql>
+
+    <select id="queryReceiveAmountBySales"
+            resultType="net.lab1024.tms.admin.module.business.reportform.employee.domain.dto.WaybillEmployeeAmountDTO">
+        SELECT
+        o.manager_id employeeId,
+        SUM(w.receive_amount ) receive_amount,
+        SUM(w.payable_amount) payableAmount,
+        IFNULL(SUM(w.salary_amount),0) salaryAmount,
+        IFNULL(SUM(w.car_cost_amount),0) carCostAmount,
+        ROUND(SUM(w.receive_amount / (100 + w.tax_point) * w.tax_point),2) taxAmount
+        FROM
+        t_waybill w
+        LEFT JOIN t_order o ON o.order_id = w.order_id
+        WHERE
+        waybill_status != #{queryForm.excludeStatus}
+        AND date_format(w.business_date,'%Y-%m-01') = #{queryForm.queryDate}
+        AND o.manager_id in
+        <foreach collection="queryForm.employeeIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+        GROUP BY
+        o.manager_id
+    </select>
+
+    <select id="queryAmountByCustomerService"
+            resultType="net.lab1024.tms.admin.module.business.reportform.employee.domain.dto.WaybillEmployeeAmountDTO">
+        SELECT
+        o.create_user_id employeeId,
+        o.create_user_name employeeName,
+        SUM( w.receive_amount ) receiveAmount,
+        SUM( w.payable_amount ) payableAmount ,
+        IFNULL(SUM(w.salary_amount),0) salaryAmount,
+        IFNULL(SUM(w.car_cost_amount),0) carCostAmount,
+        ROUND(SUM(w.receive_amount / (100 + w.tax_point) * w.tax_point),2) taxAmount
+        FROM
+        t_waybill w
+        left join t_order o on o.order_id = w.order_id
+        <where>
+            waybill_status != #{queryForm.excludeStatus}
+            AND date_format(w.business_date,'%Y-%m-01') = #{queryForm.queryDate}
+            <if test="queryForm.employeeIdList != null and queryForm.employeeIdList.size > 0">
+                AND o.create_user_id in
+                <foreach collection="queryForm.employeeIdList" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+        GROUP BY
+        o.create_user_id
+    </select>
+
+    <select id="queryPayableAmountBySettleMode" resultType="net.lab1024.tms.admin.module.business.reportform.waybill.domain.vo.WaybillAmountVO">
+        SELECT
+            o.manager_id employeeId,
+            payable_amount,
+            waybill_id
+        FROM
+            t_waybill w
+            LEFT JOIN t_order o ON o.order_id = w.order_id
+        WHERE
+            w.settle_mode = #{queryForm.settleMode}
+            AND w.waybill_status != #{queryForm.excludeStatus}
+            AND w.enterprise_id = #{queryForm.enterpriseId}
+            AND date_format(w.business_date,'%Y-%m-01') = #{queryForm.queryDate}
+    </select>
+
+    <select id="queryWaybillVehicleCount"
+            resultType="net.lab1024.tms.admin.module.business.reportform.waybill.domain.vo.WaybillVehicleCountVO">
+        SELECT
+            vehicle_id,
+            COUNT( 1 ) waybillCount
+        FROM
+            t_waybill w
+        where w.waybill_status != #{queryForm.excludeStatus}
+        <if test="queryForm.vehicleIdList != null and queryForm.vehicleIdList.size > 0">
+            AND w.vehicle_id in
+            <foreach collection="queryForm.vehicleIdList" separator="," open="(" close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test="queryForm.enterpriseId != null">
+            AND w.enterprise_id = #{queryForm.enterpriseId}
+        </if>
+        <if test="queryForm.waybillSettleMode != null">
+            AND w.settle_mode = #{queryForm.waybillSettleMode}
+        </if>
+        <if test="queryForm.businessStartDate != null">
+            AND DATE_FORMAT(w.business_date, '%Y-%m-01') &gt;= DATE_FORMAT(#{queryForm.businessStartDate}, '%Y-%m-01')
+        </if>
+        <if test="queryForm.businessEndDate != null">
+            AND DATE_FORMAT(w.business_date, '%Y-%m-01') &lt;= DATE_FORMAT(#{queryForm.businessEndDate}, '%Y-%m-01')
+        </if>
+        GROUP BY
+            vehicle_id
+        ORDER BY
+            COUNT( 1 ) DESC
+    </select>
+
+    <select id="queryByVehicleCount"
+            resultType="net.lab1024.tms.common.module.business.waybill.domain.entity.WaybillEntity">
+        SELECT *
+        FROM
+        t_waybill w
+        where w.waybill_status != #{excludeStatus}
+        <if test="vehicleIdList != null and vehicleIdList.size > 0">
+            AND w.vehicle_id in
+            <foreach collection="vehicleIdList" separator="," open="(" close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test="businessStartDate != null">
+            AND DATE_FORMAT(business_date, '%Y-%m-01') &gt;= DATE_FORMAT(#{businessStartDate}, '%Y-%m-01')
+        </if>
+        <if test="businessEndDate != null">
+            AND DATE_FORMAT(business_date, '%Y-%m-01') &lt;= DATE_FORMAT(#{businessEndDate}, '%Y-%m-01')
+        </if>
+    </select>
+
+    <select id="selectCountByVehicleIdList"
+            resultType="net.lab1024.tms.admin.module.business.vehicle.domain.dto.VehicleWaybillCountDTO">
+        select vehicle_id ,COUNT(1) count
+        from t_waybill where  waybill_status != #{excludeStatus}
+        AND vehicle_id in
+        <foreach collection="vehicleIdList" open="(" close=")" item="item" separator=",">
+            #{item}
+        </foreach>
+        group by vehicle_id
+    </select>
+
+    <select id="selectCountByDriverIdList"
+            resultType="net.lab1024.tms.admin.module.business.driver.domain.dto.DriverWaybillCountDTO">
+        select driver_id ,COUNT(1) count
+        from t_waybill where  waybill_status != #{excludeStatus}
+        AND driver_id in
+        <foreach collection="driverIdList" open="(" close=")" item="item" separator=",">
+            #{item}
+        </foreach>
+        group by driver_id
+    </select>
+
+    <select id="statisticAmount" resultType="net.lab1024.tms.admin.module.business.waybill.domain.vo.WaybillStatisticAmountVO">
+        select
+        IFNULL(SUM(w.payable_amount),0) payableAmount,
+        IFNULL(SUM(w.salary_amount),0) salaryAmount,
+        IFNULL(SUM(w.car_cost_amount),0) carCostAmount,
+        IFNULL(SUM(w.receive_amount),0) receiveAmount,
+        IFNULL(SUM(w.profit_amount),0) profitAmount
+        <include refid="queryBase"></include>
+    </select>
+
+    <update id="updateCarCostFlag">
+        update t_waybill set car_cost_flag = #{carCostFlag}
+        where waybill_id in
+        <foreach collection="waybillIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </update>
+
+    <select id="queryReceiveAmountBySale" resultType="net.lab1024.tms.admin.module.business.reportform.waybill.domain.vo.ReceiveAmountStatisticVO">
+        SELECT
+            e.actual_name AS employeeName,
+            SUM(w.receive_amount) AS receiveAmount
+        FROM t_waybill w
+            LEFT JOIN t_order o ON w.order_id = o.order_id
+            LEFT JOIN t_employee e ON o.manager_id = e.employee_id
+        WHERE
+            o.deleted_flag=#{queryForm.deletedFlag} AND w.order_id IS NOT NULL
+        <if test="queryForm.employeeIdList != null and  queryForm.employeeIdList.size > 0">
+            AND e.employee_id IN
+            <foreach collection="queryForm.employeeIdList" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="queryForm.enterpriseId != null">
+            AND w.enterprise_id = #{queryForm.enterpriseId}
+        </if>
+        <if test="queryForm.businessStartDate != null">
+            AND DATE_FORMAT(w.business_date, '%Y-%m-01') >= DATE_FORMAT(#{queryForm.businessStartDate}, '%Y-%m-01')
+        </if>
+        <if test="queryForm.businessEndDate != null">
+            AND DATE_FORMAT(w.business_date, '%Y-%m-01') &lt;= DATE_FORMAT(#{queryForm.businessEndDate}, '%Y-%m-01')
+        </if>
+        <if test="queryForm.orderStatus != null">
+            AND o.`status` != #{queryForm.orderStatus}
+        </if>
+        GROUP BY o.manager_id;
+    </select>
+
+    <select id="selectWaybillCountExportVO"
+            resultType="net.lab1024.tms.admin.module.business.reportform.waybill.domain.vo.WaybillCountVO">
+        SELECT o.create_user_id AS employeeId,
+        o.create_user_name AS employeeName,
+        mbt.trip_type,
+        DATE_FORMAT(w.load_time,'%Y-%m-%d') loadTime,
+        COUNT(1) AS waybillCount
+        FROM t_waybill w
+        LEFT JOIN t_order o ON o.order_id = w.order_id
+        LEFT JOIN t_material_business_type mbt ON o.container_business_type_id = mbt.business_type_id
+        WHERE o.status != #{queryForm.excludeOrderStatus} AND w.waybill_status != #{queryForm.excludeWaybillStatus}
+        <if test="queryForm.enterpriseId != null">
+            AND w.enterprise_id = #{queryForm.enterpriseId}
+        </if>
+        <if test="queryForm.employeeIdList != null and queryForm.employeeIdList.size > 0">
+            AND o.create_user_id IN
+            <foreach collection="queryForm.employeeIdList" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </if>
+        <if test="queryForm.tripTypeList != null and queryForm.tripTypeList.size > 0">
+            AND mbt.trip_type IN
+            <foreach collection="queryForm.tripTypeList" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </if>
+        <if test="queryForm.startLoadTime != null">
+            AND DATE_FORMAT(w.load_time, '%Y-%m-%d') &gt;= #{queryForm.startLoadTime}
+        </if>
+        <if test="queryForm.endLoadTime != null">
+            AND DATE_FORMAT(w.load_time, '%Y-%m-%d') &lt;= #{queryForm.endLoadTime}
+        </if>
+        GROUP BY o.create_user_id, mbt.trip_type, DATE_FORMAT(w.load_time,'%Y-%m-%d')
+        ORDER BY o.create_user_id
+    </select>
+
+
+
+    <select id="selectByVehicleIdList"
+            resultType="net.lab1024.tms.common.module.business.waybill.domain.entity.WaybillEntity">
+        SELECT *
+        FROM t_waybill
+        <where>
+            <if test="queryForm.vehicleIdList != null and queryForm.vehicleIdList.size > 0">
+                AND vehicle_id IN
+                <foreach collection="queryForm.vehicleIdList" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="queryForm.excludeStatus != null">
+                AND waybill_status != #{queryForm.excludeStatus}
+            </if>
+            <if test="queryForm.enterpriseId != null">
+                AND enterprise_id = #{queryForm.enterpriseId}
+            </if>
+            <if test="queryForm.startTime != null">
+                AND DATE_FORMAT(create_time, '%Y-%m-%d') &gt;= #{queryForm.startTime}
+            </if>
+            <if test="queryForm.endTime != null">
+                AND DATE_FORMAT(create_time, '%Y-%m-%d') &lt;= #{queryForm.endTime}
+            </if>
+        </where>
+        ORDER BY create_time asc
+    </select>
+
+    <select id="selectCostFlowByWaybillIdList"
+            resultType="net.lab1024.tms.admin.module.business.reportform.carcost.domain.vo.CarCostFlowExportVO">
+        SELECT waybill_id,
+               DATE_FORMAT(create_time, '%Y%m%d') AS `date`,
+               payable_amount AS receiveAmount,
+               driver_id,
+               vehicle_id,
+               route_name AS summary,
+               shipper_id
+        FROM t_waybill
+        WHERE waybill_id IN
+        <foreach collection="waybillIdList" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="sumAmountByVehicleId"
+            resultType="net.lab1024.tms.admin.module.business.reportform.carcost.domain.dto.CarCostWaybillMonthAmountDTO">
+        select vehicle_id,IFNULL(SUM(payable_amount),0) payableAmount
+        from t_waybill
+        where DATE_FORMAT(create_time, '%Y-%m-%d') &gt;= #{queryForm.startTime}
+        AND DATE_FORMAT(create_time, '%Y-%m-%d') &lt;= #{queryForm.endTime}
+        and enterprise_id = #{queryForm.enterpriseId}
+        and vehicle_id in
+        <foreach collection="queryForm.vehicleIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+        GROUP BY vehicle_id
+    </select>
+
+    <select id="selectByOrderIdAndOrderType"
+            resultType="net.lab1024.tms.common.module.business.waybill.domain.entity.WaybillEntity">
+        SELECT *
+        FROM t_waybill
+        WHERE order_id = #{orderId} AND order_type = #{orderType}
+    </select>
+
+
+    <select id="selectBySale"
+            resultType="net.lab1024.tms.admin.module.business.reportform.employee.domain.dto.EmployeeSalesWaybillDTO">
+        SELECT w.waybill_id,
+               w.receive_amount,
+               w.profit_amount,
+               w.salary_amount,
+               w.car_cost_amount,
+               o.manager_id employeeId
+        FROM t_waybill w
+        LEFT JOIN t_order o ON w.order_id = o.order_id
+        <where>
+            <if test="queryForm.excludeStatus != null">
+                w.waybill_status != #{queryForm.excludeStatus}
+            </if>
+            <if test="queryForm.startDate != null">
+                AND DATE_FORMAT(w.create_time, '%Y-%m-%d') &gt;= #{queryForm.startDate}
+            </if>
+            <if test="queryForm.endDate != null">
+                AND DATE_FORMAT(w.create_time, '%Y-%m-%d') &lt;= #{queryForm.endDate}
+            </if>
+            <if test="queryForm.employeeIdList != null and queryForm.employeeIdList.size > 0">
+                AND o.manager_id IN
+                <foreach collection="queryForm.employeeIdList" open="(" close=")" separator="," item="item">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <select id="selectReceiveAmountBySale"
+            resultType="net.lab1024.tms.admin.module.business.reportform.employee.domain.dto.WaybillEmployeeAmountDTO">
+        SELECT o.manager_id employeeId,
+               SUM(w.receive_amount) receiveAmount
+        FROM t_waybill w
+        LEFT JOIN t_order o ON w.order_id = o.order_id
+        <where>
+            <if test="queryForm.excludeStatus != null">
+                w.waybill_status != #{queryForm.excludeStatus}
+            </if>
+            <if test="queryForm.startDate != null">
+                AND DATE_FORMAT(w.create_time, '%Y-%m-%d') &gt;= #{queryForm.startDate}
+            </if>
+            <if test="queryForm.endDate != null">
+                AND DATE_FORMAT(w.create_time, '%Y-%m-%d') &lt;= #{queryForm.endDate}
+            </if>
+            <if test="queryForm.employeeIdList != null and queryForm.employeeIdList.size > 0">
+                AND o.manager_id IN
+                <foreach collection="queryForm.employeeIdList" open="(" close=")" separator="," item="item">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+        GROUP BY o.manager_id
+    </select>
+
+    <select id="selectByCustomerService"
+            resultType="net.lab1024.tms.admin.module.business.reportform.employee.domain.dto.EmployeeCustomerServiceWaybillDTO">
+        SELECT w.waybill_id,
+               w.enterprise_id,
+               w.receive_amount,
+               w.payable_amount,
+               o.create_user_id customerServiceId
+        FROM t_waybill w
+        LEFT JOIN t_order o ON w.order_id = o.order_id
+        <where>
+            <if test="queryForm.excludeWaybillStatus != null">
+                w.waybill_status!= #{queryForm.excludeWaybillStatus}
+            </if>
+            <if test="queryForm.startDate != null">
+                AND DATE_FORMAT(w.create_time, '%Y-%m-%d') &gt;= #{queryForm.startDate}
+            </if>
+            <if test="queryForm.endDate != null">
+                AND DATE_FORMAT(w.create_time, '%Y-%m-%d') &lt;= #{queryForm.endDate}
+            </if>
+            <if test="queryForm.employeeIdList != null and queryForm.employeeIdList.size > 0">
+                AND o.create_user_id IN
+                <foreach collection="queryForm.employeeIdList" open="(" close=")" item="item" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <select id="selectBySchedule"
+            resultType="net.lab1024.tms.admin.module.business.reportform.employee.domain.dto.EmployeeScheduleWaybillDTO">
+        SELECT w.waybill_id,
+               w.enterprise_id,
+               w.payable_amount,
+               o.schedule_id
+        FROM t_waybill w
+        LEFT JOIN t_order o ON w.order_id = o.order_id
+        <where>
+            <if test="queryForm.excludeStatus != null">
+                w.waybill_status != #{queryForm.excludeStatus}
+            </if>
+            <if test="queryForm.startDate != null">
+                AND DATE_FORMAT(w.create_time, '%Y-%m-%d') &gt;= #{queryForm.startDate}
+            </if>
+            <if test="queryForm.endDate != null">
+                AND DATE_FORMAT(w.create_time, '%Y-%m-%d') &lt;= #{queryForm.endDate}
+            </if>
+            <if test="queryForm.employeeIdList != null and queryForm.employeeIdList.size > 0">
+                AND o.schedule_id IN
+                <foreach collection="queryForm.employeeIdList" open="(" close=")" item="item" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <select id="selectPageByShipper"
+            resultType="net.lab1024.tms.admin.module.business.reportform.shipper.domain.vo.ShipperDayStatisticVO">
+        SELECT s.shipper_id,
+               s.consignor,
+               s.enterprise_id,
+               COUNT(1) waybillCount,
+               SUM(w.receive_amount) receiveAmount,
+               SUM(w.salary_amount) salaryAmount,
+               SUM(w.car_cost_amount) carCostAmount,
+               SUM(w.profit_amount) profitAmount
+        FROM t_waybill w
+        LEFT JOIN t_order o ON w.order_id = o.order_id
+        LEFT JOIN t_shipper s ON o.shipper_id = s.shipper_id
+        WHERE w.waybill_status != #{queryForm.excludeStatus}
+        <if test="queryForm.shipperId != null">
+            AND w.shipper_id = #{queryForm.shipperId}
+        </if>
+        <if test="queryForm.enterpriseId != null">
+            AND w.enterprise_id = #{queryForm.enterpriseId}
+        </if>
+        <if test="queryForm.startDate != null">
+            AND DATE_FORMAT(w.create_time, '%Y-%m-%d') &gt;= #{queryForm.startDate}
+        </if>
+        <if test="queryForm.endDate != null">
+            AND DATE_FORMAT(w.create_time, '%Y-%m-%d') &lt;= #{queryForm.endDate}
+        </if>
+        <if test="queryForm.managerIdList != null and queryForm.managerIdList.size > 0">
+            AND o.manager_id IN
+            <foreach collection="queryForm.managerIdList" open="(" close=")" item="item" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        GROUP BY w.shipper_id
+    </select>
+
+    <select id="selectWaybillIdByShipper" resultType="net.lab1024.tms.admin.module.business.reportform.shipper.domain.dto.ShipperOrderWaybillDTO">
+        SELECT w.waybill_id,
+               o.shipper_id
+        FROM t_waybill w
+        LEFT JOIN t_order o ON w.order_id = o.order_id
+        WHERE w.waybill_status != #{queryForm.excludeStatus}
+        <if test="queryForm.shipperIdList != null and queryForm.shipperIdList.size > 0">
+            AND o.shipper_id IN
+            <foreach collection="queryForm.shipperIdList" open="(" close=")" item="item" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="queryForm.startDate != null">
+            AND DATE_FORMAT(w.create_time, '%Y-%m-%d') &gt;= #{queryForm.startDate}
+        </if>
+        <if test="queryForm.endDate != null">
+            AND DATE_FORMAT(w.create_time, '%Y-%m-%d') &lt;= #{queryForm.endDate}
+        </if>
+    </select>
+
+    <select id="selectByShipper"
+            resultType="net.lab1024.tms.admin.module.business.reportform.shipper.domain.vo.ShipperDayStatisticVO">
+        SELECT s.shipper_id,
+               COUNT(1) waybillCount,
+               SUM(w.receive_amount) receiveTotalAmount
+        FROM t_waybill w
+        LEFT JOIN t_order o ON w.order_id = o.order_id
+        LEFT JOIN t_shipper s ON o.shipper_id = s.shipper_id
+        WHERE waybill_status != #{queryForm.excludeStatus}
+        <if test="queryForm.shipperIdList != null and queryForm.shipperIdList.size > 0">
+            AND o.shipper_id IN
+            <foreach collection="queryForm.shipperIdList" open="(" close=")" item="item" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="queryForm.startDate != null">
+            AND DATE_FORMAT(w.create_time, '%Y-%m-%d') &gt;= #{queryForm.startDate}
+        </if>
+        <if test="queryForm.endDate != null">
+            AND DATE_FORMAT(w.create_time, '%Y-%m-%d') &lt;= #{queryForm.endDate}
+        </if>
+        GROUP BY o.shipper_id
+    </select>
+
+    <select id="queryShipperIdByProfit"
+            resultType="net.lab1024.tms.admin.module.business.reportform.waybill.domain.vo.ShipperProfitVO">
+        SELECT
+        w.shipper_id,
+        w.enterprise_id,
+        COUNT(1) waybillCount,
+        SUM(w.receive_amount) receiveAmount,
+        SUM(w.payable_amount) payableAmount,
+        SUM(w.salary_amount) salaryAmount,
+        SUM(w.car_cost_amount) carCostAmount,
+        SUM(w.profit_amount) profitAmount,
+        ROUND(SUM(w.receive_amount / (100 + w.tax_point) * w.tax_point),2) taxAmount
+        <include refid="queryShipperProfitWhere"></include>
+        GROUP BY
+        w.shipper_id,
+        w.enterprise_id
+    </select>
+
+
+    <select id="queryWaybillIdByShipperProfit" resultType="java.lang.Long">
+        SELECT
+        waybill_id
+        <include refid="queryShipperProfitWhere"></include>
+    </select>
+
+    <select id="queryShipperProfit"
+            resultType="net.lab1024.tms.admin.module.business.reportform.waybill.domain.dto.WaybillShipperAmountDTO">
+        SELECT
+        shipper_id,
+        enterprise_id,
+        settle_mode,
+        SUM(receive_amount) receiveAmount,
+        SUM(payable_amount) payAmount
+        FROM
+        t_waybill w
+        where waybill_id in
+        <foreach collection="waybillIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+        GROUP BY
+        shipper_id,
+        enterprise_id,
+        settle_mode
+    </select>
+
+    <select id="queryShipperCount"
+            resultType="net.lab1024.tms.admin.module.business.reportform.waybill.domain.dto.WaybillShipperCountDTO">
+        SELECT
+        shipper_id,
+        enterprise_id,
+        settle_mode,
+        COUNT(1) count
+        FROM
+        t_waybill w
+        where waybill_id in
+        <foreach collection="waybillIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+        GROUP BY
+        shipper_id,
+        enterprise_id,
+        settle_mode
+    </select>
+
+    <select id="queryShipperReceiveAmount"
+            resultType="net.lab1024.tms.admin.module.business.reportform.waybill.domain.dto.WaybillReceiveCostAmountDTO">
+        SELECT
+        shipper_id,
+        enterprise_id,
+        settle_mode,
+        SUM(wrc.cost_amount) totalAmount
+        FROM
+        t_waybill w  left join t_waybill_receive_cost wrc on w.waybill_id = wrc.waybill_id
+        where wrc.cost_item_type = #{costItemType}
+        AND w.waybill_id in
+        <foreach collection="waybillIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+        GROUP BY
+        shipper_id,
+        enterprise_id,
+        settle_mode
+    </select>
+    <select id="selectIdByNumber" resultType="java.lang.Long">
+        select waybill_id from t_waybill where waybill_number = #{waybillNumber}
+    </select>
+
+    <select id="countWaybillByExcludeStatus" resultType="java.lang.Integer">
+        select count(1) from t_waybill where enterprise_id = #{enterpriseId} and waybill_status != #{excludeStatus}
+    </select>
+
+</mapper>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.driver.module.business.vehicle.dao.VehicleDao">
+
+    <select id="selectByList"
+            resultType="net.lab1024.tms.driver.module.business.driver.domain.vo.DriverVehicleQueryVO">
+        SELECT v.vehicle_id, v.vehicle_number, v.audit_status, v.bracket_id, b.bracket_no, v.disabled_flag
+        FROM t_vehicle v
+        LEFT JOIN t_bracket b ON v.bracket_id = b.bracket_id
+        WHERE v.deleted_flag = #{queryForm.deletedFlag} AND v.create_user_id = #{queryForm.driverId} AND v.create_user_type = #{queryForm.userType}
+        <if test="queryForm.keywords != null and queryForm.keywords != ''">
+            AND INSTR(v.vehicle_number, #{queryForm.keywords})
+        </if>
+    </select>
+
+    <select id="selectByNumberExcludeIds"
+            resultType="net.lab1024.tms.common.module.business.vehicle.domain.VehicleEntity">
+        SELECT *
+        FROM t_vehicle
+        WHERE vehicle_number = #{vehicleNumber} AND deleted_flag = #{deleteFlag}
+        <if test="excludeIds != null and excludeIds.size > 0">
+            AND vehicle_id NOT IN
+            <foreach collection="excludeIds" separator="," open="(" close=")" item="id">
+                #{id}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="selectByDriverRelate"
+            resultType="net.lab1024.tms.common.module.business.vehicle.domain.VehicleEntity">
+        SELECT v.*
+        FROM t_driver_vehicle dv
+        LEFT JOIN t_vehicle v ON dv.vehicle_id = v.vehicle_id
+        <where>
+            dv.driver_id = #{driverId} AND v.deleted_flag = #{deletedFlag}
+        </where>
+    </select>
+
+</mapper>

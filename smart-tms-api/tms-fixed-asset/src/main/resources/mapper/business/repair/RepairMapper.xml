@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.fixedasset.module.business.repair.dao.RepairDao">
+
+    <insert id="batchInsertRepairAsset">
+        insert into t_asset_repair_relate_asset
+        (repair_id, asset_id,asset_status)
+        values
+        <foreach collection="assetIdList" separator="," item="item">
+            ( #{repairId} , #{item.assetId},#{item.status} )
+        </foreach>
+    </insert>
+
+
+    <update id="batchUpdateStatus">
+        update  t_asset_repair
+            set status = #{status}
+            where repair_id in
+        <foreach collection="repairIdList" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+
+    </update>
+
+    <!-- 分页查询 -->
+    <select id="queryPage" resultType="net.lab1024.tms.fixedasset.module.business.repair.domain.vo.RepairVO">
+        SELECT
+            t_asset_repair.*,
+            t_employee.actual_name as applyUserName
+        FROM t_asset_repair
+        left join t_employee on t_asset_repair.apply_user_id = t_employee.employee_id
+        <where>
+            <!--关键字-->
+            <if test="queryForm.keywords != null and queryForm.keywords != ''">
+                AND ( INSTR(t_asset_repair.repair_code,#{queryForm.keywords}) or INSTR(t_employee.actual_name,#{queryForm.keywords}) )
+            </if>
+            <!--部门-->
+            <if test="queryForm.departmentIdList != null and queryForm.departmentIdList.size > 0">
+                AND t_employee.department_id in
+                <foreach collection="queryForm.departmentIdList" open="(" close=")" separator="," item="item">
+                    #{item}
+                </foreach>
+            </if>
+            <!--业务日期-->
+            <if test="queryForm.businessDateBegin != null">
+                AND DATE_FORMAT(t_asset_repair.business_date, '%Y-%m-%d') &gt;= #{queryForm.businessDateBegin}
+            </if>
+            <if test="queryForm.businessDateEnd != null">
+                AND DATE_FORMAT(t_asset_repair.business_date, '%Y-%m-%d') &lt;= #{queryForm.businessDateEnd}
+            </if>
+            <if test="queryForm.enterpriseId != null">
+                AND t_asset_repair.enterprise_id = #{queryForm.enterpriseId}
+            </if>
+        </where>
+        order by t_asset_repair.create_time desc
+    </select>
+
+    <select id="selectRelateAssetIdList" resultType="java.lang.Long">
+        select asset_id from   t_asset_repair_relate_asset where repair_id = #{repairId}
+    </select>
+
+    <select id="selectRelateAssetList" resultType="net.lab1024.tms.fixedasset.module.business.repair.domain.vo.RepairAssetVO">
+        select
+        t_asset_repair_relate_asset.*,
+        t_asset.*
+        from t_asset_repair_relate_asset
+        left join t_asset on t_asset_repair_relate_asset.asset_id = t_asset.asset_id
+        where repair_id in
+        <foreach collection="repairIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </select>
+
+
+</mapper>

@@ -1,0 +1,28 @@
+esign:
+  host: https://openapi.esign.cn
+  noticeDeveloperUrl: 'http://wwww.xxxx.net/api/esign/notice'
+ali:
+    ocr:
+      endpoint: ocr-api.cn-hangzhou.aliyuncs.com
+      access-key: xxxxx
+      secret-key: xxxxx
+    sms:
+      region-id: cn-hangzhou
+      api-url: dysmsapi.aliyuncs.com
+      access-key: xxxxx
+      secret-key: xxxxx
+      sign-name: 'xxxxx'
+      template-code-map:
+        registerCode: 'xxxxx'
+        updatePwdCode: 'xxxxx'
+        authenticationCode: 'xxxxx'
+        verifyCodeLogin: 'xxxxx'
+baidu:
+  ocr:
+    client-key: xxxxx
+    client-secret: xxxxx
+  map:
+    ak: xxxxx
+ding:
+  app-key: xxxxx
+  app-secret: xxxxx

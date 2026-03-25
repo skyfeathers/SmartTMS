@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.pay.dao.PayOrderDao">
+
+    <sql id="queryBase">
+        from t_pay_order po
+        LEFT JOIN t_waybill wb on wb.waybill_id = po.waybill_id
+        <if test="queryForm.auditByMeFlag != null and queryForm.auditByMeFlag">
+            LEFT JOIN t_flow_instance_task_record fr ON fr.instance_id = po.flow_instance_id
+        </if>
+        <if test="queryForm.waitAuditByMeFlag != null and queryForm.waitAuditByMeFlag">
+            LEFT JOIN t_flow_instance fi ON fi.instance_id = po.flow_instance_id
+        </if>
+        <where>
+            <if test="queryForm.keywords != null and queryForm.keywords != ''">
+                AND (INSTR(po.pay_order_number,#{queryForm.keywords}) OR
+                INSTR(wb.waybill_number,#{queryForm.keywords}) OR
+                INSTR(wb.container_number,#{queryForm.keywords}) OR
+                INSTR(po.remark,#{queryForm.keywords})
+                )
+            </if>
+            <if test="queryForm.waybillNumberList != null and queryForm.waybillNumberList.size > 0">
+                and wb.waybill_number IN
+                <foreach collection="queryForm.waybillNumberList" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="queryForm.payOrderType != null ">
+                AND po.pay_order_type = #{queryForm.payOrderType}
+            </if>
+            <if test="queryForm.payOrderStatus != null ">
+                AND po.pay_order_status = #{queryForm.payOrderStatus}
+            </if>
+            <if test="queryForm.verificationFlag != null">
+                AND po.verification_flag = #{queryForm.verificationFlag}
+            </if>
+            <if test="queryForm.shipperId != null">
+                AND po.shipper_id = #{queryForm.shipperId}
+            </if>
+            <if test="queryForm.driverId != null">
+                AND po.driver_id = #{queryForm.driverId}
+            </if>
+            <if test="queryForm.vehicleId != null">
+                AND po.vehicle_id = #{queryForm.vehicleId}
+            </if>
+            <if test="queryForm.fleetId != null">
+                AND po.fleet_id = #{queryForm.fleetId}
+            </if>
+            <if test="queryForm.startTime != null">
+                and DATE_FORMAT(po.create_time, '%Y-%m-%d') &gt;= #{queryForm.startTime}
+            </if>
+            <if test="queryForm.endTime != null">
+                and DATE_FORMAT(po.create_time, '%Y-%m-%d') &lt;= #{queryForm.endTime}
+            </if>
+            <if test="queryForm.payStartTime != null">
+                and DATE_FORMAT(po.pay_time, '%Y-%m-%d') &gt;= #{queryForm.payStartTime}
+            </if>
+            <if test="queryForm.payEndTime != null">
+                and DATE_FORMAT(po.pay_time, '%Y-%m-%d') &lt;= #{queryForm.payEndTime}
+            </if>
+
+            <if test="queryForm.excludePayOrderStatus != null">
+                and po.pay_order_status != #{queryForm.excludePayOrderStatus}
+            </if>
+            <if test="queryForm.enterpriseId != null">
+                and po.enterprise_id = #{queryForm.enterpriseId}
+            </if>
+            <if test="queryForm.createUserId != null">
+                and po.create_user_id = #{queryForm.createUserId}
+            </if>
+            <if test="queryForm.auditStatus != null">
+                and po.audit_status = #{queryForm.auditStatus}
+            </if>
+            <if test="queryForm.auditStatusList != null and queryForm.auditStatusList.size > 0">
+                and po.audit_status in
+                <foreach collection="queryForm.auditStatusList" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="queryForm.auditByMeFlag != null and queryForm.auditByMeFlag">
+                and fr.handler = #{queryForm.requestUserId}
+            </if>
+            <if test="queryForm.waitAuditByMeFlag != null and queryForm.waitAuditByMeFlag">
+                and FIND_IN_SET(#{queryForm.requestUserId},fi.current_handlers)
+            </if>
+        </where>
+        <if test="queryForm.auditByMeFlag != null and queryForm.auditByMeFlag">
+            GROUP BY po.flow_instance_id
+        </if>
+        <if test="queryForm.sortItemList == null or queryForm.sortItemList.size == 0">
+            order by po.pay_order_id desc
+        </if>
+    </sql>
+
+    <select id="query" resultType="net.lab1024.tms.common.module.business.pay.domain.PayOrderEntity">
+        select
+        po.*
+        <include refid="queryBase"></include>
+    </select>
+
+    <select id="queryAmountStatistic" resultType="net.lab1024.tms.admin.module.business.pay.domain.vo.PayOrderAmountStatisticVO">
+        select
+        SUM(payable_total_amount) payableTotalAmount,
+        SUM(paid_total_amount) paidTotalAmount
+        <include refid="queryBase"></include>
+    </select>
+
+    <select id="queryByWaybillId"
+            resultType="net.lab1024.tms.common.module.business.pay.domain.PayOrderEntity">
+        select
+            po.*
+        from t_pay_order po
+        where po.waybill_id = #{waybillId}
+        <if test="payOrderStatusList != null and  payOrderStatusList.size > 0">
+            and po.pay_order_status IN
+            <foreach collection="payOrderStatusList" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+        group by po.pay_order_id
+        order by po.pay_order_id desc
+    </select>
+
+    <select id="queryByWaybillIdList" resultType="net.lab1024.tms.common.module.business.pay.domain.PayOrderEntity">
+    select
+    po.*
+    from t_pay_order po
+    where po.waybill_id in
+    <foreach collection="waybillIdList" item="item" separator="," open="(" close=")">
+        #{item}
+    </foreach>
+    <if test="payOrderStatusList != null and  payOrderStatusList.size > 0">
+        and po.pay_order_status IN
+        <foreach collection="payOrderStatusList" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </if>
+    group by po.pay_order_id
+    order by po.pay_order_id desc
+</select>
+
+
+    <select id="selectPayOrderNumByWaybillId"
+            resultType="net.lab1024.tms.admin.module.business.pay.domain.bo.PayOrderNumBO">
+        select
+        poc.waybill_id as id,
+        count(DISTINCT poc.pay_order_id) as num
+        from t_pay_order po
+        where po.waybill_id in
+        <foreach collection="waybillIdList" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+        <if test="payOrderStatusList != null and  payOrderStatusList.size > 0">
+            and po.pay_order_status IN
+            <foreach collection="payOrderStatusList" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+        GROUP BY po.waybill_id
+    </select>
+
+    <select id="selectWayBillByWaybillIdAndStatus" resultType="java.lang.Long">
+        select
+        po.waybill_id
+        from t_pay_order po
+        where po.waybill_id in
+        <foreach collection="waybillIdList" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+        <if test="payOrderStatusList != null and  payOrderStatusList.size > 0">
+            and po.pay_order_status IN
+            <foreach collection="payOrderStatusList" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+        group by po.waybill_id
+    </select>
+
+    <select id="selectWayBillByWaybillIdAndStatusAndExcludePayOrderId" resultType="java.lang.Long">
+        select
+        po.waybill_id
+        from t_pay_order po
+        where po.pay_order_id != #{excludePayOrderId} and po.waybill_id in
+        <foreach collection="waybillIdList" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+        <if test="payOrderStatusList != null and  payOrderStatusList.size > 0">
+            and po.pay_order_status IN
+            <foreach collection="payOrderStatusList" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+        group by po.waybill_id
+    </select>
+
+    <select id="selectWayBillByPayOrderIdAndStatus" resultType="java.lang.Long">
+        select
+        po.waybill_id
+        from t_pay_order po
+        where po.pay_order_id in
+        <foreach collection="payOrderIdList" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+        <if test="payOrderStatusList != null and  payOrderStatusList.size > 0">
+            and po.pay_order_status IN
+            <foreach collection="payOrderStatusList" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+        group by po.waybill_id
+    </select>
+
+    <select id="selectWayBillByPayOrderId" resultType="net.lab1024.tms.admin.module.business.pay.domain.bo.PayOrderWaybillBO">
+        select
+            po.pay_order_id,
+            po.waybill_id,
+            tw.profit_amount,
+            tw.receive_amount,
+            tw.waybill_number,
+            tw.order_id,
+            tw.container_number,
+            tw.receipt_attachment,
+            tw.truck_order_attachment
+        from t_pay_order po
+        left join t_waybill tw on po.waybill_id = tw.waybill_id
+        where po.pay_order_id in
+        <foreach collection="payOrderIdList" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+        group by po.pay_order_id,po.waybill_id
+    </select>
+
+    <select id="selectByWaybillIdAndFleetDriverId"
+            resultType="net.lab1024.tms.common.module.business.pay.domain.PayOrderEntity">
+        select
+            po.*
+        from t_pay_order po
+        where po.waybill_id = #{waybillId}
+        <if test="driverId != null">
+            and po.driver_id = #{driverId}
+        </if>
+        <if test="fleetId != null">
+            and po.fleet_id = #{fleetId}
+        </if>
+        and po.pay_order_status != #{exPayOrderStatus}
+    </select>
+
+    <select id="selectByWaybillId"
+            resultType="net.lab1024.tms.common.module.business.pay.domain.PayOrderEntity">
+        select
+            po.*
+        from t_pay_order po
+        where po.waybill_id = #{waybillId}
+          and po.pay_order_status != #{exPayOrderStatus}
+    </select>
+
+
+    <select id="selectByWaybillIdList"
+            resultType="net.lab1024.tms.common.module.business.pay.domain.PayOrderEntity">
+        select
+            po.*
+        from t_pay_order po
+        where po.pay_order_status != #{exPayOrderStatus}
+        and po.waybill_id in
+        <foreach collection="waybillIdList" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </select>
+
+
+    <select id="selectByWaybillIdAndPayType"
+            resultType="net.lab1024.tms.common.module.business.pay.domain.PayOrderEntity">
+        select
+            po.*
+        from t_pay_order po
+        where po.waybill_id = #{waybillId}
+          and po.pay_order_type = #{payOrderType}
+          and po.pay_order_status != #{exPayOrderStatus}
+    </select>
+
+    <select id="selectIdByNumber" resultType="java.lang.Long">
+        select pay_order_id from t_pay_order where pay_order_number = #{payOrderNumber}
+    </select>
+
+    <select id="selectByCustomerService"
+            resultType="net.lab1024.tms.admin.module.business.reportform.employee.domain.dto.EmployeePayOrderCostDTO">
+        SELECT po.pay_order_id,
+        po.payable_total_amount,
+        o.create_user_id customerServiceId
+        FROM t_pay_order po
+        LEFT JOIN t_waybill w ON w.waybill_id = po.waybill_id
+        LEFT JOIN t_order o ON o.order_id = w.order_id
+        <where>
+            <if test="queryForm.excludePayOrderStatus != null">
+                po.pay_order_status != #{queryForm.excludePayOrderStatus}
+            </if>
+            <if test="queryForm.startDate != null">
+                AND DATE_FORMAT(po.create_time, '%Y-%m-%d') &gt;= #{queryForm.startDate}
+            </if>
+            <if test="queryForm.endDate != null">
+                AND DATE_FORMAT(po.create_time, '%Y-%m-%d') &lt;= #{queryForm.endDate}
+            </if>
+            <if test="queryForm.employeeIdList != null and queryForm.employeeIdList.size > 0">
+                AND o.create_user_id IN
+                <foreach collection="queryForm.employeeIdList" open="(" close=")" item="item" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+</mapper>

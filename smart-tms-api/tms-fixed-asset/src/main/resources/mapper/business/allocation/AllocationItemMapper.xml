@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.fixedasset.module.business.allocation.dao.AllocationItemDao">
+
+    <select id="queryByAllocationIdList" resultType="net.lab1024.tms.fixedasset.module.business.allocation.domain.AllocationItemEntity">
+        SELECT * FROM t_asset_allocation_item
+        where allocation_id IN
+        <foreach collection="allocationIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </select>
+</mapper>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.shipper.dao.ShipperInvoiceDao">
+
+    <update id="updateDeletedFlagById">
+        update t_shipper_invoice set deleted_flag = #{deletedFlag} where invoice_id = #{invoiceId}
+    </update>
+
+    <update id="updateDeletedFlag">
+        update t_shipper_invoice set deleted_flag = #{deletedFlag} where  shipper_id in
+        <foreach collection="shipperIdList" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </update>
+
+    <delete id="deleteByShipperId">
+        delete from t_shipper_invoice where shipper_id = #{shipperId}
+    </delete>
+
+    <select id="selectByShipperId"
+            resultType="net.lab1024.tms.admin.module.business.shipper.domain.dto.ShipperInvoiceDTO">
+        select * from t_shipper_invoice where shipper_id = #{shipperId} and deleted_flag = #{deletedFlag}
+    </select>
+
+    <select id="selectByShipperIdList"
+            resultType="net.lab1024.tms.admin.module.business.shipper.domain.dto.ShipperInvoiceDTO">
+        select * from t_shipper_invoice where deleted_flag = #{deletedFlag}
+        and shipper_id in
+        <foreach collection="shipperIdList" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </select>
+
+
+    <select id="selectEntityByShipperId"
+            resultType="net.lab1024.tms.common.module.business.shipper.domain.ShipperInvoiceEntity">
+        select * from t_shipper_invoice where shipper_id = #{shipperId} and deleted_flag = #{deletedFlag}
+    </select>
+
+    <select id="getDetail" resultType="net.lab1024.tms.admin.module.business.shipper.domain.dto.ShipperInvoiceDTO">
+        SELECT oi.*
+        FROM t_shipper_invoice oi
+        WHERE oi.invoice_id = #{invoiceId}
+          AND oi.deleted_flag = #{deletedFlag}
+    </select>
+
+</mapper>

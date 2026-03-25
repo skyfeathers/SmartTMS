@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.fixedasset.module.business.consumables.stock.dao.ConsumablesDao">
+
+    <select id="queryPage"
+            resultType="net.lab1024.tms.fixedasset.module.business.consumables.stock.domain.vo.ConsumablesVO">
+        SELECT
+        *
+        FROM t_consumables
+        where
+        deleted_flag = #{queryForm.deletedFlag}
+        <!--创建时间-->
+        <!--<if test="queryForm.startTime != null">
+            and DATE_FORMAT(create_time, '%Y-%m-%d') &gt;= #{queryForm.startTime}
+        </if>
+        <if test="queryForm.endTime != null">
+            and DATE_FORMAT(create_time, '%Y-%m-%d') &lt;= #{queryForm.endTime}
+        </if>-->
+        <!--关键字-->
+        <if test="queryForm.keywords != null and queryForm.keywords != ''">
+            AND ( INSTR(consumables_no,#{queryForm.keywords})
+            OR INSTR(consumables_name,#{queryForm.keywords})
+            )
+        </if>
+        <if test="queryForm.categoryId != null">
+            AND category_id = #{queryForm.categoryId}
+        </if>
+        <if test="queryForm.enterpriseId != null">
+            AND enterprise_id = #{queryForm.enterpriseId}
+        </if>
+        <if test="queryForm.sortItemList == null or queryForm.sortItemList.size == 0">
+            ORDER BY create_time DESC
+        </if>
+    </select>
+
+    <select id="selectByNameExcludeIds"
+            resultType="net.lab1024.tms.fixedasset.module.business.consumables.stock.domain.entity.ConsumablesEntity">
+        select * from t_consumables where consumables_name = #{consumablesName} and deleted_flag = #{deletedFlag}
+        AND enterprise_id = #{enterpriseId}
+        <if test="excludeIds != null">
+            and consumables_id not in
+            <foreach collection="excludeIds" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="selectByIdList"
+            resultType="net.lab1024.tms.fixedasset.module.business.consumables.stock.domain.entity.ConsumablesEntity">
+        select * from t_consumables
+        where consumables_id in
+        <foreach collection="consumablesIdList" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="selectByEnterpriseLocationId"
+            resultType="net.lab1024.tms.fixedasset.module.business.consumables.stock.domain.entity.ConsumablesEntity">
+        select c.* from t_consumables c
+            left join t_consumables_stock cs on cs.consumables_id = c.consumables_id
+        where c.enterprise_id = #{enterpriseId} and cs.location_id= #{locationId}
+    </select>
+</mapper>

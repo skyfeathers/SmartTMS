@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.flow.instance.dao.FlowInstanceTaskRecordDao">
+
+
+    <select id="selectAlreadyAuditHandler" resultType="java.lang.Long">
+        SELECT * FROM t_flow_instance_task_record WHERE instance_id = #{instanceId} and audit_status = #{auditStatus}
+    </select>
+    <select id="selectByTaskId"
+            resultType="net.lab1024.tms.admin.module.business.flow.instance.domain.vo.FlowInstanceTaskRecordVO">
+        SELECT
+        itr.*,
+        te.actual_name as handlerName
+        FROM t_flow_instance_task_record  itr
+        left join t_employee te on itr.handler = te.employee_id
+        WHERE itr.instance_id = #{instanceId} and itr.task_id in
+        <foreach collection="taskIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="selectByTaskIdList"
+            resultType="net.lab1024.tms.admin.module.business.flow.instance.domain.vo.FlowInstanceTaskRecordVO">
+        SELECT
+        itr.*,
+        te.actual_name as handlerName
+        FROM t_flow_instance_task_record  itr
+        left join t_employee te on itr.handler = te.employee_id
+        WHERE itr.instance_id in
+        <foreach collection="instanceIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+         and itr.task_id in
+        <foreach collection="taskIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </select>
+
+</mapper>

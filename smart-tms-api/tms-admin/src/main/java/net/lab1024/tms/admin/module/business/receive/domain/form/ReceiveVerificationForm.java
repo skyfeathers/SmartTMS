@@ -1,0 +1,56 @@
+package net.lab1024.tms.admin.module.business.receive.domain.form;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import net.lab1024.tms.common.common.deserializer.FileKeyVoDeserializer;
+
+import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+/**
+ * 确认核销接口
+ *
+ * @author lidoudou
+ * @date 2022/7/20 下午9:13
+ */
+@Data
+public class ReceiveVerificationForm {
+
+    @ApiModelProperty("收款单ID")
+    @NotNull(message = "收款单ID不能为空")
+    private Long receiveOrderId;
+
+    @ApiModelProperty(value = "收款企业ID",hidden = true)
+    private Long enterpriseId;
+
+    @ApiModelProperty("收款银行ID")
+    @NotNull(message = "收款银行不能为空")
+    private Long bankId;
+
+    @ApiModelProperty("核销金额")
+    private BigDecimal verificationAmount;
+
+    @ApiModelProperty("核销时间")
+    @NotNull(message = "核销时间不能为空")
+    private LocalDate verificationTime;
+
+    @ApiModelProperty("凭证")
+    @JsonDeserialize(using = FileKeyVoDeserializer.class)
+    private String attachment;
+
+    @ApiModelProperty("备注")
+    private String remark;
+
+    @ApiModelProperty("流水单号")
+//    @NotBlank(message = "流水单号不能为空")
+    private String sequenceCode;
+
+    @ApiModelProperty(value = "创建人ID", hidden = true)
+    private Long createUserId;
+
+    @ApiModelProperty(value = "创建人名称", hidden = true)
+    private String createUserName;
+
+}

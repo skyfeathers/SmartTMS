@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.flow.task.FlowTaskDao">
+
+    <delete id="deleteByFlowId">
+        DELETE FROM t_flow_task WHERE flow_id = #{flowId} and enterprise_id = #{enterpriseId}
+    </delete>
+
+    <select id="selectByFlowId"
+            resultType="net.lab1024.tms.admin.module.business.flow.task.domain.FlowTaskEntity">
+        select * from t_flow_task where flow_id = #{flowId} and enterprise_id = #{enterpriseId}
+    </select>
+
+    <select id="selectByFlowIdList"
+            resultType="net.lab1024.tms.admin.module.business.flow.task.domain.FlowTaskEntity">
+        SELECT *
+        FROM t_flow_task
+        where enterprise_id = #{enterpriseId} and flow_id IN
+        <foreach collection="flowIdList" item="flowId" open="(" separator="," close=")">
+            #{flowId}
+        </foreach>
+    </select>
+
+
+</mapper>

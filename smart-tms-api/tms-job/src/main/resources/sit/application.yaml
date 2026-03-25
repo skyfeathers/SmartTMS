@@ -1,0 +1,15 @@
+server:
+  servlet:
+    context-path: '/'
+  port: 60006
+spring:
+  profiles:
+    active: '@profiles.active@'
+project:
+  name: tms-job
+  module: net.lab1024.tms.job.module
+swagger:
+  host: localhost:${server.port}
+  tag-class: net.lab1024.tms.job.constant.JobSwaggerTagConst
+redis:
+  project-name: tms-admin

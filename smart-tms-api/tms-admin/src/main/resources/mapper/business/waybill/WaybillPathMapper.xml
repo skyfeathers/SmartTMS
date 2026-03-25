@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.waybill.dao.WaybillPathDao">
+
+    <delete id="deleteByWaybillId">
+        DELETE FROM t_waybill_path WHERE waybill_id = #{waybillId}
+    </delete>
+
+    <select id="selectByWaybillIdList"
+            resultType="net.lab1024.tms.common.module.business.waybill.domain.entity.WaybillPathEntity">
+        SELECT * FROM t_waybill_path WHERE waybill_id in
+        <foreach collection="waybillIdList" separator="," open="(" close=")" item="item">
+            #{item}
+        </foreach>
+    </select>
+</mapper>

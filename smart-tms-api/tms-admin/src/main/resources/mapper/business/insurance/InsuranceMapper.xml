@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.insurance.InsuranceDao">
+
+    <select id="queryByPage" resultType="net.lab1024.tms.admin.module.business.insurance.domain.vo.InsuranceVO">
+        select i.*,
+               i.policy_number as encryptPolicyNumber
+        from t_insurance i
+        <where>
+            <if test="queryDTO.keyWord != null and queryDTO.keyWord != ''">
+                AND INSTR(i.policy_number,#{queryDTO.keyWord})
+            </if>
+            <if test="queryDTO.insuranceType != null">
+                AND i.insurance_type = #{queryDTO.insuranceType}
+            </if>
+            <if test="queryDTO.enterpriseId != null">
+                AND i.enterprise_id = #{queryDTO.enterpriseId}
+            </if>
+            <if test="queryDTO.deletedFlag != null">
+                AND i.deleted_flag = #{queryDTO.deletedFlag}
+            </if>
+            <if test="queryDTO.moduleType != null">
+                AND i.module_type = #{queryDTO.moduleType}
+            </if>
+            <if test="queryDTO.moduleId != null">
+                AND i.module_id = #{queryDTO.moduleId}
+            </if>
+            <if test="queryDTO.moduleIdList != null and queryDTO.moduleIdList.size > 0">
+                AND i.module_id IN
+                <foreach collection="queryDTO.moduleIdList" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="queryDTO.insuranceCompanyCode != null and queryDTO.insuranceCompanyCode != ''">
+                AND i.insurance_company_code = #{queryDTO.insuranceCompanyCode}
+            </if>
+            <if test="queryDTO.startDate != null">
+                and DATE_FORMAT(i.expire_date, '%Y-%m-%d') &gt;= #{queryDTO.startDate}
+            </if>
+            <if test="queryDTO.endDate != null">
+                and DATE_FORMAT(i.expire_date, '%Y-%m-%d') &lt;= #{queryDTO.endDate}
+            </if>
+            <if test="queryDTO.createStartDate != null">
+                and DATE_FORMAT(i.create_time, '%Y-%m-%d') &gt;= #{queryDTO.createStartDate}
+            </if>
+            <if test="queryDTO.createEndDate != null">
+                and DATE_FORMAT(i.create_time, '%Y-%m-%d') &lt;= #{queryDTO.createEndDate}
+            </if>
+        </where>
+        <if test="queryDTO.sortItemList == null or queryDTO.sortItemList.size == 0">
+            ORDER BY i.expire_date DESC
+        </if>
+
+    </select>
+
+    <select id="countByModuleIdAndTypeAndDeletedFlag" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM t_insurance where module_id = #{moduleId} AND module_type = #{moduleType} AND deleted_flag
+        = #{deletedFlag}
+        <if test="excludeId != null">
+            AND insurance_id != #{excludeId}
+        </if>
+    </select>
+
+    <delete id="deleteByModuleIdAndType">
+        DELETE FROM t_insurance WHERE module_id = #{moduleId} AND module_type = #{moduleType}
+    </delete>
+
+    <update id="updateDeletedFlagByModuleIdAndType">
+        update t_insurance set deleted_flag = #{deletedFlag},update_user_id = #{requestUsrId} where module_type = #{moduleType} AND module_id in
+        <foreach collection="moduleIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </update>
+
+    <select id="selectByModuleIdAndType"
+            resultType="net.lab1024.tms.common.module.business.insurance.domain.InsuranceEntity">
+        select * from t_insurance where module_id = #{moduleId} and module_type = #{moduleType}
+    </select>
+
+    <select id="selectByModuleIdListAndType"
+            resultType="net.lab1024.tms.common.module.business.insurance.domain.InsuranceEntity">
+        select * from t_insurance where module_type = #{moduleType} and  module_id in
+        <foreach collection="moduleIdList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="sumByModuleIdListAndType"
+            resultType="net.lab1024.tms.admin.module.business.reportform.carcost.domain.dto.CarCostVehicleMonthAmountDTO">
+        SELECT module_id vehicleId,SUM(insurance_amount) amount
+        FROM t_insurance
+        where deleted_flag = #{queryForm.deletedFlag}
+        and module_type = #{moduleType}
+        and DATE_FORMAT(create_time, '%Y-%m-%d') &gt;= #{queryForm.startTime}
+        and DATE_FORMAT(create_time, '%Y-%m-%d') &lt;= #{queryForm.endTime}
+        and enterprise_id = #{queryForm.enterpriseId}
+        and module_id in
+        <foreach collection="queryForm.vehicleIdList" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+        GROUP BY module_id
+    </select>
+</mapper>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.waybill.dao.WaybillVoucherDao">
+
+
+    <select id="selectByWaybillId"
+            resultType="net.lab1024.tms.common.module.business.waybill.domain.vo.WaybillVoucherVO">
+        SELECT * FROM t_waybill_voucher WHERE waybill_id = #{waybillId}
+    </select>
+
+    <select id="selectByWaybillIdList"
+            resultType="net.lab1024.tms.common.module.business.waybill.domain.entity.WaybillVoucherEntity">
+        SELECT * FROM t_waybill_voucher WHERE waybill_id in
+        <foreach collection="waybillIdList" separator="," open="(" close=")" item="item">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="selectByWaybillIdAndType"
+            resultType="net.lab1024.tms.common.module.business.waybill.domain.entity.WaybillVoucherEntity">
+        SELECT * FROM t_waybill_voucher WHERE waybill_id = #{waybillId} and type = #{type}
+    </select>
+
+</mapper>

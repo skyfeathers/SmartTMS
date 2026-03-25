@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.reportform.employee.EmployeeSalesTargetDao">
+
+    <!-- 根据年份 部门 查询数据 -->
+    <select id="listByYear"
+            resultType="net.lab1024.tms.admin.module.business.reportform.employee.domain.entity.EmployeeSalesTargetEntity">
+        SELECT *
+        FROM t_employee_sales_target
+        WHERE employee_id = #{employeeId}
+          AND `year` = #{year}
+    </select>
+
+    <!-- 查询 员工业绩目标 -->
+    <select id="query"
+            resultType="net.lab1024.tms.admin.module.business.reportform.employee.domain.entity.EmployeeSalesTargetEntity">
+        SELECT s.*
+        FROM t_employee_sales_target AS s
+        LEFT JOIN t_employee AS e ON e.employee_id = s.employee_id
+        <where>
+            <if test="query.employeeId != null">
+                AND s.employee_id = #{query.employeeId}
+            </if>
+            <if test="query.year != null">
+                AND s.year = #{query.year}
+            </if>
+            <if test="query.employeeIdList != null and query.employeeIdList.size > 0">
+                AND s.employee_id in
+                <foreach collection="query.employeeIdList" separator="," open="(" close=")" item="item">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+        ORDER BY `month`
+    </select>
+
+    <select id="selectByYearMonth"
+            resultType="net.lab1024.tms.admin.module.business.reportform.employee.domain.entity.EmployeeSalesTargetEntity">
+        select *
+        FROM t_employee_sales_target
+        where `year` = #{year}
+          and `month` = #{month}
+          and employee_id = #{employeeId}
+    </select>
+
+    <select id="queryBetweenYearMonth"
+            resultType="net.lab1024.tms.admin.module.business.reportform.employee.domain.dto.EmployeeSalesTargetAmountBO">
+        select
+        employee_id,
+        SUM(target) AS target
+        FROM t_employee_sales_target
+        where `year` &gt;= #{startYear}
+        and `month` &gt;= #{startMonth}
+        and `year` &lt;= #{endYear}
+        and `month` &lt;= #{endMonth}
+        and employee_id IN
+        <foreach collection="employeeIdList" separator="," open="(" close=")" item="item">
+            #{item}
+        </foreach>
+        GROUP BY employee_id
+    </select>
+
+    <select id="querySalesTarget"
+            resultType="net.lab1024.tms.admin.module.business.reportform.employee.domain.entity.EmployeeSalesTargetEntity">
+        SELECT *
+        FROM t_employee_sales_target
+        WHERE (`year` &gt; DATE_FORMAT(#{queryForm.startDate}, '%Y') OR (`year` = DATE_FORMAT(#{queryForm.startDate}, '%Y') AND `month` &gt;= DATE_FORMAT(#{queryForm.startDate}, '%m')))
+        AND (`year` &lt; DATE_FORMAT(#{queryForm.endDate}, '%Y') OR (`year` = DATE_FORMAT(#{queryForm.endDate}, '%Y') AND `month` &lt;= DATE_FORMAT(#{queryForm.endDate}, '%m')))
+        <if test="queryForm.employeeIdList != null and queryForm.employeeIdList.size > 0">
+            AND employee_id IN
+            <foreach collection="queryForm.employeeIdList" separator="," open="(" close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+</mapper>

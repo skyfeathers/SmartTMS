@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.admin.module.business.contract.esign.ESignNoticeRecordDao">
+    <select id="queryByFlowId"
+            resultType="net.lab1024.tms.common.module.business.esign.domain.entity.ESignNoticeRecordEntity">
+        SELECT *
+        FROM t_esign_notice_record
+        WHERE flow_id = #{flowId}
+        ORDER BY create_time ASC
+    </select>
+</mapper>
