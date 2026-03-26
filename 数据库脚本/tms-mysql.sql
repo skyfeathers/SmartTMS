@@ -1,18 +1,3 @@
-/*
- Navicat Premium Data Transfer
-
- Source Server         : 1024-47.96.105.74-5.8
- Source Server Type    : MySQL
- Source Server Version : 80023
- Source Host           : 47.96.105.74:11024
- Source Schema         : tms_sass_open_sit
-
- Target Server Type    : MySQL
- Target Server Version : 80023
- File Encoding         : 65001
-
- Date: 25/03/2026 11:45:05
-*/
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
