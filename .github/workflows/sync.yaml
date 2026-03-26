@@ -1,0 +1,31 @@
+name: Sync Gitee to GitHub (SSH)
+
+on:
+  push:
+  schedule:
+    - cron: '*/30 * * * *'  # 每30分钟同步一次
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SYNC_SSH_KEY }}
+          known_hosts: github.com,gitee.com
+
+      - name: Add known hosts
+        run: |
+          ssh-keyscan -H gitee.com >> ~/.ssh/known_hosts
+          ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+      - name: Sync all branches and tags
+        run: |
+          git clone --mirror git@gitee.com:lab1024/smart-tms.git temp_repo
+          cd temp_repo
+          git push --mirror git@github.com:1024-lab/smart-tms.git
