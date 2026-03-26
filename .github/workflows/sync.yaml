@@ -3,7 +3,7 @@ name: Sync Gitee to GitHub (SSH)
 on:
   push:
   schedule:
-    - cron: '*/30 * * * *'  # 每30分钟同步一次
+    - cron: '0 */2 * * *'  # 每2小时同步一次
 
 jobs:
   sync:
