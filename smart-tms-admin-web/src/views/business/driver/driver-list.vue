@@ -118,9 +118,11 @@
       </template>
       <template #bodyCell="{ text, record, index, column }">
         <template v-if="column.dataIndex === 'driverName'">
-          <a v-if="$privilege('driver:detail')" @click="driverDetail(record.driverId)" type="link">{{ record.driverName }}
-          - {{ record.telephone }}</a>
+          <a v-if="$privilege('driver:detail')" @click="driverDetail(record.driverId)" type="link">{{ record.driverName }} - {{ record.telephone }}</a>
         <span v-else>{{ record.driverName }} - {{ record.telephone }}</span>
+        </template>
+        <template v-if="column.dataIndex === 'businessMode'">
+          <span>{{ $smartEnumPlugin.getDescByValue('DRIVER_BUSINESS_MODE_ENUM', text) }}</span>
         </template>
         <template v-if="column.dataIndex === 'idCardEffectiveDate'">
           <span :class="{ 'expired': dateExpired(record.idCardEffectiveEndDate) }">{{

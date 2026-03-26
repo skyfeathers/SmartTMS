@@ -617,8 +617,8 @@ function changeBusinessMode(businessMode) {
   }
 }
 
-function changeRoadTransportCertificateAttachment(e) {
-  formState.roadTransportCertificateAttachment = e;
+function changeRoadTransportCertificateAttachment(fileList) {
+  formState.roadTransportCertificateAttachment = fileList;
   if (_.isEmpty(fileList)) {
     return;
   }

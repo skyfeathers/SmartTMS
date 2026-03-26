@@ -309,14 +309,14 @@ import Upload from '/@/components/upload/index.vue';
 import EmployeeSelect from "/@/components/employee-select/index.vue";
 import VehicleSelect from '/@/components/vehicle-select/index.vue';
 import SmartEnumSelect from '/@/components/smart-enum-select/index.vue';
-import EnterpriseSelect from '/@/components/enterprise-select/index.vue';
 import DriverNameList from './components/driver-name-list.vue';
 import SmartDictSelect from '/@/components/smart-dict-select/index.vue';
 import VehicleQuickCreate from '/@/components/vehicle-quick-create/index.vue';
 import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue';
 import { FILE_FOLDER_TYPE_ENUM } from '/@/constants/business/file-const';
 import { FLAG_NUMBER_ENUM } from '/@/constants/common-const';
-import { VEHICLE_BUSINESS_MODE_ENUM, QUICK_CREATE_TYPE_ENUM } from '/@/constants/business/vehicle-const';
+import { QUICK_CREATE_TYPE_ENUM } from '/@/constants/business/vehicle-const';
+import { DRIVER_BUSINESS_MODE_ENUM } from '/@/constants/business/driver-const';
 import { message } from 'ant-design-vue';
 import { useSpinStore } from '/@/store/modules/system/spin';
 import { driverApi } from '/@/api/business/driver/driver-api';
@@ -405,6 +405,7 @@ const bankForm = {
 };
 const form = reactive({
   enterpriseId: null,
+  businessMode: DRIVER_BUSINESS_MODE_ENUM.INNER_MANAGEMENT.value, //经营方式
   idCardEndlessFlag: false,
   photo: [],
   bankList: [],

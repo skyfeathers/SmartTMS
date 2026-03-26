@@ -186,8 +186,6 @@
     <!-- 快速创建司机、车辆、挂车 -->
     <VehicleQuickCreate ref="quickCreateRef" @reloadList="handleFinish" />
 
-    <QrCodeModal ref="qrCodeModalRef"/>
-
     <DriverVehicleModal ref="driverVehicleModal"/>
   </a-card>
 </template>
