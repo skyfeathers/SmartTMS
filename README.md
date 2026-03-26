@@ -9,7 +9,7 @@
 
 TMS (Transportation Management System) 是一套完整的运输管理系统，由 **中国·洛阳** [1024创新实验室](https://www.1024lab.net/) 开发。系统采用 Spring Boot 框架，基于 Java 8 和 Maven 多模块架构设计，提供货主管理、司机管理、车辆管理、挂车管理、业务资料、油卡管理、报表统计、流程审批、固定资产等核心功能。
 
-在线预览：
+在线预览（演示环境数据每天早上8点重置）：
 
 **管理端**
 - [http://lab.tms.1024lab.net/admin/](http://lab.tms.1024lab.net/admin/)
