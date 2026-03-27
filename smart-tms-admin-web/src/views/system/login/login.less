@@ -23,12 +23,12 @@
   }
   .box-item {
     width: 434px;
-    height: 420px;
+    // height: 420px;
     margin-right: 260px;
     &.login {
       background: #ffffff;
       border-radius: 8px;
-      padding: 34px 42px;
+      padding: 34px 42px 20px;
       position: relative;
     }
     .login-qr {
@@ -201,5 +201,30 @@
     text-align: center;
     cursor: pointer;
     margin-bottom: 10px;
+  }
+
+  .code-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    margin-top: 40px;
+    &-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      &-img {
+        width: 112px;
+        height: 112px;
+      }
+      &-text {
+        font-size: 12px;
+        font-weight: 500;
+        color: #333;
+        margin-top: 10px;
+      }
+    }
+    
   }
 }

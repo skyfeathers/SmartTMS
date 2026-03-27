@@ -26,13 +26,12 @@
         <div class="home-right-content-notice">
             <HomeNotice title="通知" :noticeTypeId="2" :icon="MessageIcon" class="smart-bottom-10" />
         </div>
-        <div class="changelog-card-box">
-          <ChangelogCard />
-        </div>
+        
         
         
       </div>
       
+      <Contact />
     </div>
     
     
@@ -54,6 +53,8 @@ import Statistics from './components/statistics.vue';
 import CredentialsCount from './components/credentials-count.vue';
 import NoticeIcon from "/@/assets/images/home/notice-icon.png";
 import MessageIcon from "/@/assets/images/home/message-icon.png";
+import Contact from './components/contact.vue';
+
 
 
 // ----------------------- 以下是字段定义 emits props ---------------------
@@ -122,15 +123,10 @@ defineExpose({});
       overflow: hidden;
       &-notice {
         flex-shrink: 0;
-        flex: 35%;
+        flex: 1;
         display: flex;
         flex-direction: row;
         column-gap: 10px;
-        overflow: hidden;
-      }
-      .changelog-card-box {
-        flex: 30%;
-        flex-shrink: 0;
         overflow: hidden;
       }
       

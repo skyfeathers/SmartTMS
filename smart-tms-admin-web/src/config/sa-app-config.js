@@ -56,7 +56,7 @@ export default {
   dingdingAppKey: '',
   dingdingRedirectUri: '',
   loginPagePath: 'common',
-  compactFlag: true,
+  compactFlag: false,
   // 百度AK
   baiduMapAk:'xxxxxxxxxxxx',
 };

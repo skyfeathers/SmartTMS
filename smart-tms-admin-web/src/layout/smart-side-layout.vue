@@ -252,7 +252,7 @@ let { route, keepAliveIncludes, iframeNotKeepAlivePageFlag, keepAliveIframePages
 .admin-layout {
   .side-menu {
     height: 100vh;
-    overflow: scroll;
+    overflow-y: scroll;
 
     &.fixed-side {
       position: fixed;

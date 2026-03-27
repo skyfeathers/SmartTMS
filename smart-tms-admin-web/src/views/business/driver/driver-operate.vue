@@ -84,11 +84,16 @@
             </a-form-item>
           </a-descriptions-item>
           <a-descriptions-item label="身份证有效期结束时间">
-            <a-form-item name="idCardEffectiveEndDate">
-              <a-date-picker :disabled="form.idCardEndlessFlag" v-model:value="form.idCardEffectiveEndDate"
-                valueFormat="YYYY-MM-DD" class="form-width" />
-              <a-checkbox class="flex-end" v-model:checked="form.idCardEndlessFlag">长期有效</a-checkbox>
-            </a-form-item>
+            <div class="item-row">
+              <a-form-item name="idCardEffectiveEndDate">
+                <a-date-picker :disabled="form.idCardEndlessFlag" v-model:value="form.idCardEffectiveEndDate"
+                  valueFormat="YYYY-MM-DD" class="form-width" />
+                
+              </a-form-item>
+              <a-form-item name="idCardEndlessFlag">
+                <a-checkbox style="margin-left: 5px;" v-model:checked="form.idCardEndlessFlag">长期有效</a-checkbox>
+              </a-form-item>
+            </div>
           </a-descriptions-item>
         </a-descriptions>
       </a-card>
@@ -108,9 +113,7 @@
                 @change="drivingLicenseBackPicChange" />
             </a-form-item>
           </a-descriptions-item>
-          <a-descriptions-item :span="3">
-
-          </a-descriptions-item>
+          <a-descriptions-item :span="3" />
           <a-descriptions-item label="驾驶证号">
             <a-form-item name="drivingLicenseNo">
               <a-input v-model:value="form.drivingLicenseNo" class="form-width" placeholder="请输入驾驶证号" />
@@ -143,7 +146,7 @@
                 <a-date-picker :disabled="form.drivingLicenseEndlessFlag" v-model:value="form.validPeriodTo"
                   valueFormat="YYYY-MM-DD" class="form-width" />
               </a-form-item-rest>
-              <a-checkbox class="flex-end" v-model:checked="form.drivingLicenseEndlessFlag">长期有效</a-checkbox>
+              <a-checkbox style="margin-left: 3px;" v-model:checked="form.drivingLicenseEndlessFlag">长期有效</a-checkbox>
             </a-form-item>
           </a-descriptions-item>
         </a-descriptions>
@@ -733,5 +736,12 @@ function onClose() {
 
 ::v-deep th.required {
   color: red;
+}
+
+.item-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
 }
 </style>

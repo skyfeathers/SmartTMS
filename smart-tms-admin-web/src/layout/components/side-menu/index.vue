@@ -14,7 +14,7 @@
    -->
 
   <!-- 顶部logo区域 -->
-  <div class="logo" @click="goHome" :style="sideMenuWidth" v-if="!collapsed">
+  <div class="logo" @click="goHome" v-if="!collapsed">
     <img v-if="appDefaultConfig.logoUrl" class="logo-img" :src="appDefaultConfig.logoUrl" />
     <div class="title">{{ websiteName }}</div>
   </div>
@@ -88,6 +88,7 @@ function goHome() {
   }
 
   .logo {
+    width: 100%;
     height: @header-user-height;
     line-height: @header-user-height;
     padding: 0px 15px 0px 15px;

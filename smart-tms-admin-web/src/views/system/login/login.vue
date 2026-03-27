@@ -37,6 +37,16 @@
           <a-form-item>
             <div class="btn" @click="handleFinish">登录</div>
           </a-form-item>
+          <div class="code-info">
+            <div class="code-info-item">
+              <img src="/@/assets/images/login/code-h5.png" alt="" class="code-info-item-img" />
+              <div class="code-info-item-text">移动端</div>
+            </div>
+            <div class="code-info-item">
+              <img src="/@/assets/images/login/code-mp.png" alt="" class="code-info-item-img" />
+              <div class="code-info-item-text">微信号</div>
+            </div>
+          </div>
         </a-form>
         <div v-else class="login-form dingding-login-qrcode">
           <div>
@@ -89,6 +99,9 @@ const loginForm = reactive({
   loginDevice: LOGIN_DEVICE_ENUM.PC.value,
   uniqueCode: ''
 });
+
+
+
 const rules = {
   loginName: [{required: true, message: '用户名不能为空'}],
   password: [{required: true, message: '密码不能为空'}],
@@ -97,9 +110,17 @@ const rules = {
 
 const showPassword = ref(false);
 const router = useRouter();
-const route = useRoute();
+let route = useRoute();
 const formRef = ref();
 const rememberPwd = ref(false);
+
+let previewUser = route.query.previewUser;
+let previewPwd = route.query.previewPwd;
+if (previewUser && previewPwd) {
+  loginForm.loginName = previewUser;
+  loginForm.password = previewPwd;
+}
+
 
 onMounted(() => {
   document.onkeyup = (e) => {

@@ -24,13 +24,12 @@
 }
 .login-container .box-item {
   width: 434px;
-  height: 420px;
   margin-right: 260px;
 }
 .login-container .box-item.login {
   background: #ffffff;
   border-radius: 8px;
-  padding: 34px 42px;
+  padding: 34px 42px 20px;
   position: relative;
 }
 .login-container .box-item .login-qr {
@@ -196,4 +195,27 @@
   text-align: center;
   cursor: pointer;
   margin-bottom: 10px;
+}
+.login-container .code-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  margin-top: 40px;
+}
+.login-container .code-info-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.login-container .code-info-item-img {
+  width: 112px;
+  height: 112px;
+}
+.login-container .code-info-item-text {
+  font-size: 12px;
+  font-weight: 500;
+  color: #333;
+  margin-top: 10px;
 }
