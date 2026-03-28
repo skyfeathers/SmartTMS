@@ -50,7 +50,7 @@
     </a-row>
 
     <a-table
-        :scroll="{ x: 1500,y:500 }"
+        :scroll="{ x: '100%' }"
         size="small"
         :dataSource="tableData"
         :columns="columns"
@@ -108,40 +108,48 @@ const columns = reactive([
   {
     title: '报关行编号',
     dataIndex: 'customsBrokerCode',
-    width: 90
+    width: 90,
+    ellipsis: true,
   },
   {
     title: '报关行名称',
     dataIndex: 'customsBrokerName',
+    width: 120,
+    ellipsis: true,
   },
   {
     title: '报关行简称',
     dataIndex: 'customsBrokerShortName',
+    width: 120,
+    ellipsis: true,
   },
   {
     title: '地址',
     dataIndex: 'address',
+    width: 160,
+    ellipsis: true,
   },
   {
     title: '联系人',
-    width: 100,
     dataIndex: 'contact',
-  },
-  {
-    title: '联系人电话',
-    width: 120,
-    dataIndex: 'contactPhone',
-  },
-  {
-    title: '备注',
-    dataIndex: 'remark',
     width: 100,
     ellipsis: true,
   },
   {
+    title: '联系人电话',
+    dataIndex: 'contactPhone',
+    width: 120,
+  },
+  {
+    title: '备注',
+    dataIndex: 'remark',
+    width: 130,
+    ellipsis: true,
+  },
+  {
     title: '状态',
-    width: 60,
     dataIndex: 'disabledFlag',
+    width: 60,
   },
   {
     title: '创建人',
@@ -151,7 +159,7 @@ const columns = reactive([
   {
     title: '创建时间',
     dataIndex: 'createTime',
-    width: 160
+    width: 170
   },
   {
     title: '操作',

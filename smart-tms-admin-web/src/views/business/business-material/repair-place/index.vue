@@ -70,7 +70,7 @@
     <a-table rowKey="repairPlantId"
       :columns="tableColumns"
       :dataSource="tableData"
-      :scroll="{ x: 1300,y:500 }"
+      :scroll="{ x: '100%' }"
       :pagination="false"
       :loading="tableLoading"
       size="small"
@@ -128,10 +128,13 @@ const tableColumns = reactive([
     title: '车辆维修厂家简称',
     dataIndex: 'repairPlantName',
     width: 260,
+    ellipsis: true,
   },
   {
     title: '维修厂地址',
     dataIndex: 'addressDetail',
+    width: 300,
+    ellipsis: true,
     customRender: ({ record }) => {
       return `${record.addressArea || ''}${record.addressDetail||''}`;
     },
@@ -139,12 +142,13 @@ const tableColumns = reactive([
   {
     title: '联系人',
     dataIndex: 'contactName',
-    width: 100,
+    width: 120,
+    ellipsis: true,
   },
   {
     title: '联系方式',
     dataIndex: 'contactPhone',
-    width: 120,
+    width: 130,
   },
   {
     title: '状态',
@@ -154,12 +158,13 @@ const tableColumns = reactive([
   {
     title: '创建人',
     dataIndex: 'createUserName',
-    width: 100,
+    width: 120,
+    ellipsis: true,
   },
   {
     title: '创建时间',
     dataIndex: 'createTime',
-    width: 160,
+    width: 170,
   },
   {
     title: '操作',

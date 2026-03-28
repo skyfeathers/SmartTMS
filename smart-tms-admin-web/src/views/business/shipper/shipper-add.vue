@@ -202,7 +202,8 @@ const shipperForm = reactive({
   deductTaxRatio: 0,
   accountPeriod: 30,
   managerIdList: [],
-  managerId: null
+  managerId: null,
+  area: [],
 });
 let area = ref([]);
 const contactManageRef = ref();
@@ -257,12 +258,22 @@ async function onSubmit(next) {
 
 function reset(){
   formRef.value.resetFields();
-  shipperForm.area = []
-  shipperForm.consignorImage = []
-  shipperForm.contactList = []
-  shipperForm.invoiceList = []
-  shipperForm.paymentWayList = []
-  shipperForm.mailAddressList = []
+
+  shipperForm.area = [];
+  shipperForm.consignorImage = [];
+
+  if(contactManageRef.value) {
+    contactManageRef.value.tableData = [];
+  }
+  if(invoiceManageRef.value) {
+    invoiceManageRef.value.tableData = [];
+  }
+  if(paymentTypeManageRef.value) {
+    paymentTypeManageRef.value.tableData = [];
+  }
+  if(mailAddressManageRef.value) {
+    mailAddressManageRef.value.tableData = [];
+  }
 }
 
 function changeArea(value, selectedOptions) {
@@ -342,6 +353,19 @@ async function getDetail() {
     area.value = [{ value: shipperForm.provinceCode }, { value: shipperForm.cityCode }];
     data.makeInvoiceFlag = data.makeInvoiceFlag ? FLAG_NUMBER_ENUM.TRUE.value : FLAG_NUMBER_ENUM.FALSE.value;
     Object.assign(shipperForm, data);
+
+    if(contactManageRef.value) {
+      contactManageRef.value.tableData = data.contactList || [];
+    }
+    if(invoiceManageRef.value) {
+      invoiceManageRef.value.tableData = data.invoiceList || [];
+    }
+    if(paymentTypeManageRef.value) {
+      paymentTypeManageRef.value.tableData = data.paymentWayList || [];
+    }
+    if(mailAddressManageRef.value) {
+      mailAddressManageRef.value.tableData = data.mailAddressList || [];
+    }
   } catch (e) {
     console.log(e);
   } finally {

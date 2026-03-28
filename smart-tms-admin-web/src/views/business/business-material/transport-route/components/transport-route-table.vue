@@ -7,7 +7,7 @@
 -->
 <template>
   <a-table
-    :scroll="{ x: '2000px', y: '600px' }"
+    :scroll="{ x: '100%' }"
     size="small"
     :dataSource="tableData"
     :columns="columns"

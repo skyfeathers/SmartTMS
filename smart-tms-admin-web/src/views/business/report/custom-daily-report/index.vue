@@ -34,7 +34,7 @@
         <a-button v-privilege="'shipperReport:export'" size="small" @click="exportExcel()">导出</a-button>
       </div>
     </a-row>
-    <a-table :scroll="{ x: 2200 }" :columns="columns" :dataSource="tableData" :loading="tableLoading" :pagination="false"
+    <a-table :scroll="{ x: '100%' }" :columns="columns" :dataSource="tableData" :loading="tableLoading" :pagination="false"
       bordered size="small">
       <template #bodyCell="{ text, record, index, column }">
         <template v-if="column.dataIndex === 'consignor'">
@@ -109,75 +109,92 @@ let columns = reactive([
   {
     title: '下单数量',
     dataIndex: 'waybillCount',
+    width: 100,
   },
   {
     title: '下单金额',
     dataIndex: 'receiveTotalAmount',
-    width: 300,
+    width: 100,
   },
   {
     title: '异常运单数量',
     dataIndex: 'cancelOrderCount',
+    width: 120,
   },
   {
     title: '应收金额',
     dataIndex: 'receiveAmount',
+    width: 100,
   },
   {
     title: '运费金额',
     dataIndex: 'freightAmount',
+    width: 100,
   },
   {
     title: '异常金额',
     dataIndex: 'exceptionAmount',
+    width: 100,
   },
   {
     title: '工资',
-    dataIndex: 'salaryAmount'
+    dataIndex: 'salaryAmount',
+    width: 100,
   },
   {
     title: '在途费用',
-    dataIndex: 'carCostAmount'
+    dataIndex: 'carCostAmount',
+    width: 100,
   },
   {
     title: '税率',
     dataIndex: 'taxRate',
+    width: 100,
   },
   {
     title: '利润',
     dataIndex: 'profitAmount',
+    width: 100,
   },
   {
     title: '去年同期运单数量',
     dataIndex: 'lastYearWaybillCount',
+    width: 180,
   },
   {
     title: '去年同期下单金额',
     dataIndex: 'lastYearWReceiveTotalAmount',
+    width: 180,
   },
   {
     title: '比例',
     dataIndex: 'rate',
+    width: 100,
   },
   {
     title: '应收账款金额',
     dataIndex: 'receiveCostAmount',
+    width: 120,
   },
   {
     title: '已开票金额',
     dataIndex: 'invoiceAmount',
+    width: 100,
   },
   {
     title: '未开票金额',
     dataIndex: 'waitInvoiceAmount',
+    width: 100,
   },
   {
     title: '预计收回金额',
     dataIndex: 'unRecoveredAmount',
+    width: 120,
   },
   {
     title: '业务负责人',
     dataIndex: 'managerName',
+    width: 100,
   },
   {
     title: '操作',

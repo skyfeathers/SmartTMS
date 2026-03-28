@@ -41,7 +41,7 @@
     </a-row>
 
     <a-table
-        :scroll="{ x: 2000 }"
+        :scroll="{ x: '100%' }"
         size="small"
         :dataSource="tableData"
         :columns="columns"
@@ -110,7 +110,7 @@ const columns = reactive([
   {
     title: '图片标题',
     dataIndex: 'title',
-    width:300
+    width: 100
   },
   {
     title: '投放方向',
@@ -120,7 +120,7 @@ const columns = reactive([
   {
     title: '展示时间',
     dataIndex: 'startTime',
-    width: 280
+    width: 300
   },
   {
     title: '顺序',
@@ -134,12 +134,14 @@ const columns = reactive([
   },
   {
     title: '创建人',
-    width: 60,
+    width: 80,
     dataIndex: 'createUserName',
+    ellipsis: true,
   },
   {
     title: '创建时间',
     dataIndex: 'createTime',
+    width: 200
   },
   {
     title: '操作',

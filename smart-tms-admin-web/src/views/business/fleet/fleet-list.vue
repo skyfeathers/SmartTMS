@@ -86,7 +86,7 @@
         :dataSource="tableData"
         :pagination="false"
         :row-selection="{ selectedRowKeys: selectedRowKeyList, onChange: onSelectChange }"
-        :scroll="{ x: 1300, y: 500 }"
+        :scroll="{ x: '100%' }"
         :loading="tableLoading"
         rowKey="fleetId"
         size="small"
@@ -159,6 +159,7 @@ const columns = ref([
     dataIndex: "fleetName",
     width:180,
     fixed: "left",
+    ellipsis: true,
   },
   {
     title: "车队长-联系方式",
@@ -174,6 +175,7 @@ const columns = ref([
     title: "注册地址",
     width:100,
     dataIndex: "registerArea",
+    ellipsis: true,
   },
   {
     title: "审核状态",
@@ -184,6 +186,7 @@ const columns = ref([
     title: "创建人",
     width:100,
     dataIndex: "createUserName",
+    ellipsis: true,
   },
   {
     title: "创建时间",
@@ -194,7 +197,7 @@ const columns = ref([
     title: "操作",
     dataIndex: "action",
     fixed: "right",
-    width: 50,
+    width: 70,
   },
 ]);
 

@@ -125,7 +125,7 @@ export const payColumns = [
   {
     title: '支付时间',
     dataIndex: 'payTime',
-    width: 160
+    width: 180
   },
 ];
 

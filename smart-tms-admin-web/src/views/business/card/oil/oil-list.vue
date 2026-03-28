@@ -88,7 +88,7 @@
     </span>
     <a-table :columns="columns"
              :dataSource="tableData" :pagination="false" :row-selection="{ selectedRowKeys: selectedRowKeyList, onChange: onSelectChange }"
-             :scroll="{ x: 2000,y:400 }"
+             :scroll="{ x: '100%' }"
              bordered
              rowKey="oilCardId" size="small">
       <template #bodyCell="{ text, record, index, column }">
@@ -204,69 +204,72 @@ const basicColumns = [
   {
     title: '油卡卡号',
     dataIndex: 'oilCardNo',
-    width: 200,
     fixed: 'left',
+    width: 200,
   },
   {
     title: '主卡卡号',
     dataIndex: 'masterOilCardNo',
-    width: 180,
     fixed: 'left',
+    width: 180,
   },
   {
     title: '油卡品牌',
-    width: 75,
     dataIndex: 'brand',
+    width: 100,
+    ellipsis: true,
   },
   {
     title: '油卡类型',
-    width: 75,
     dataIndex: 'type',
+    width: 100,
   },
   {
     title: '是否定点',
-    width: 75,
     dataIndex: 'fixedPointFlag',
+    width: 90,
   },
   {
     title: '燃料类型',
-    width: 75,
     dataIndex: 'fuelType',
+    width: 90,
   },
   {
     title: '取卡时间',
-    width: 160,
     dataIndex: 'drivingLicense',
+    width: 170,
   },
   {
     title: '领取人',
-    width: 90,
     dataIndex: 'receiveUserName',
+    width: 100,
   },
   {
     title: '持卡司机',
-    width: 90,
     dataIndex: 'useDriverName',
+    width: 120,
+    ellipsis: true,
   },
   {
     title: '当前持卡车',
-    width: 90,
     dataIndex: 'useVehicleNumber',
+    width: 120,
+    ellipsis: true,
   },
   {
     title: '期初余额',
-    width: 75,
     dataIndex: 'beginBalance',
+    width: 100,
   },
   {
     title: '当前余额',
-    width: 75,
     dataIndex: 'balance',
+    width: 100,
   },
   {
     title: '待分配金额',
-    width: 100,
     dataIndex: 'preDistributionBalance',
+    width: 100,
   },
   {
     title: '充值金额',
@@ -280,31 +283,35 @@ const basicColumns = [
   },
   {
     title: '分配金额',
-    dataIndex: 'distributeBalance'
+    dataIndex: 'distributeBalance',
+    width: 120,
   },
   {
     title: '用途',
-    width: 100,
     dataIndex: 'purpose',
+    width: 120,
+    ellipsis: true,
   },
   {
     title: '油卡状态',
-    width: 75,
-    dataIndex: 'disabledFlag',
+    dataIndex: 'disabledFlag',  
+    width: 100,
+    ellipsis: true,
   },
   {
     title: '创建人',
-    width: 70,
     dataIndex: 'createUserName',
+    width: 100,
+    ellipsis: true,
   },
   {
     title: '创建时间',
-    width: 160,
     dataIndex: 'createTime',
+    width: 170,
   },
   {
     title: '操作',
-    width: 210,
+    width: 230,
     dataIndex: 'action',
     fixed: 'right',
   },

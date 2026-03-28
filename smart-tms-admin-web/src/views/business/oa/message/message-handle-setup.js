@@ -57,9 +57,9 @@ export function messageSetup () {
     // 油卡充值审批
     if (record.msgSubType == MSG_SUB_TYPE_ENUM.AUDIT_OIL_CARD_AUDIT.value) {
       router.push({
-        path: '/oil-card/recharge',
+        path: '/pay/pay-order-detail',
         query: {
-          rechargeApplyId: record.dataId,
+          payOrderId: record.dataId,
         },
       });
       return;

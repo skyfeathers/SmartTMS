@@ -43,7 +43,7 @@
             <div class="smart-table-setting-block"></div>
         </a-row>
 
-        <a-table :scroll="{ x: tableWidth, y: 500 }" size="small" :dataSource="tableData" :columns="columns" :pagination="false" bordered>
+        <a-table :scroll="{ x: '100%' }" size="small" :dataSource="tableData" :columns="columns" :pagination="false" bordered>
             <template #bodyCell="{ text, record, index, column }">
                 <template v-if="column.dataIndex === 'waybillNumber'">
                     <a @click="waybillDetail(record.waybillId)">{{ text }}</a>
@@ -101,12 +101,13 @@ const { columnsData:columns, tableWidth } = useDragTable([
     {
         title: '司机',
         dataIndex: 'driverName',
-        width: 100
+        width: 100,
+        ellipsis: true,
     },
     {
         title: '车辆',
         dataIndex: 'vehicleNumber',
-        width: 100
+        width: 120,
     },
     {
         title: '运单',
@@ -116,22 +117,22 @@ const { columnsData:columns, tableWidth } = useDragTable([
     {
         title: '箱号',
         dataIndex: 'containerNumber',
-        width: 100
+        width: 120,
     },
     {
         title: '高速里程',
-        width: 100,
         dataIndex: 'highSpeedMileage',
+        width: 100,
     },
     {
         title: '低速里程',
-        width: 100,
         dataIndex: 'lowSpeedMileage',
+        width: 100,
     },
     {
         title: 'GPS公里数',
-        width: 100,
         dataIndex: 'gpsMileage',
+        width: 100,
     },
     {
         title: '用油量',

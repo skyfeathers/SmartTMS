@@ -49,7 +49,7 @@
   <a-card size="small" :bordered="false" :hoverable="true">
 
     <a-table
-        :scroll="{ x: 1300 }"
+        :scroll="{ x: '100%' }"
         size="small"
         :dataSource="tableData"
         :columns="columns"
@@ -103,18 +103,19 @@ import {messageSetup} from "/@/views/business/oa/message/message-handle-setup";
 const columns = reactive([
   {
     title: 'ID',
-    width: 50,
+    width: 70,
     dataIndex: 'msgId',
   },
   {
     title: '消息类型',
-    width: 80,
+    width: 90,
     dataIndex: 'msgType',
   },
   {
     title: '消息子类型',
-    width: 150,
+    width: 160,
     dataIndex: 'msgSubType',
+    ellipsis: true,
   },
   {
     title: '是否已读',
@@ -124,22 +125,24 @@ const columns = reactive([
   {
     title: '消息标题',
     dataIndex: 'title',
-    width: 120
+    width: 150,
+    ellipsis: true,
   },
   {
     title: '消息内容',
     dataIndex: 'content',
+    width: 200,
   },
   {
     title: '创建时间',
     dataIndex: 'createTime',
-    width: 160
+    width: 180
   },
   {
     title: '操作',
     dataIndex: 'action',
     fixed: 'right',
-    width: 60
+    width: 80
   },
 ]);
 

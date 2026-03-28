@@ -64,7 +64,7 @@
     </a-row>
 
     <a-table
-      :scroll="{ x: 2200,y:500 }"
+      :scroll="{ x: '100%' }"
       size="small"
       bordered
       :dataSource="tableData"
@@ -155,16 +155,18 @@ const columns = ref([
   {
     title: '保险公司',
     dataIndex: 'insuranceCompanyName',
+    width: 260,
+    ellipsis: true,
   },
   {
     title: '保险类型',
     dataIndex: 'insuranceType',
-    width: 90
+    width: 120
   },
   {
     title: '保险对象类型',
     dataIndex: 'moduleType',
-    width: 110
+    width: 120
   },
   {
     title: '保险对象',
@@ -174,7 +176,7 @@ const columns = ref([
   {
     title: '保额(万)',
     dataIndex: 'insuranceAmount',
-    width: 90
+    width: 100
   },
   {
     title: '保险费用（元）',
@@ -184,42 +186,45 @@ const columns = ref([
   {
     title: '投保时间',
     dataIndex: 'effectDate',
-    width: 100
+    width: 120
   },
   {
     title: '到期时间',
     dataIndex: 'expireDate',
-    width: 100
+    width: 120
   },
   {
     title: '登记日期',
     dataIndex: 'enrollDate',
-    width: 100
+    width: 120
   },
   {
     title: '备注',
     dataIndex: 'remark',
-    width: 100
+    width: 100,
+    ellipsis: true,
   },
   {
     title: '附件',
     dataIndex: 'attachment',
+    width: 120,
   },
   {
     title: '创建人',
     dataIndex: 'createUserName',
-    width: 70,
+    width: 100,
+    ellipsis: true,
   },
   {
     title: '创建时间',
     dataIndex: 'createTime',
-    width: 160,
+    width: 170,
   },
   {
     title: '操作',
     dataIndex: 'action',
     fixed: 'right',
-    width: 50,
+    width: 70,
   },
 ]);
 

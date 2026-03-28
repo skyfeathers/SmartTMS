@@ -124,7 +124,7 @@
         :pagination="false"
         :row-selection="{ selectedRowKeys: selectedRowKeyList, onChange: onSelectChange }"
         rowKey="bracketId"
-        :scroll="{ x: tableWidth, y: 500 }"
+        :scroll="{ x: '100%' }"
         :loading="tableLoading"
         size="small"
         bordered
@@ -372,7 +372,7 @@ const { columnsData:columns, tableWidth } = useDragTable([
     title: '操作',
     dataIndex: 'action',
     fixed: 'right',
-    width: 50,
+    width: 70,
     filterOptions:{
       type:'submit',
       btnType:'link'

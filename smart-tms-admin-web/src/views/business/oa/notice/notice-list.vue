@@ -86,7 +86,7 @@
       rowKey="noticeId"
       :columns="tableColumns"
       :dataSource="tableData"
-      :scroll="{ x: 1500 }"
+      :scroll="{ x: '100%' }"
       :pagination="false"
       :loading="tableLoading"
       size="small"
@@ -172,48 +172,48 @@ const tableColumns = reactive([
   {
     title: `文号`,
     dataIndex: 'documentNumber',
-    width: 100,
+    width: 120,
     ellipsis: true,
   },
   {
     title: '分类',
     dataIndex: 'noticeTypeName',
-    width: 60,
+    width: 80,
     ellipsis: true,
   },
   {
     title: `作者`,
     dataIndex: 'author',
-    width: 80,
+    width: 100,
     ellipsis: true,
   },
   {
     title: `来源`,
     dataIndex: 'source',
-    width: 90,
+    width: 120,
     ellipsis: true,
   },
 
   {
     title: '可见范围',
     dataIndex: 'allVisibleFlag',
-    width: 90,
+    width: 100,
     ellipsis: true,
   },
   {
     title: '发布',
     dataIndex: 'publishFlag',
-    width: 80,
+    width: 90,
   },
   {
     title: '删除',
     dataIndex: 'deletedFlag',
-    width: 80,
+    width: 90,
   },
   {
     title: '发布时间',
     dataIndex: 'publishTime',
-    width: 140,
+    width: 170,
   },
   {
     title: '页面浏览量',
@@ -228,18 +228,18 @@ const tableColumns = reactive([
   {
     title: '创建人',
     dataIndex: 'createUserName',
-    width: 80,
+    width: 100,
   },
   {
     title: '创建时间',
     dataIndex: 'createTime',
-    width: 140,
+    width: 170,
   },
   {
     title: '操作',
     dataIndex: 'action',
     fixed: 'right',
-    width: 90,
+    width: 100,
   },
 ]);
 

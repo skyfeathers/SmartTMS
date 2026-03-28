@@ -54,7 +54,7 @@
     </a-row>
 
     <a-table
-        :scroll="{ x: 1300,y: 500 }"
+        :scroll="{ x: '100%' }"
         size="small"
         :dataSource="tableData"
         :columns="columns"
@@ -111,21 +111,20 @@ import {PAGE_SIZE, PAGE_SIZE_OPTIONS} from '/@/constants/common-const';
 
 const columns = reactive([
   {
-    title: 'ID',
-    width: 50,
-    dataIndex: 'businessTypeId',
-  },
-  {
     title: '业务类型',
-    dataIndex: 'tripTypeDesc'
+    dataIndex: 'tripTypeDesc',
+    width: 100,
   },
   {
     title: '业务代码',
     dataIndex: 'businessTypeCode',
+    width: 120,
   },
   {
     title: '业务名称',
     dataIndex: 'businessTypeName',
+    width: 150,
+    ellipsis: true,
   },
   {
     title: '是否默认',
@@ -139,12 +138,14 @@ const columns = reactive([
   },
   {
     title: '创建人',
-    width: 100,
     dataIndex: 'createUserName',
+    width: 100,
+    ellipsis: true,
   },
   {
     title: '创建时间',
     dataIndex: 'createTime',
+    width: 180,
   },
   {
     title: '操作',

@@ -43,7 +43,7 @@
     </a-row>
 
     <a-table
-        :scroll="{ x: 1300 }"
+        :scroll="{ x: '100%' }"
         size="small"
         :dataSource="tableData"
         :columns="columns"
@@ -74,19 +74,24 @@ import { SmartLoading } from '/@/components/smart-loading';
 const columns = reactive([
   {
     title: '业务负责人',
-    dataIndex: 'employeeName'
+    dataIndex: 'employeeName',
+    width: 120,
+    ellipsis: true,
   },
   {
     title: '外调车运费成本',
-    dataIndex: 'payableAmount'
+    dataIndex: 'payableAmount',
+    width: 120,
   },
   {
     title: '分配外调车油卡',
-    dataIndex: 'oilCardAmount'
+    dataIndex: 'oilCardAmount',
+    width: 120,
   },
   {
     title: '油卡比例',
-    dataIndex: 'oilCardRate'
+    dataIndex: 'oilCardRate',
+    width: 120,
   }
 ]);
 

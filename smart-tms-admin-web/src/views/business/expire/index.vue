@@ -57,7 +57,7 @@
     </a-row>
 
     <a-table
-        :scroll="{ x: 1300,y:500 }"
+        :scroll="{ x: '100%' }"
         size="small"
         :dataSource="tableData"
         :columns="columns"
@@ -116,32 +116,41 @@ import { EXPIRED_CERTIFICATE_STATUS_ENUM } from '/@/constants/business/exipre-co
 const columns = ref([
   {
     title: 'ID',
-    width: 50,
     dataIndex: 'id',
+    width: 50,
   },
   {
     title: '所属模块',
     dataIndex: 'moduleType',
+    width: 180,
   },
   {
     title: '模块名称',
     dataIndex: 'moduleName',
+    width: 180,
+    ellipsis: true,
   },
   {
     title: '证件类型',
     dataIndex: 'type',
+    width: 100,
+    ellipsis: true,
   },
   {
     title: '到期时间',
     dataIndex: 'expiredTime',
+    width: 180,
   },
   {
     title: '到期状态',
     dataIndex: 'status',
+    width: 100,
   },
   {
     title: '备注',
     dataIndex: 'remark',
+    width: 200,
+    ellipsis: true,
   },
 ]);
 

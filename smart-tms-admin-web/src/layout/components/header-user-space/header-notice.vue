@@ -3,7 +3,7 @@
     <div style="width: 28px;display: flex;justify-content: center;">
       <a-badge :count="unreadCount">
         <a-button title="消息通知" type="text">
-          <template #icon><BellOutlined :style="{ fontSize: '12px' }" /></template>
+          <template #icon><BellOutlined /></template>
         </a-button>
       </a-badge>
     </div>

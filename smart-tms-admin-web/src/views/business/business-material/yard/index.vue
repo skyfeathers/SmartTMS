@@ -50,7 +50,7 @@
     </a-row>
 
     <a-table
-        :scroll="{ x: 1900,y:500 }"
+        :scroll="{ x: '100%' }"
         size="small"
         :dataSource="tableData"
         :columns="columns"
@@ -111,47 +111,53 @@ const columns = reactive([
   {
     title: '堆场名称',
     dataIndex: 'yardName',
-    width: 200
+    width: 200,
+    ellipsis: true,
   },
   {
     title: '堆场地区',
     dataIndex: 'area',
-    width:240,
+    width: 200,  
+    ellipsis: true,
   },
   {
     title: '堆场地址',
-    dataIndex: 'address'
+    dataIndex: 'address',
+    width: 200,
+    ellipsis: true,
   },
   {
     title: '联系人',
     dataIndex: 'contact',
-    width: 240
+    width: 150,
+    ellipsis: true,
   },
   {
     title: '联系人电话',
-    width: 120,
     dataIndex: 'contactPhone',
+    width: 120,
   },
   {
     title: '堆场状态',
-    width: 80,
     dataIndex: 'disabledFlag',
+    width: 80,
   },
   {
     title: '创建人',
-    width: 70,
     dataIndex: 'createUserName',
+    width: 100,
+    ellipsis: true,
   },
   {
     title: '创建时间',
     dataIndex: 'createTime',
-    width: 160
+    width: 170
   },
   {
     title: '操作',
     dataIndex: 'action',
     fixed: 'right',
-    width: 90
+    width: 100
   },
 ]);
 

@@ -6,7 +6,7 @@
  * @LastEditTime: 2022-07-07 10:18:53
 -->
 <template>
-  <a-modal v-model:open="visible" :width="1000" :title="updateFlag ? '编辑' : '添加'" ok-text="确认" cancel-text="取消" @ok="onSubmit"
+  <a-modal v-model:open="visible" :width="1200" :title="updateFlag ? '编辑' : '添加'" ok-text="确认" cancel-text="取消" @ok="onSubmit"
     @cancel="onClose">
     <a-form ref="formRef" :model="form" :rules="rules" :label-col="{ style: { width: '90px' } }" >
       <a-row>
