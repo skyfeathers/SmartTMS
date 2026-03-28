@@ -102,8 +102,8 @@ public class CapitalFlowService {
     public ResponseDTO<PageResult<PayOrderCapitalFlowVO>> queryPayByPage(CapitalFlowQueryForm queryForm) {
         queryForm.setPayOrderExcludeAuditStatus(FlowAuditStatusEnum.REJECT.getValue());
         Page page = SmartPageUtil.convert2PageQuery(queryForm);
-        List<PayOrderPaymentEntity> verificationEntityList = payOrderPaymentDao.queryByPage(page, queryForm);
-        List<PayOrderCapitalFlowVO> flowList = SmartBeanUtil.copyList(verificationEntityList, PayOrderCapitalFlowVO.class);
+        List<PayOrderEntity> payOrderEntityList = payOrderDao.queryCapitalFlowByPage(page, queryForm);
+        List<PayOrderCapitalFlowVO> flowList = SmartBeanUtil.copyList(payOrderEntityList, PayOrderCapitalFlowVO.class);
         buildPayInfo(flowList);
         PageResult<PayOrderCapitalFlowVO> pageResult = SmartPageUtil.convert2PageResult(page, flowList);
         return ResponseDTO.ok(pageResult);

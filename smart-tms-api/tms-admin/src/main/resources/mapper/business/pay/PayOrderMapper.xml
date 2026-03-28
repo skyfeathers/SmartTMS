@@ -214,6 +214,7 @@
         select
             po.pay_order_id,
             po.waybill_id,
+            ts.consignor as shipperName,
             tw.profit_amount,
             tw.receive_amount,
             tw.waybill_number,
@@ -223,6 +224,7 @@
             tw.truck_order_attachment
         from t_pay_order po
         left join t_waybill tw on po.waybill_id = tw.waybill_id
+        left join t_shipper ts on po.shipper_id = ts.shipper_id
         where po.pay_order_id in
         <foreach collection="payOrderIdList" item="item" separator="," open="(" close=")">
             #{item}
@@ -305,6 +307,32 @@
                 <foreach collection="queryForm.employeeIdList" open="(" close=")" item="item" separator=",">
                     #{item}
                 </foreach>
+            </if>
+        </where>
+    </select>
+    <select id="queryCapitalFlowByPage"
+            resultType="net.lab1024.tms.common.module.business.pay.domain.PayOrderEntity">
+        select
+        po.*
+        from t_pay_order po
+        <where>
+            <if test="queryForm.enterpriseId != null">
+                and po.enterprise_id = #{queryForm.enterpriseId}
+            </if>
+            <if test="queryForm.verificationStartTime != null">
+                and DATE_FORMAT(po.pay_time, '%Y-%m-%d') &gt;= #{queryForm.verificationStartTime}
+            </if>
+            <if test="queryForm.verificationEndTime != null">
+                and DATE_FORMAT(po.pay_time, '%Y-%m-%d') &lt;= #{queryForm.verificationEndTime}
+            </if>
+            <if test="queryForm.startTime != null">
+                and DATE_FORMAT(po.create_time, '%Y-%m-%d') &gt;= #{queryForm.startTime}
+            </if>
+            <if test="queryForm.endTime != null">
+                and DATE_FORMAT(po.create_time, '%Y-%m-%d') &lt;= #{queryForm.endTime}
+            </if>
+            <if test="queryForm.payOrderExcludeAuditStatus != null">
+                and po.audit_status != #{queryForm.payOrderExcludeAuditStatus}
             </if>
         </where>
     </select>

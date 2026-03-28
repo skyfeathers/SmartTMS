@@ -455,6 +455,7 @@ public class PayOrderDetailService {
             }
             payOrderVO.setWaybillId(waybillBO.getWaybillId());
             payOrderVO.setWaybillNumber(waybillBO.getWaybillNumber());
+            payOrderVO.setShipperName(waybillBO.getShipperName());
             payOrderVO.setContainerNumber(waybillBO.getContainerNumber());
             payOrderVO.setReceiptAttachment(waybillBO.getReceiptAttachment());
             payOrderVO.setTruckOrderAttachment(waybillBO.getTruckOrderAttachment());

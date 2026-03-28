@@ -2,6 +2,7 @@ package net.lab1024.tms.admin.module.business.pay.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import net.lab1024.tms.admin.module.business.capitalflow.domain.CapitalFlowQueryForm;
 import net.lab1024.tms.admin.module.business.pay.domain.bo.PayOrderNumBO;
 import net.lab1024.tms.admin.module.business.pay.domain.bo.PayOrderWaybillBO;
 import net.lab1024.tms.admin.module.business.pay.domain.form.PayOrderQueryForm;
@@ -125,4 +126,11 @@ public interface PayOrderDao extends BaseMapper<PayOrderEntity> {
      */
     List<EmployeePayOrderCostDTO> selectByCustomerService(@Param("queryForm") CustomerServiceDayStatisticQueryForm queryForm);
 
+    /**
+     * 资金流水查询
+     * @param page
+     * @param queryForm
+     * @return
+     */
+    List<PayOrderEntity> queryCapitalFlowByPage(Page page, CapitalFlowQueryForm queryForm);
 }

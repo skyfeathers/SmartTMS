@@ -16,6 +16,8 @@ public class PayOrderWaybillBO {
 
     private Long waybillId;
 
+    private String shipperName;
+
     /**
      * 应收总金额
      */

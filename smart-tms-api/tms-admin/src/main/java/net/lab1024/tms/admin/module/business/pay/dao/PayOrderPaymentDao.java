@@ -29,15 +29,6 @@ public interface PayOrderPaymentDao extends BaseMapper<PayOrderPaymentEntity> {
     List<PayOrderPaymentEntity> selectByPayOrderIdList(@Param("payOrderIdList") List<Long> payOrderIdList);
 
     /**
-     * 查询资金流水
-     *
-     * @param page
-     * @param queryForm
-     * @return
-     */
-    List<PayOrderPaymentEntity> queryByPage(Page page, @Param("queryForm") CapitalFlowQueryForm queryForm);
-
-    /**
      * 统计付款总金额
      *
      * @param queryForm

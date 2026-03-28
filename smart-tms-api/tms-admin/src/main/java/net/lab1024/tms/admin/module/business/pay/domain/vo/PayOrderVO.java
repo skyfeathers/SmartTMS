@@ -116,6 +116,9 @@ public class PayOrderVO {
     @ApiModelProperty("支付流水")
     private String sequenceCode;
 
+    @ApiModelProperty("支付时间")
+    private LocalDateTime payTime;
+
     @ApiModelProperty("是否核销")
     private Boolean verificationFlag;
 
