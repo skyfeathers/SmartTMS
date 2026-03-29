@@ -4,6 +4,13 @@
 
 基于[SmartAdmin](https://gitee.com/lab1024/smart-admin)技术体系（Java+SpringBoot2+Vue3+Uniapp)，并以 <font color="#DC143C">**以代码「简洁、高质量、安全」为核心，同时满足《网络安全-三级等保》、《数据安全》</font>** 要求，支持登录限制、接口国产加解密、数据脱敏等一系列安全要求。
 
+**在线预览**
+- 管理端：[http://lab.tms.1024lab.net/admin/](http://lab.tms.1024lab.net/admin/#/login?previewUser=13700000001&previewPwd=789321) 用户名：13700000001 / 789321
+- 移动端：[http://lab.tms.1024lab.net/h5/](http://lab.tms.1024lab.net/h5/pages/login/login?previewUserType=1&previewUser=13700000001&previewPwd=789321)
+  员工账号同上;  司机账号：13500000001 / 789321
+
+---
+
 ### ⚖️ 开源协议与商业规则
 本项目采用 **AGPL-3.0 + 自定义附加条款**。我们支持合规的商业行为，如果您计划将本项目用于商业场景，请务必完成如下3步：
 1. **登记备案**：前往 [👉 商业使用登记专用 Issue](https://gitee.com/lab1024/smart-tms/issues/IHT0FE) 按格式提交登记。未登记的使用将被视为违反协议。
@@ -12,12 +19,7 @@
 
 ❌ **严禁 SaaS 化**：禁止封装后以云服务租用模式牟利;**严禁三方分发**：禁止将代码提供给其他技术服务商;**严禁打包转售**：禁止将本项目作为组件集成到其他软件中销售。
 
-
-### 在线预览
-
-- 管理端：[http://lab.tms.1024lab.net/admin/](http://lab.tms.1024lab.net/admin/#/login?previewUser=13700000001&previewPwd=789321) 用户名：13700000001 / 789321
-- 移动端：[http://lab.tms.1024lab.net/h5/](http://lab.tms.1024lab.net/h5/pages/login/login?previewUserType=1&previewUser=13700000001&previewPwd=789321)
-  员工账号同上;  司机账号：13500000001 / 789321
+---
 
 
 ### 核心功能模块 
