@@ -50,7 +50,7 @@
     </a-row>
 
     <a-table
-        :scroll="{ x: 1300,y:500 }"
+        :scroll="{ x: '100%' }"
         size="small"
         :dataSource="tableData"
         :columns="columns"
@@ -104,37 +104,36 @@ import {PAGE_SIZE, PAGE_SIZE_OPTIONS} from '/@/constants/common-const';
 
 const columns = reactive([
   {
-    title: 'ID',
-    width: 50,
-    dataIndex: 'cabinetId',
-  },
-  {
     title: '柜型名称',
     dataIndex: 'cabinetName',
+    width: 120,
+    ellipsis: true,
   },
   {
     title: '柜型皮重（千克）',
     dataIndex: 'tare',
+    width: 150,
   },
   {
     title: '默认箱型',
-    width: 100,
     dataIndex: 'defaultFlag',
+    width: 100,
   },
   {
     title: '柜型状态',
-    width: 100,
     dataIndex: 'disabledFlag',
+    width: 100,
   },
   {
     title: '创建人',
-    width: 100,
     dataIndex: 'createUserName',
+    width: 130,
+    ellipsis: true,
   },
   {
     title: '创建时间',
     dataIndex: 'createTime',
-    width: 160
+    width: 170
   },
   {
     title: '操作',

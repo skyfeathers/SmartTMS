@@ -37,7 +37,7 @@
     </a-row>
 
     <a-table
-        :scroll="{ x: 1300 }"
+        :scroll="{ x: '100%' }"
         size="small"
         bordered
         :dataSource="tableData"
@@ -51,22 +51,29 @@
           <span v-else>{{ record.vehicleNumber }}</span>
         </template>
         <template v-if="column.dataIndex === 'contentVOList'">
-            <div  v-for="(item,index) in record.contentVOList" :key="index">
-              <div v-if="index<2" style="line-height: 20px;">
-                <span>{{ item.repairContent }}</span>,
-                <span>￥{{ item.repairAmount?.toFixed(1) }}</span>
+            <div class="repair-content">
+              <div>
+                <div  v-for="(item,index) in record.contentVOList" :key="index">
+                  <div v-if="index<2" style="line-height: 20px;">
+                    <span>{{ item.repairContent }}</span>,
+                    <span>￥{{ item.repairAmount?.toFixed(1) }}</span>
+                  </div>
+                </div>
               </div>
-            </div>
               <div v-if="record.contentVOList?.length>2">
                 <a-button type="link" :size="size" @click="showContentVOListModal(record.contentVOList)">更多></a-button>
               </div>
+            </div>
         </template>
         <template v-else-if="column.dataIndex === 'attachment'">
           <file-preview :fileList="record.attachment" :width="50"/>
         </template>
         <template v-else-if="column.dataIndex === 'action'">
-          <a-button @click="addOrUpdate(record)" type="link">编辑</a-button>
-          <a-button @click="confirmDelete(record.repairId)" type="link">删除</a-button>
+          <div class="smart-table-operate">
+            <a-button @click="addOrUpdate(record)" type="link">编辑</a-button>
+            <a-button @click="confirmDelete(record.repairId)" type="link">删除</a-button>
+          </div>
+          
         </template>
       </template>
     </a-table>
@@ -173,23 +180,28 @@ const columns = reactive([
   {
     title: '维修对象',
     dataIndex: 'vehicleNumber',
+    width: 120,
   },
   {
     title: '维修厂家',
     dataIndex: 'repairPlantName',
+    width: 120,
+    ellipsis: true,
   },
   {
     title: '维修人',
     dataIndex: 'repairPerson',
+    width: 120,
   },
   {
     title: '维修时间',
-    width: 100,
+    width: 150,
     dataIndex: 'repairDate',
   },
   {
     title: '维修内容',
     dataIndex: 'contentVOList',
+    width: 200,
   },
   {
     title: '维修配件附件',
@@ -204,11 +216,13 @@ const columns = reactive([
   {
     title: '创建时间',
     dataIndex: 'createTime',
+    width: 180,
   },
   {
     title: '操作',
     dataIndex: 'action',
     fixed: 'right',
+    width: 100,
   },
 ]);
 // 日期选择
@@ -310,3 +324,12 @@ function handleDetail(record) {
 
 onMounted(ajaxQuery);
 </script>
+
+<style lang="less" scoped>
+.repair-content{
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center;
+  padding: 8px 0;
+}
+</style>

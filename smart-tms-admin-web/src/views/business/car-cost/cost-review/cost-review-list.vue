@@ -77,7 +77,7 @@
         </a-row>
 
         <a-table :row-selection="{ selectedRowKeys: selectedRowKeyList, onChange: onSelectChange }"
-            :scroll="{ x: tableWidth, y: 500 }" size="small" :dataSource="tableData" :columns="columns" rowKey="tabulationId"
+            :scroll="{ x: '100%' }" size="small" :dataSource="tableData" :columns="columns" rowKey="tabulationId"
             :pagination="false" bordered>
             <template #bodyCell="{ text, record, index, column }">
                 <template v-if="column.dataIndex === 'waybillNumber'">
@@ -150,6 +150,7 @@ const { columnsData:columns, tableWidth } = useDragTable([
         title: '司机',
         dataIndex: 'driverName',
         width: 100,
+        ellipsis: true,
     },
     {
         title: '车辆',

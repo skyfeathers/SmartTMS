@@ -199,6 +199,7 @@ const infoFormDefault = {
   remark: undefined, // 备注 ,
   drivingLicenseAttachment: undefined, // 行驶证附件
   drivingLicenseEctypeAttachment: undefined, // 行驶证副本附件
+  businessMode: VEHICLE_BUSINESS_MODE_ENUM.INNER_MANAGEMENT.value, // 经营方式
 };
 
 let infoForm = reactive({ ...infoFormDefault });

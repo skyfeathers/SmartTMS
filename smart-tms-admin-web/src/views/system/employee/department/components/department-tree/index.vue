@@ -6,7 +6,7 @@
  * @Description:
 -->
 <template>
-  <a-card class="tree-container" size="small">
+  <a-card class="tree-container" size="small" ref="treeContainerRef" :style="{'height': `${props.height}px`}">
     <a-row>
       <a-input v-model:value.trim="keywords" placeholder="请输入部门名称"/>
     </a-row>
@@ -103,6 +103,8 @@ const props = defineProps({
   },
 });
 
+let treeContainerRef = ref(null);
+
 // ----------------------- 部门树的展示 ---------------------
 const topDepartmentId = ref();
 // 所有部门列表
@@ -116,7 +118,7 @@ const showSortFlag = ref(false);
 
 const treeHeight = ref(600);
 onMounted(() => {
-  let offsetHeight = document.getElementsByClassName('tree-container')[0].offsetHeight;
+  let offsetHeight = treeContainerRef.value ? treeContainerRef.value.$el.offsetHeight : 200;
   treeHeight.value = offsetHeight - 100;
   console.log(treeHeight.value)
   queryDepartmentTree();

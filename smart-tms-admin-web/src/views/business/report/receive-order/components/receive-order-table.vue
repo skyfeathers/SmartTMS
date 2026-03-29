@@ -13,6 +13,7 @@
       :pagination="false"
       bordered
       size="small"
+      :scroll="{ x: '100%' }"
   >
     <template #bodyCell="{ text, record, index, column }">
       <template v-if="column.dataIndex === 'receiveOrderNumber'">
@@ -61,22 +62,23 @@ let columns = reactive([
   {
     title: '收款单号',
     dataIndex: 'receiveOrderNumber',
+    width: 180,
   },
   {
     title: '货主名称',
     dataIndex: 'consignor',
+    width: 160,
     ellipsis: true,
   },
   {
     title: '开票/应收金额',
     dataIndex: 'totalAmount',
-    ellipsis: true,
-    width: 100
+    width: 130
   },
   {
     title: '回款金额',
     dataIndex: 'verificationAmount',
-    width: 90
+    width: 100
   },
   {
     title: '应收款余额',
@@ -85,16 +87,19 @@ let columns = reactive([
   },
   {
     title: '帐期',
-    width: 100,
+    width: 120,
     dataIndex: 'accountPeriodDate',
   },
   {
     title: '逾期天数',
-    dataIndex: 'overdueDays'
+    dataIndex: 'overdueDays',
+    width: 100,
   },
   {
     title: '销售',
-    dataIndex: 'managerName'
+    dataIndex: 'managerName',
+    width: 100,
+    ellipsis: true,
   }
 ]);
 

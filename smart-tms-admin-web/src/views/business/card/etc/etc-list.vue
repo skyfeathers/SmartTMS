@@ -56,7 +56,7 @@
       </div>
     </a-row>
     <a-table :columns="columns" :dataSource="tableData" :pagination="false" bordered
-      :row-selection="{ selectedRowKeys: selectedRowKeyList, onChange: onSelectChange }" :scroll="{ x: 1100,y:500 }"
+      :row-selection="{ selectedRowKeys: selectedRowKeyList, onChange: onSelectChange }" :scroll="{ x: '100%' }"
       rowKey="etcId" size="small">
       <template  #bodyCell="{ column, record, text }">
         <template v-if="column.dataIndex === 'etcNo'">
@@ -108,38 +108,40 @@ const columns = ref([
   {
     title: 'ETC卡号',
     dataIndex: 'etcNo',
-    width: 180,
     fixed: 'left',
+    width: 180,
+    ellipsis: true,
   },
   {
     title: '使用司机',
-    width: 180,
     dataIndex: 'userName',
+    width: 180,
+    ellipsis: true,
   },
   {
     title: '绑定车牌',
-    width: 180,
     dataIndex: 'useVehicleNumber',
+    width: 180,
   },
 
   {
     title: 'ETC状态',
-    width: 180,
     dataIndex: 'disabledFlag',
+    width: 180,
   },
   {
     title: '创建人',
-    width: 180,
     dataIndex: 'createUserName',
+    width: 180,
   },
   {
     title: '创建时间',
-    width: 180,
     dataIndex: 'createTime',
+    width: 180,
   },
   {
     title: '操作',
-    width: 50,
+    width: 70,
     dataIndex: 'action',
     fixed: 'right',
   },

@@ -140,7 +140,7 @@ export const { columnsData:columns, tableWidth } = useDragTable([
     title: '操作',
     dataIndex: 'operate',
     fixed: 'right',
-    width: 50,
+    width: 70,
     filterOptions:{
       type:'submit',
       btnType:'link'

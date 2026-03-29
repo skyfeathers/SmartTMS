@@ -10,7 +10,7 @@
     <a-form class="smart-form" labelAlign="right" ref="formRef" :model="form" :rules="rules">
       <!---基础信息-->
       <a-card size="small" title="基础信息">
-        <a-descriptions size="small" bordered :column="{ lg: 2, md: 2, sm: 2, xl: 3, xs: 2, xxl: 5 }">
+        <a-descriptions size="small" bordered :column="{ lg: 2, md: 2, sm: 2, xl: 3, xs: 2, xxl: 5 }" class="base-info-top" :labelStyle="{ minWidth: '120px' }">
           <a-descriptions-item label="货主" class="required">
             <a-form-item name="shipperId">
               <div class="flex-center form-width">
@@ -31,13 +31,14 @@
                 placeholder="请选择运输类型" width="180px"/>
             </a-form-item>
           </a-descriptions-item>
-          <template v-if="containerFlag">
-            <a-descriptions-item label="业务类型" class="required">
+          <a-descriptions-item label="业务类型" class="required">
               <a-form-item name="containerBusinessTypeId">
                 <BusinessTypeSelect v-model:value="form.containerBusinessTypeId" placeholder="请选择业务类型"
                   :default="form.orderId ? false : true" width="180px"/>
               </a-form-item>
-            </a-descriptions-item>
+          </a-descriptions-item>
+          <template v-if="containerFlag">
+            
             <a-descriptions-item label="柜型" class="required">
               <a-form-item name="cabinetId">
                 <CabinetSelect width="180px" v-model:value="form.cabinetId" placeholder="请选择柜型"
@@ -45,15 +46,18 @@
               </a-form-item>
             </a-descriptions-item>
           </template>
+        </a-descriptions>
+        <a-descriptions size="small" bordered :column="{ lg: 2, md: 2, sm: 2, xl: 3, xs: 2, xxl: 5 }" class="base-info-bottom" :labelStyle="{ minWidth: '120px' }">
+          
           <a-descriptions-item label="装货时间" class="required">
             <a-form-item name="loadTime">
-              <a-date-picker width="100%" :show-time="{ format: 'HH:mm' }" format="YYYY-MM-DD HH:mm:00"
+              <a-date-picker style="width: 180px" :show-time="{ format: 'HH:mm' }" format="YYYY-MM-DD HH:mm:00"
                 valueFormat="YYYY-MM-DD HH:mm:00" v-model:value="form.loadTime" placeholder="请选择装货时间" />
             </a-form-item>
           </a-descriptions-item>
           <a-descriptions-item label="卸货时间" class="required">
             <a-form-item name="unloadTime">
-              <a-date-picker width="100%" :show-time="{ format: 'HH:mm' }" format="YYYY-MM-DD HH:mm:00"
+              <a-date-picker style="width: 180px" :show-time="{ format: 'HH:mm' }" format="YYYY-MM-DD HH:mm:00"
                 valueFormat="YYYY-MM-DD HH:mm:00" v-model:value="form.unloadTime" placeholder="请选择卸货时间" />
             </a-form-item>
           </a-descriptions-item>
@@ -94,7 +98,7 @@
           </a-descriptions-item>
           <a-descriptions-item label="最迟提箱时间">
             <a-form-item name="latestPackingTime">
-              <a-date-picker width="180px" v-model:value="form.latestPackingTime" :show-time="{ format: 'YYYY-MM-DD HH:mm' }"
+              <a-date-picker style="width: 180px" v-model:value="form.latestPackingTime" :show-time="{ format: 'YYYY-MM-DD HH:mm' }"
                 format="YYYY-MM-DD HH:mm:00" placeholder="请选择最迟提箱时间" valueFormat="YYYY-MM-DD HH:mm:00" />
             </a-form-item>
           </a-descriptions-item>
@@ -424,5 +428,19 @@ function reloadShipper(){
 
 .form-width {
   width: 180px;
+}
+
+.base-info-top {
+  ::v-deep .ant-descriptions-view {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom: 0 !important;
+  }
+}
+.base-info-bottom {
+  ::v-deep .ant-descriptions-view {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
 }
 </style>

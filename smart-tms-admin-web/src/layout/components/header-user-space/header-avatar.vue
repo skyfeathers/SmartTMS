@@ -10,7 +10,7 @@
 <template>
   <a-dropdown class="header-trigger">
     <div class="wrapper">
-      <a-avatar style="margin: 0 5px" :size="18" id="smartAdminAvatar">
+      <a-avatar style="margin: 0 5px" :size="compactFlag ? 17 : 20" id="smartAdminAvatar">
         {{ avatarName }}
       </a-avatar>
       <span v-if="userSpaceType != 'mini'" class="name">{{ actualName }}</span>
@@ -40,7 +40,11 @@
   import { localClear } from '/@/utils/local-util';
   import headerResetPassword from "/@/components/header-reset-password-modal/index.vue";
   import { useAppConfigStore } from '/@/store/modules/system/app-config';
+
   const userSpaceType = computed(() => useAppConfigStore().$state.userSpaceType);
+
+  // 是否紧凑
+  const compactFlag = computed(() => useAppConfigStore().compactFlag);
   // 头像背景颜色
   const AVATAR_BACKGROUND_COLOR_ARRAY = ['#87d068', '#00B853', '#f56a00', '#1890ff'];
 

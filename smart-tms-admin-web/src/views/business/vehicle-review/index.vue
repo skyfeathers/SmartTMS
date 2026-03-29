@@ -37,7 +37,7 @@
     </a-row>
 
     <a-table
-        :scroll="{ x: 1300 }"
+        :scroll="{ x: '100%' }"
         size="small"
         bordered
         :dataSource="tableData"
@@ -51,8 +51,10 @@
           <span v-else>{{ record.vehicleNumber }}</span>
         </template>
         <template v-if="column.dataIndex === 'action'">
-          <a-button @click="addOrUpdate(record)" type="link">编辑</a-button>
-          <a-button @click="confirmDelete(record.reviewId)" type="link">删除</a-button>
+          <div class="smart-table-operate">
+            <a-button @click="addOrUpdate(record)" type="link">编辑</a-button>
+            <a-button @click="confirmDelete(record.reviewId)" type="link">删除</a-button>
+          </div>
         </template>
       </template>
     </a-table>
@@ -103,41 +105,53 @@ const columns = reactive([
   {
     title: '车辆号',
     dataIndex: 'vehicleNumber',
+    width: 140,
+    ellipsis: true,
   },
   {
     title: '审车时间',
     dataIndex: 'reviewDate',
+    width: 130,
   },
   {
     title: '审车费用',
     dataIndex: 'reviewAmount',
+    width: 130,
   },
   {
     title: '审车人',
     dataIndex: 'reviewPerson',
+    width: 100,
+    ellipsis: true,
   },
   {
     title: '审车地点',
-    width: 100,
     dataIndex: 'reviewPlant',
+    width: 100,
+    ellipsis: true,
   },
   {
     title: '审车备注',
     dataIndex: 'remark',
+    width: 200,
+    ellipsis: true,
   },
   {
     title: '创建人',
-    width: 100,
     dataIndex: 'createUserName',
+    width: 120,
+    ellipsis: true,
   },
   {
     title: '创建时间',
     dataIndex: 'createTime',
+    width: 170,
   },
   {
     title: '操作',
     dataIndex: 'action',
     fixed: 'right',
+    width: 100,
   },
 ]);
 // 日期选择

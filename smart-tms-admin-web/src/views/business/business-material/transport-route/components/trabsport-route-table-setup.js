@@ -11,13 +11,14 @@ export function transportRouteTableSetup() {
     const containerTransportColumns = reactive([
         {
             title: 'ID',
-            width: 50,
             dataIndex: 'transportRouteId',
+            width: 50,
         },
         {
             title: '路线名称',
             dataIndex: 'transportRouteName',
             width: 200,
+            ellipsis: true,
         },
         {
             title: '提柜地点',
@@ -51,23 +52,23 @@ export function transportRouteTableSetup() {
         {
             title: '路线状态',
             dataIndex: 'disabledFlag',
-            width: 80,
+            width: 90,
         },
         {
             title: '创建人',
             dataIndex: 'createUserName',
-            width: 80,
+            width: 100,
         },
         {
             title: '创建时间',
             dataIndex: 'createTime',
-            width: 160,
+            width: 170,
         },
         {
             title: '操作',
             dataIndex: 'action',
             fixed: 'right',
-            width: 90,
+            width: 100,
         },
     ]);
 

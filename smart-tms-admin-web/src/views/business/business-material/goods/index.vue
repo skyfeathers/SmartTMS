@@ -42,6 +42,7 @@
         rowKey="goodsId"
         :pagination="false"
         bordered
+        :scroll="{ x: '100%' }"
     >
       <template #bodyCell="{ text, record, index, column }">
         <template v-if="column.dataIndex === 'goodsType'">
@@ -87,27 +88,31 @@ const columns = reactive([
   {
     title: '货物名称',
     dataIndex: 'goodsName',
-    width: 50
+    width: 100,
+    ellipsis: true,
   },
   {
     title: '货物类型',
     dataIndex: 'goodsType',
-    width:50,
+    width: 160,
+    ellipsis: true,
   },
   {
     title: '创建人',
-    width: 60,
     dataIndex: 'createUserName',
+    width: 100,
   },
   {
     title: '创建时间',
     dataIndex: 'createTime',
-    width: 60
+    width: 180,
+    ellipsis: true,
   },
   {
     title: '操作',
     dataIndex: 'action',
-    width: 50
+    fixed: 'right',
+    width: 100,
   },
 ]);
 

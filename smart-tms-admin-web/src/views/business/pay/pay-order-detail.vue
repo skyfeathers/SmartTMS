@@ -51,6 +51,7 @@
           </a-descriptions>
           <a-descriptions :column="4" size="small">
             <a-descriptions-item label="支付时间">{{ payOrderDetail.payTime }}</a-descriptions-item>
+            <a-descriptions-item label="支付流水号">{{ payOrderDetail.sequenceCode }}</a-descriptions-item>
             <a-descriptions-item label="付款凭证">
               <file-preview :fileList="payOrderDetail.attachment" v-if="payOrderDetail && payOrderDetail.attachment" />
             </a-descriptions-item>

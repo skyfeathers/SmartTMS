@@ -47,7 +47,7 @@
 
     <!---帮助文档--->
     <div class="user-space-item" @click="showHelpDoc">
-      <question-circle-two-tone title="帮助文档" style="font-size: 12px; margin-right: 5px" />
+      <question-circle-two-tone title="帮助文档" style="margin-right: 5px" />
       <span v-if="userSpaceType != 'mini'">帮助文档</span>
     </div>
     <HeaderSetting ref="headerSetting" />
@@ -112,7 +112,6 @@ function toAddOrder() {
   cursor: pointer;
   display: flex;
   align-items: center;
-  font-size: 12px;
   a {
     color: inherit;
 

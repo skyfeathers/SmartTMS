@@ -110,7 +110,7 @@
     </a-tabs>
 
     <a-table :columns="columns" :dataSource="tableData" :pagination="false"
-      :row-selection="{ selectedRowKeys: selectedRowKeyList, onChange: onSelectChange }" :scroll="{ x: tableWidth, y: 500 }"
+      :row-selection="{ selectedRowKeys: selectedRowKeyList, onChange: onSelectChange }" :scroll="{ x: '100%' }"
       :loading="tableLoading" rowKey="driverId" size="small" bordered>
       <template #headerCell="{ column }">
           <SmartHeaderCell v-model:value="queryForm[column.filterOptions?.key || column.dataIndex]" :column="column"
@@ -144,23 +144,25 @@
         </template>
         <template v-if="column.dataIndex === 'driverVehicleVOList'">
           <template v-if="$privilege('vehicle:detail')">
-            <a-button v-if="!$lodash.isEmpty(record.driverVehicleVOList) && record.driverVehicleVOList.length > 0" type="link"
+            <div style="display: flex; align-items: center;">
+              <a-button v-if="!$lodash.isEmpty(record.driverVehicleVOList) && record.driverVehicleVOList.length > 0" type="link"
                       @click="vehicleDetail(record.driverVehicleVOList[0].vehicleId)">{{ record.driverVehicleVOList[0].vehicleNumber }} &nbsp;
             </a-button>
             <a-button v-if="!$lodash.isEmpty(record.driverVehicleVOList) && record.driverVehicleVOList.length > 1" type="link"
                       @click="moreVehicle(record.driverVehicleVOList, false)">更多</a-button>
+            </div>
           </template>
           <template v-else>
             <span v-if="!$lodash.isEmpty(record.driverVehicleVOList) && record.driverVehicleVOList.length > 0">{{ record.driverVehicleVOList[0].vehicleNumber }}</span>
             <a-button v-if="!$lodash.isEmpty(record.driverVehicleVOList) && record.driverVehicleVOList.length > 1" type="link"
                       @click="moreVehicle(record.driverVehicleVOList, true)">更多</a-button>
           </template>
-          <template v-if="column.dataIndex === 'action'">
+        </template>
+        <template v-if="column.dataIndex === 'action'">
             <div class="smart-table-operate">
               <a-button @click="addDriver(record.driverId)" v-privilege="'driver:edit'" type="link">编辑</a-button>
             </div>
           </template>
-        </template>
       </template>
 
     </a-table>
@@ -206,7 +208,7 @@ const { columnsData:columns,tableWidth } = useDragTable([
   {
     title: "姓名-电话",
     dataIndex: "driverName",
-    width: 120,
+    width: 150,
     fixed: "left",
     filterOptions:{
         type:'input',
@@ -224,12 +226,12 @@ const { columnsData:columns,tableWidth } = useDragTable([
   {
     title: "关联车辆",
     dataIndex: "driverVehicleVOList",
-    width: 120,
+    width: 140,
   },
 
   {
     title: "身份证号",
-    width: 120,
+    width: 180,
     dataIndex: "drivingLicense",
     filterOptions:{
         type:'input',
@@ -238,7 +240,7 @@ const { columnsData:columns,tableWidth } = useDragTable([
   {
     title: "身份证有效期",
     dataIndex: "idCardEffectiveDate",
-    width: 140,
+    width: 150,
     filterOptions:{
       type:'date-range',
       ranges:true,
@@ -282,7 +284,7 @@ const { columnsData:columns,tableWidth } = useDragTable([
   },
   {
     title: "创建时间",
-    width: 140,
+    width: 170,
     dataIndex: "createTime",
     filterOptions:{
       type:'date-range',
@@ -293,7 +295,7 @@ const { columnsData:columns,tableWidth } = useDragTable([
     title: "操作",
     dataIndex: 'action',
     fixed: 'right',
-    width: 50,
+    width: 70,
     filterOptions:{
       type:'submit',
       btnType:'link'

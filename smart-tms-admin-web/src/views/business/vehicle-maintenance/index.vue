@@ -37,7 +37,7 @@
     </a-row>
 
     <a-table
-        :scroll="{ x: 1300 }"
+        :scroll="{ x: '100%' }"
         size="small"
         bordered
         :dataSource="tableData"
@@ -51,19 +51,25 @@
           <span v-else>{{ record.vehicleNumber }}</span>
         </template>
         <template v-if="column.dataIndex === 'contentVOList'">
-          <div v-for="(item,index) in record.contentVOList" :key="index">
-            <div v-if="index<2" style="line-height: 20px;">
-              <span>{{ item.maintenanceContent }}</span>,
-              <span>￥{{ item.maintenanceAmount?.toFixed(1) }}</span>
+          <div class="content-info">
+            <div>
+              <div v-for="(item,index) in record.contentVOList" :key="index">
+                <div v-if="index<2" style="line-height: 20px;">
+                  <span>{{ item.maintenanceContent }}</span>,
+                  <span>￥{{ item.maintenanceAmount?.toFixed(1) }}</span>
+                </div>
+              </div>
             </div>
-          </div>
-          <div v-if="record.contentVOList?.length>2">
-            <a-button :size="size" type="link" @click="showContentVOListModal(record.contentVOList)">更多></a-button>
+            <div v-if="record.contentVOList?.length>2">
+              <a-button :size="size" type="link" @click="showContentVOListModal(record.contentVOList)">更多></a-button>
+            </div>
           </div>
         </template>
         <template v-if="column.dataIndex === 'action'">
-          <a-button @click="addOrUpdate(record)" type="link">编辑</a-button>
-          <a-button @click="confirmDelete(record.maintenanceId)" type="link">删除</a-button>
+          <div class="smart-table-operate">
+            <a-button @click="addOrUpdate(record)" type="link">编辑</a-button>
+            <a-button @click="confirmDelete(record.maintenanceId)" type="link">删除</a-button>
+          </div>
         </template>
       </template>
     </a-table>
@@ -130,39 +136,49 @@ const columns = reactive([
   {
     title: '车辆号',
     dataIndex: 'vehicleNumber',
+    width: 140,
   },
   {
     title: '保养时间',
     dataIndex: 'maintenanceDate',
+    width: 130,
   },
   {
     title: '下次保养时间',
     dataIndex: 'nextMaintenanceDate',
+    width: 130,
   },
   {
     title: '保养内容',
     dataIndex: 'contentVOList',
+    width: 200,
   },
   {
     title: '保养里程',
     dataIndex: 'mileage',
+    width: 120,
   },
   {
     title: '下次保养里程',
     dataIndex: 'nextMaintenanceMileage',
+    width: 120,
   },
   {
     title: '保养人',
     dataIndex: 'maintenancePerson',
+    width: 120,
   },
   {
     title: '保养地点',
     width: 100,
     dataIndex: 'maintenancePlant',
+    ellipsis: true,
   },
   {
     title: '保养备注',
     dataIndex: 'remark',
+    width: 200,
+    ellipsis: true,
   },
   {
     title: '创建人',
@@ -172,11 +188,13 @@ const columns = reactive([
   {
     title: '创建时间',
     dataIndex: 'createTime',
+    width: 180,
   },
   {
     title: '操作',
     dataIndex: 'action',
     fixed: 'right',
+    width: 100,
   },
 ]);
 // 日期选择
@@ -262,12 +280,12 @@ function addOrUpdate (rowData) {
 const columnsContentVOList = [
   {
     title: '维修内容',
-    dataIndex: 'repairContent',
+    dataIndex: 'maintenanceContent',
     align:'center'
   },
   {
     title: '费用',
-    dataIndex: 'repairAmount',
+    dataIndex: 'maintenanceAmount',
     align:'center'
   },
 ]
@@ -298,3 +316,14 @@ function handleDetail(record) {
 
 onMounted(ajaxQuery);
 </script>
+
+<style lang="less" scoped>
+
+.content-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}
+
+</style>

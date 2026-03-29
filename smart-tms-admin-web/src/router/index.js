@@ -8,6 +8,8 @@ import SmartLayout from '/@/layout/smart-layout.vue';
 import { useUserStore } from '/@/store/modules/system/user';
 import { clearAllCoolies, getTokenFromCookie } from '/@/utils/cookie-util';
 import { localClear } from '/@/utils/local-util';
+import _ from 'lodash';
+
 
 export const router = createRouter({
   history: createWebHashHistory(),
@@ -20,6 +22,16 @@ export const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   // 进度条开启
   nProgress.start();
+
+  if (to.path == PAGE_PATH_LOGIN && to.redirectedFrom) { 
+    // 判断query不为空对象
+    if(!_.isEmpty(to.redirectedFrom.query)) {
+      let names = Object.keys(to.redirectedFrom.query);
+      to.fullPath = to.fullPath + `?${names.map((e) => `${e}=${to.redirectedFrom.query[e]}`).join('&')}`;
+    }
+    to.query = to.redirectedFrom.query;
+    
+  }
 
   // 公共页面，任何时候都可以跳转
   if (to.path === PAGE_PATH_404 || to.path === PAGE_PATH_LOGIN || to.path === PAGE_PATH_STATISTIC) {

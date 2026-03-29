@@ -50,7 +50,7 @@
     </a-row>
 
     <a-table
-        :scroll="{ x: 1300 }"
+        :scroll="{ x: '100%' }"
         size="small"
         :dataSource="tableData"
         :columns="columns"
@@ -102,45 +102,46 @@ import {PAGE_SIZE, PAGE_SIZE_OPTIONS} from '/@/constants/common-const';
 
 const columns = reactive([
   {
-    title: 'ID',
-    width: 50,
-    dataIndex: 'companyId',
-  },
-  {
     title: '公司编号',
     dataIndex: 'companyCode',
+    width: 120,
   },
   {
     title: '公司名称',
     dataIndex: 'companyName',
+    width: 150,
+    ellipsis: true,
   },
   {
     title: '联系人',
-    width: 100,
     dataIndex: 'contact',
+    width: 120,
   },
   {
     title: '联系人电话',
-    width: 120,
     dataIndex: 'contactPhone',
+    width: 130,
   },
   {
     title: '备注',
     dataIndex: 'remark',
+    width: 150,
+    ellipsis: true,
   },
   {
     title: '类型状态',
-    width: 100,
     dataIndex: 'disabledFlag',
+    width: 100,
   },
   {
     title: '创建人',
-    width: 100,
     dataIndex: 'createUserName',
+    width: 100,
   },
   {
     title: '创建时间',
     dataIndex: 'createTime',
+    width: 180,
   },
   {
     title: '操作',

@@ -111,7 +111,7 @@
     </a-tabs>
 
     <a-table
-        :scroll="{ x: scrollX, y: 2000 }"
+        :scroll="{ x: '100%' }"
         size="small"
         bordered
         :dataSource="tableData"
