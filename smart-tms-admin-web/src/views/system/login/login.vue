@@ -114,8 +114,8 @@ let route = useRoute();
 const formRef = ref();
 const rememberPwd = ref(false);
 
-let previewFlag = route.query.previewFlag;
-if (previewFlag) {
+let showMode = route.query.showMode;
+if (showMode === 'preview') {
   loginForm.loginName = '13700000001';
   loginForm.password = '789321';
 }

@@ -5,8 +5,8 @@
 基于[SmartAdmin](https://gitee.com/lab1024/smart-admin)技术体系（Java+SpringBoot2+Vue3+Uniapp)，并以 <font color="#DC143C">**以代码「简洁、高质量、安全」为核心，同时满足《网络安全-三级等保》、《数据安全》</font>** 要求，支持登录限制、接口国产加解密、数据脱敏等一系列安全要求。
 
 **在线预览**
-- 管理端：[http://lab.tms.1024lab.net/admin/](http://lab.tms.1024lab.net/admin/#/login?previewFlag=true) 用户名：13700000001 / 789321
-- 移动端：[http://lab.tms.1024lab.net/h5/](http://lab.tms.1024lab.net/h5/pages/login/login?previewFlag=true)
+- 管理端：[http://lab.tms.1024lab.net/admin/](http://lab.tms.1024lab.net/admin/#/login?showMode=preview) 用户名：13700000001 / 789321
+- 移动端：[http://lab.tms.1024lab.net/h5/](http://lab.tms.1024lab.net/h5/pages/login/login?showMode=preview)
   员工账号同上;  司机账号：13500000001 / 789321
 
 ---
