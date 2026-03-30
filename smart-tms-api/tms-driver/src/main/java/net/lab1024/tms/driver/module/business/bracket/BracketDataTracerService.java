@@ -98,8 +98,8 @@ public class BracketDataTracerService {
                 .append(DataTracerConstant.TAB).append("【车辆识别代号】").append(DataTracerConstant.SPLIT).append(detailVO.getVin()).append(DataTracerConstant.LINE)
                 .append(DataTracerConstant.TAB).append("【挂车车牌号】").append(DataTracerConstant.SPLIT).append(detailVO.getBracketNo()).append(DataTracerConstant.LINE)
                 .append(DataTracerConstant.TAB).append("【车牌颜色】").append(DataTracerConstant.SPLIT).append(SmartBaseEnumUtil.getEnumDescByValue(detailVO.getPlateColorCode(), VehiclePlateColorEnum.class)).append(DataTracerConstant.LINE)
-                .append(DataTracerConstant.TAB).append("【载重（吨）】").append(DataTracerConstant.SPLIT).append(detailVO.getTonnage()).append(DataTracerConstant.LINE)
-                .append(DataTracerConstant.TAB).append("【重量（吨）】").append(DataTracerConstant.SPLIT).append(detailVO.getWeight()).append(DataTracerConstant.LINE)
+                .append(DataTracerConstant.TAB).append("【载重（kg）】").append(DataTracerConstant.SPLIT).append(detailVO.getTonnage()).append(DataTracerConstant.LINE)
+                .append(DataTracerConstant.TAB).append("【重量（kg）】").append(DataTracerConstant.SPLIT).append(detailVO.getWeight()).append(DataTracerConstant.LINE)
                 .append(DataTracerConstant.TAB).append("【注册日期】").append(DataTracerConstant.SPLIT).append(detailVO.getRegisterTime()).append(DataTracerConstant.LINE)
                 .append(DataTracerConstant.TAB).append("【发证日期】").append(DataTracerConstant.SPLIT).append(detailVO.getIssueTime()).append(DataTracerConstant.LINE);
         return builder.toString().replaceAll("null", "");

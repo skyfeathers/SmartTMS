@@ -17,6 +17,9 @@
         <if test="queryForm.bracketNo != null and queryForm.bracketNo != ''">
             AND INSTR(b.bracket_no,#{queryForm.bracketNo})
         </if>
+        <if test="queryForm.businessMode != null">
+            AND b.business_mode = #{queryForm.businessMode}
+        </if>
         <if test="queryForm.managerId != null">
             AND b.manager_id = #{queryForm.managerId}
         </if>

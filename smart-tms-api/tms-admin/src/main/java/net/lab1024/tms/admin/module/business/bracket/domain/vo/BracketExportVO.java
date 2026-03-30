@@ -28,10 +28,10 @@ public class BracketExportVO {
     @Excel(name = "速记码")
     private String shorthandCode;
 
-    @Excel(name = "重量（吨）", width = 20)
+    @Excel(name = "重量（kg）", width = 20)
     private BigDecimal weight;
 
-    @Excel(name = "载重（吨）", width = 20)
+    @Excel(name = "载重（kg）", width = 20)
     private BigDecimal tonnage;
 
     @Excel(name = "型号", width = 20)

@@ -79,7 +79,7 @@ public class WaybillCostDetailExcelVO {
     private String cabinetName;
 
     @ApiModelProperty(value = "重量")
-    @Excel(name = "重量（吨）", orderNum = "11", type = 10, width = 15)
+    @Excel(name = "重量（kg）", orderNum = "11", type = 10, width = 15)
     private BigDecimal totalWeight;
 
     @ApiModelProperty("订单备注")

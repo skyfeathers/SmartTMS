@@ -33,6 +33,9 @@
         <if test="queryForm.enterpriseId != null">
             AND enterprise_id = #{queryForm.enterpriseId}
         </if>
+        <if test="queryForm.businessMode != null">
+            AND business_mode = #{queryForm.businessMode}
+        </if>
         <if test="queryForm.status != null">
             AND status = #{queryForm.status}
         </if>

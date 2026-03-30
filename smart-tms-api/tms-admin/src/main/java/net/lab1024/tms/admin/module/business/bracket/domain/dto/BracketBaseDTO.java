@@ -56,8 +56,8 @@ public class BracketBaseDTO {
     @DataTracerFieldBigDecimal
     private BigDecimal weight;
 
-    @ApiModelProperty("载重（吨）")
-    @DataTracerFieldDoc("载重（吨）")
+    @ApiModelProperty("载重（kg）")
+    @DataTracerFieldDoc("载重（kg）")
     @DataTracerFieldBigDecimal
     private BigDecimal tonnage;
 

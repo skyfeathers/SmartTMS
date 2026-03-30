@@ -52,13 +52,13 @@ public class BracketExcelImportDTO {
     /**
      * 重量
      */
-    @Excel(name = "重量（吨）")
+    @Excel(name = "重量（kg）")
     private String weight;
 
     /**
      * 载重（吨）
      */
-    @Excel(name = "载重（吨）")
+    @Excel(name = "载重（kg）")
     private String tonnage;
 
     /**

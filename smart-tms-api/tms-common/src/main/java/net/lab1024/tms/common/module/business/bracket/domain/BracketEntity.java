@@ -49,7 +49,7 @@ public class BracketEntity {
     private BigDecimal weight;
 
     /**
-     * 载重（吨）
+     * 载重（kg）
      */
     private BigDecimal tonnage;
 

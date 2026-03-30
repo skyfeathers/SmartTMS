@@ -30,6 +30,9 @@
         <if test="queryDTO.vehicleType != null and queryDTO.vehicleType != ''">
             AND v.vehicle_type = #{queryDTO.vehicleType}
         </if>
+        <if test="queryForm.businessMode != null">
+            AND v.business_mode = #{queryForm.businessMode}
+        </if>
         <if test="queryDTO.auditStatus != null">
             AND v.audit_status = #{queryDTO.auditStatus}
         </if>
