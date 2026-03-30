@@ -114,11 +114,10 @@ let route = useRoute();
 const formRef = ref();
 const rememberPwd = ref(false);
 
-let previewUser = route.query.previewUser;
-let previewPwd = route.query.previewPwd;
-if (previewUser && previewPwd) {
-  loginForm.loginName = previewUser;
-  loginForm.password = previewPwd;
+let previewFlag = route.query.previewFlag;
+if (previewFlag) {
+  loginForm.loginName = '13700000001';
+  loginForm.password = '789321';
 }
 
 

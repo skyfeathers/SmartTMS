@@ -1,7 +1,7 @@
 <template>
   <a-modal :getContainer="getContainer" :open="visible" :width="600" cancel-text="取消" ok-text="保存" title="快速新建"
     @cancel="onClose" @ok="onSubmit">
-    <a-form ref="formRef" :label-col="{ span: 6 }" :model="form" :rules="rules">
+    <a-form ref="formRef" :label-col="{ span: 8 }" :model="form" :rules="rules">
       <a-row>
         <a-col :span="12">
           <a-form-item label="创建类型" name="createType">
