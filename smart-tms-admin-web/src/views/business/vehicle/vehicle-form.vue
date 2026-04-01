@@ -32,12 +32,7 @@
               </div>
             </a-form-item>
           </a-descriptions-item>
-          <a-descriptions-item label="车辆审验到期时间">
-            <a-form-item name="vehicleAuditExpireDate">
-              <a-date-picker valueFormat="YYYY-MM-DD" v-model:value="formState.vehicleAuditExpireDate"
-                class="form-width" />
-            </a-form-item>
-          </a-descriptions-item>
+          
           <a-descriptions-item label="绑定挂车">
             <a-form-item name="bracketId">
               <div class="form-width flex-center">
@@ -52,21 +47,7 @@
                 width="180px" />
             </a-form-item>
           </a-descriptions-item>
-          <a-descriptions-item label="品牌型号">
-            <a-form-item name="model">
-              <a-input v-model:value="formState.model" class="form-width"  />
-            </a-form-item>
-          </a-descriptions-item>
-          <a-descriptions-item label="发动机号">
-            <a-form-item name="engineNumber">
-              <a-input v-model:value="formState.engineNumber" class="form-width"  />
-            </a-form-item>
-          </a-descriptions-item>
-          <a-descriptions-item label="机动车登记证书编号">
-            <a-form-item name="vehicleRegistrationCertificateNo">
-              <a-input v-model:value="formState.vehicleRegistrationCertificateNo" class="form-width"  />
-            </a-form-item>
-          </a-descriptions-item>
+          
           <a-descriptions-item label="备注">
             <a-form-item name="remark">
               <a-textarea :auto-size="{ minRows: 1, maxRows: 5 }" v-model:value="formState.remark"
@@ -111,9 +92,25 @@
                 :selectLabel="formState.selectVehicleTypeName" />
             </a-form-item>
           </a-descriptions-item>
+          <a-descriptions-item label="机动车登记证书编号">
+            <a-form-item name="vehicleRegistrationCertificateNo">
+              <a-input v-model:value="formState.vehicleRegistrationCertificateNo" class="form-width"  />
+            </a-form-item>
+          </a-descriptions-item>
           <a-descriptions-item label="车辆识别代码(车架号)">
             <a-form-item name="vin">
               <a-input v-model:value="formState.vin" class="form-width" />
+            </a-form-item>
+          </a-descriptions-item>
+          
+          <a-descriptions-item label="发动机号">
+            <a-form-item name="engineNumber">
+              <a-input v-model:value="formState.engineNumber" class="form-width"  />
+            </a-form-item>
+          </a-descriptions-item>
+          <a-descriptions-item label="品牌型号">
+            <a-form-item name="model">
+              <a-input v-model:value="formState.model" class="form-width"  />
             </a-form-item>
           </a-descriptions-item>
           <a-descriptions-item label="发证机关">
@@ -129,6 +126,12 @@
           <a-descriptions-item label="发证日期">
             <a-form-item name="issueDate">
               <a-date-picker valueFormat="YYYY-MM-DD" v-model:value="formState.issueDate" class="form-width" />
+            </a-form-item>
+          </a-descriptions-item>
+          <a-descriptions-item label="车辆审验到期时间">
+            <a-form-item name="vehicleAuditExpireDate">
+              <a-date-picker valueFormat="YYYY-MM-DD" v-model:value="formState.vehicleAuditExpireDate"
+                class="form-width" />
             </a-form-item>
           </a-descriptions-item>
           <a-descriptions-item label="总质量(kg)">
@@ -171,6 +174,9 @@
               <a-input v-model:value="formState.nature" class="form-width" />
             </a-form-item>
           </a-descriptions-item>
+          
+          
+          
         </a-descriptions>
       </a-card>
 

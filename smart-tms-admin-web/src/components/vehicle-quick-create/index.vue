@@ -3,7 +3,7 @@
     @cancel="onClose" @ok="onSubmit">
     <a-form ref="formRef" :label-col="{ span: 8 }" :model="form" :rules="rules">
       <a-row>
-        <a-col :span="12">
+        <a-col :span="16">
           <a-form-item label="创建类型" name="createType">
             <a-radio-group v-model:value="form.createType">
               <a-radio-button :value="QUICK_CREATE_TYPE_ENUM.DRIVER.value">司机</a-radio-button>
@@ -17,7 +17,7 @@
       </a-row>
 
       <a-row>
-        <a-col :span="12">
+        <a-col :span="16">
           <a-form-item label="经营方式" name="businessMode">
             <SmartEnumSelect v-model:value="form.businessMode" enumName="VEHICLE_BUSINESS_MODE_ENUM" width="100%" />
           </a-form-item>
@@ -27,14 +27,14 @@
       <template
         v-if="form.createType == QUICK_CREATE_TYPE_ENUM.ALL.value || form.createType == QUICK_CREATE_TYPE_ENUM.DRIVER.value">
         <a-row>
-          <a-col :span="12">
+          <a-col :span="16">
             <a-form-item label="司机姓名" name="driverName">
               <a-input v-model:value="form.driverName" placeholder="请输入司机姓名" />
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
-          <a-col :span="12">
+          <a-col :span="16">
             <a-form-item label="司机电话" name="telephone">
               <a-input v-model:value="form.telephone" placeholder="请输入司机电话" />
             </a-form-item>
@@ -44,7 +44,7 @@
 
       <template v-if="form.createType == QUICK_CREATE_TYPE_ENUM.ALL.value || form.createType == QUICK_CREATE_TYPE_ENUM.VEHICLE.value">
         <a-row>
-          <a-col :span="12">
+          <a-col :span="16">
             <a-form-item label="车牌号" name="vehicleNumber">
               <a-input v-model:value="form.vehicleNumber" placeholder="请输入车牌号" style="width: 100%" />
             </a-form-item>
@@ -53,7 +53,7 @@
       </template>
       <template v-if="form.createType == QUICK_CREATE_TYPE_ENUM.ALL.value || form.createType == QUICK_CREATE_TYPE_ENUM.BRACKET.value">
         <a-row>
-          <a-col :span="12">
+          <a-col :span="16">
             <a-form-item label="挂车车牌号" name="bracketNo">
               <a-input v-model:value="form.bracketNo" placeholder="请输入挂车车牌号" style="width:100%" />
             </a-form-item>

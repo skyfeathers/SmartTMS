@@ -35,7 +35,7 @@
         <ContactManage :shipperId="detail.shipperId" :actionFlag="false"/>
       </a-tab-pane>
       <a-tab-pane key="invoice" tab="开票信息">
-        <InvoiceManage :shipperId="detail.shipperId" :actionFlag="false"/>
+        <InvoiceManage :shipperId="detail.shipperId" :actionFlag="false" :defaultInfo="detail"/>
       </a-tab-pane>
       <a-tab-pane key="paymentType" tab="收付款信息">
         <PaymentTypeManage :shipperId="detail.shipperId" :actionFlag="false"/>

@@ -141,7 +141,7 @@ const columns = reactive([
     slots: { customRender: 'vehicleType' }
   },
   {
-    title: "载重（吨）",
+    title: "载重（kg）",
     dataIndex: "vehicleTonnage",
     width: 100,
   },

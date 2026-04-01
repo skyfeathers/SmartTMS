@@ -82,7 +82,7 @@ export const headerColumns = [
     dataIndex: 'cabinetName'
   },
   {
-    title: '重量（吨）',
+    title: '重量（kg）',
     dataIndex: 'totalWeight',
     width: 90
   },

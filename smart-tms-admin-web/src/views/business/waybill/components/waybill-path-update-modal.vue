@@ -6,7 +6,7 @@
  * @LastEditTime: 2022-07-07 10:18:53
 -->
 <template>
-  <a-modal :open="visible" :width="950" title="修改路线" ok-text="确认" cancel-text="取消" @ok="onSubmit" @cancel="onClose">
+  <a-modal :open="visible" :width="1000" title="修改路线" ok-text="确认" cancel-text="取消" @ok="onSubmit" @cancel="onClose">
     <a-alert
       v-for="(item, index) in waybillRef.exceptionList"
       :key="index"

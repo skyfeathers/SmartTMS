@@ -100,7 +100,7 @@
       </a-tab-pane>
     </a-tabs>
     <a-table
-        :scroll="{ x: 1900,y:500 }"
+        :scroll="{ x: '100%' }"
         size="small"
         :dataSource="tableData"
         :columns="columns"

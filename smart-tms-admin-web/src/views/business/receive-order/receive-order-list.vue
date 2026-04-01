@@ -129,7 +129,7 @@
       </a-tab-pane>
     </a-tabs>
     <a-table
-        :scroll="{ x: 3000,y:500 }"
+        :scroll="{ x: '100%' }"
         size="small"
         :dataSource="tableData"
         :columns="columns"
@@ -224,7 +224,7 @@ const columns = ref([
   {
     title: '收款单号',
     dataIndex: 'receiveOrderNumber',
-    width: 150,
+    width: 180,
     fixed: 'left'
   },
   {

@@ -22,13 +22,13 @@
             <a-descriptions-item label="经营方式">{{
               $smartEnumPlugin.getDescByValue('VEHICLE_BUSINESS_MODE_ENUM', vehicleDetail.businessMode)
             }}</a-descriptions-item>
-            <a-descriptions-item label="车辆审验到期时间">{{ vehicleDetail.vehicleAuditExpireDate }}</a-descriptions-item>
+           
             <a-descriptions-item label="绑定挂车">{{ vehicleDetail.bracketNo }}</a-descriptions-item>
             <a-descriptions-item label="绑定司机">{{ driverList.join(',') }}</a-descriptions-item>
             <a-descriptions-item label="负责人">{{ vehicleDetail.managerName }}</a-descriptions-item>
-            <a-descriptions-item label="品牌型号">{{ vehicleDetail.model }}</a-descriptions-item>
-            <a-descriptions-item label="发动机号">{{ vehicleDetail.engineNumber }}</a-descriptions-item>
-            <a-descriptions-item label="机动车登记证书编号">{{ vehicleDetail.vehicleRegistrationCertificateNo }}</a-descriptions-item>
+            
+            
+            
             <a-descriptions-item label="备注">{{ vehicleDetail.remark }}</a-descriptions-item>
             <a-descriptions-item label="创建人">{{ vehicleDetail.createUserName }}</a-descriptions-item>
             <a-descriptions-item label="创建时间">{{ vehicleDetail.createTime }}</a-descriptions-item>

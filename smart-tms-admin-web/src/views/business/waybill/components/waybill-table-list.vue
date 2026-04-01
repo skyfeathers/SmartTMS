@@ -7,7 +7,7 @@
  * @LastEditTime: 2022-08-06
 -->
 <template>
-  <a-form v-privilege="`${privilegePrefix}:query`" class="smart-query-form" :label-col="{  style: { width: '80px' } }" v-show="showQueryForm">
+  <a-form v-privilege="`${privilegePrefix}:query`" class="smart-query-form" :label-col="{  style: { width: '110px' } }" v-show="showQueryForm">
     <a-row class="smart-query-form-row" :gutter="24">
       <a-col :span="6">
         <a-form-item class="smart-query-form-item" label="运单号">

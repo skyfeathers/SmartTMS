@@ -118,7 +118,7 @@ ul li :hover {
     overflow: hidden;
     .ant-list-items {
       height: 100%;
-      overflow: scroll;
+      overflow: auto;
       .ant-list-item-meta-description {
         width: 100%;
         white-space: nowrap;

@@ -6,13 +6,15 @@
  * @LastEditors: zhuoda
 -->
 <template>
-  <a-space :size="10">
+  <a-space :size="5">
       <a-button class="user-space-item" title="快捷搜索" type="text" v-if="!show && userSpaceType == 'mini'" @click="showSearch">
         <template #icon><search-outlined/></template>
       </a-button>
       <HeaderAutoComplete @hideSearch="hideSearch" ref="autoCompleteRef" v-else/>
       <div class="user-space-item" @click="showQuickCreateModal" v-privilege="'vehicle:quickCreate'">
-        <plus-square-outlined v-if="userSpaceType == 'mini'" title="快速新建" />
+        <a-button title="快速新建" style="width: 28px;" type="text" v-if="userSpaceType == 'mini'" >
+          <template #icon><plus-square-outlined /></template>
+        </a-button>
         <a-button v-else size="small" type="primary">
           <template #icon>
             <PlusOutlined />
@@ -21,7 +23,9 @@
         </a-button>
       </div>
       <div class="user-space-item" @click="toAddOrder" v-privilege="'order:add'">
-          <DiffOutlined v-if="userSpaceType == 'mini'" title="新建订单" />
+          <a-button title="新建订单" type="text" style="width: 28px;" v-if="userSpaceType == 'mini'">
+          <template #icon><DiffOutlined /></template>
+        </a-button>
           <a-button v-else size="small" type="primary">
               <template #icon>
                   <PlusOutlined />
@@ -37,9 +41,12 @@
         i18n
       </a-button> -->
       <!---设置--->
-      <a-button class="user-space-item" title="设置" type="text" @click="showSetting">
-        <template #icon><setting-outlined /></template>
-      </a-button>
+      <div class="user-space-item">
+         <a-button style="width: 28px;" title="设置" type="text" @click="showSetting">
+          <template #icon><setting-outlined /></template>
+        </a-button>
+      </div>
+     
     <!---头像信息--->
     <div class="user-space-item" >
       <header-avatar />
@@ -47,7 +54,9 @@
 
     <!---帮助文档--->
     <div class="user-space-item" @click="showHelpDoc">
-      <question-circle-two-tone title="帮助文档" style="margin-right: 5px" />
+      <a-button title="帮助文档" style="width: 28px;" type="text" >
+          <template #icon><question-circle-two-tone /></template>
+        </a-button>
       <span v-if="userSpaceType != 'mini'">帮助文档</span>
     </div>
     <HeaderSetting ref="headerSetting" />
@@ -108,7 +117,6 @@ function toAddOrder() {
 .user-space-item {
   height: 40px;
   color: inherit;
-  padding: 0 5px;
   cursor: pointer;
   display: flex;
   align-items: center;

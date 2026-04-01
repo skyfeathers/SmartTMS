@@ -142,7 +142,7 @@ let columns = reactive([
     dataIndex: "vehicleTypeName",
   },
   {
-    title: "载重（吨）",
+    title: "载重（kg）",
     dataIndex: "vehicleTonnage",
     width: 100,
   },

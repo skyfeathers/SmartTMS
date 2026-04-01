@@ -57,7 +57,9 @@
           <a-col :span="24">
             <a-form-item label="位置">
               <a-input v-model:value="form.location" placeholder="请输入位置" style="width: 200px" />
+              <a-button type="link" class="smart-margin-left10" @click="showMapModal">地图选点</a-button>
             </a-form-item>
+            
           </a-col>
 
           <a-col :span="24">
@@ -79,6 +81,7 @@
         </a-row>
       </a-form>
     </a-modal>
+    <MapModal ref="mapRef" pathTypeEnumName="WAYBILL_VOUCHER_TYPE_ENUM" @confirmSelect="selectAddressByMap"/>
 </template>
 <script setup>
 import { onMounted, ref, getCurrentInstance, nextTick, reactive } from 'vue';
@@ -91,6 +94,9 @@ import SmartEnumSelect from '/@/components/smart-enum-select/index.vue';
 import Upload from '/@/components/upload/index.vue';
 import { WAYBILL_VOUCHER_TYPE_ENUM } from '/@/constants/business/waybill-const';
 import dayjs from 'dayjs';
+
+import MapModal from '/@/views/business/order/components/map-modal.vue';
+import { baiduMapApi } from '/@/api/support/baidumap/baidu-map-api';
 
 const smartEnumsPlugin = getCurrentInstance().appContext.config.globalProperties.$smartEnumPlugin;
 
@@ -118,6 +124,7 @@ function showModal(rowData) {
       typeDisable.value = true;
     }
     Object.assign(form, rowData);
+    console.log('form', form);
   }
   form.createTime = dayjs().format('YYYY-MM-DD HH:mm:ss');
   visible.value = true;
@@ -175,6 +182,34 @@ function onSubmit() {
       message.error('参数验证错误，请仔细填写表单数据!');
     });
 }
+
+// ----------------------- 地图 ------------------------
+const mapRef = ref();
+function showMapModal() {
+  mapRef.value.showModal(form.type, null, {
+    longitude: form.longitude, // 经度
+    latitude: form.latitude, // 纬度
+    province: form.provinceName, // 省
+    city: form.cityName, // 市
+    district: form.districtName, // 区
+    address: form.location, // 详细地址
+  });
+}
+async function selectAddressByMap (selectedAddress, pathType, pathIndex) {
+  try {
+    let { latitude, longitude } = selectedAddress;
+    const { data } = await baiduMapApi.reverseGeocoding({ latitude, longitude });
+    let { adcode, province, city, district, address } = data;
+    form.location = address;
+    form.longitude = longitude;
+    form.latitude = latitude;
+  } catch (error) {
+    console.log('error', error);
+  }
+}
+
+
+
 defineExpose({
   showModal,
 });

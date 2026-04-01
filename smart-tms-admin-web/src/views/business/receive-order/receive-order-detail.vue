@@ -65,7 +65,7 @@
     <a-tabs>
       <a-tab-pane key="detail" tab="应收账款明细">
         <a-table :columns="waybillReceiveColumns" :dataSource="detail.waybillList" bordered :pagination="false" size="small"
-                 :scroll="{ x: 2000 }">
+                 :scroll="{ x: '100%' }">
           <template #headerCell="{ column }">
             <template v-if="column.dataIndex === 'taxAmount'">
         <span>

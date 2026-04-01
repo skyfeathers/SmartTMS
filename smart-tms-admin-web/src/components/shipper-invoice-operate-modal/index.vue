@@ -92,6 +92,8 @@ import DisabledFlagSelect from '/@/components/boolean-flag-select/index.vue';
 import Upload from '/@/components/upload/index.vue';
 import { regular } from '/@/constants/regular-const';
 
+import _ from 'lodash';
+
 const emits = defineEmits(['onSubmit']);
 
 defineExpose({
@@ -161,6 +163,11 @@ function showModal (index, invoiceInfo) {
   if (!invoiceInfo) {
     Object.assign(invoiceForm, defaultForm);
   } else {
+    // 判断invoiceInfo是否有disableFlag属性，有则转换为1或2
+    if (_.has(invoiceInfo, 'disableFlag')) {
+      invoiceInfo.disableFlag = invoiceInfo.disableFlag ? 1 : 2;
+    }
+
     Object.assign(invoiceForm, invoiceInfo);
   }
   invoiceForm.index = index;

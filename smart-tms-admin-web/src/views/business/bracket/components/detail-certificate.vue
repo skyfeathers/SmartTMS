@@ -18,8 +18,8 @@
       <a-descriptions-item label="车辆类型">{{ detail.type }}</a-descriptions-item>
       <a-descriptions-item label="车辆识别代号">{{ detail.vin }}</a-descriptions-item>
       <a-descriptions-item label="车牌颜色">{{  $smartEnumPlugin.getDescByValue('VEHICLE_PLATE_COLOR_ENUM', detail.plateColorCode) }}</a-descriptions-item>
-      <a-descriptions-item label="载重（吨）">{{ detail.tonnage }}</a-descriptions-item>
-      <a-descriptions-item label="重量（吨）">{{ detail.weight }}</a-descriptions-item>
+      <a-descriptions-item label="载重（kg）">{{ detail.tonnage }}</a-descriptions-item>
+      <a-descriptions-item label="重量（kg）">{{ detail.weight }}</a-descriptions-item>
       <a-descriptions-item label="注册日期">{{ detail.registerTime }}</a-descriptions-item>
       <a-descriptions-item label="发证日期">{{ detail.issueTime }}</a-descriptions-item>
     </a-descriptions>

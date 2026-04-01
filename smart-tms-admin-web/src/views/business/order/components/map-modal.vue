@@ -10,7 +10,7 @@
     </div>
     <template #footer>
       <a-button @click="visible = false">取消</a-button>
-      <a-button type="primary" @click="handleOk">设为{{$smartEnumPlugin.getDescByValue('PATH_TYPE_ENUM', pathType) }}</a-button>
+      <a-button type="primary" @click="handleOk">设为{{$smartEnumPlugin.getDescByValue(pathTypeEnumName, pathType) }}</a-button>
     </template>
   </a-modal>
 </template>
@@ -22,6 +22,13 @@ import localKey from '/@/constants/local-storage-key-const';
 import { localRead } from '/@/utils/local-util';
 
 const emit = defineEmits(['confirmSelect']);
+
+const props = defineProps({
+  pathTypeEnumName: {
+    type: String,
+    default: 'PATH_TYPE_ENUM',
+  },
+});
 
 let visible = ref(false);
 
@@ -63,8 +70,23 @@ function showModal (type, index, pathInfo) {
       address: pathInfo.address, // 详细地址
     };
   }
-  nextTick(() => {
-    initBaiduMap(pathInfo?.longitude, pathInfo?.latitude);
+  nextTick(async() => {
+    try {
+      let longitude = pathInfo?.longitude;
+      let latitude = pathInfo?.latitude;
+
+      if (!pathInfo?.longitude && !pathInfo?.latitude) {
+        let position = await getLocation();
+        console.log('position', position);
+        longitude = position.coords.longitude;
+        latitude = position.coords.latitude;
+      }
+      
+      initBaiduMap(longitude, latitude);
+    } catch (error) {
+      console.error('获取位置失败');
+      initBaiduMap(pathInfo?.longitude, pathInfo?.latitude);
+    }
   });
 }
 
@@ -211,6 +233,18 @@ function handleOk () {
 
 async function getMapShowFlag () {
 
+}
+
+
+
+function getLocation() {
+  return new Promise(function(resolve, reject) {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(resolve, reject);
+    } else {
+      reject("Geolocation不支持该浏览器");
+    }
+  });
 }
 
 </script>

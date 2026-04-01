@@ -35,10 +35,6 @@ const disableLink = ref(true);
 // 表格列
 let columns = reactive([
   {
-    title: '司机ID',
-    dataIndex: 'driverId',
-  },
-  {
     title: '司机姓名',
     dataIndex: 'driverName',
   },

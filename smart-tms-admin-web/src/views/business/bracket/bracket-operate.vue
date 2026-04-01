@@ -88,11 +88,11 @@
               />
             </a-form-item>
           </a-descriptions-item>
-          <a-descriptions-item label="载重（吨）">
+          <a-descriptions-item label="载重（kg）">
             <a-form-item name="tonnage">
               <a-input-number
                 class="form-width"
-                placeholder="请输入载重（吨）"
+                placeholder="请输入载重（kg）"
                 v-model:value="infoForm.tonnage"
                 :min="0"
                 :max="9999"
@@ -101,11 +101,11 @@
               />
             </a-form-item>
           </a-descriptions-item>
-          <a-descriptions-item label="重量（吨）">
+          <a-descriptions-item label="重量（kg）">
             <a-form-item name="weight">
               <a-input-number
                 class="form-width"
-                placeholder="请输入重量（吨）"
+                placeholder="请输入重量（kg）"
                 v-model:value="infoForm.weight"
                 :min="0"
                 :max="9999"
@@ -190,7 +190,7 @@ const infoFormDefault = {
   vin: undefined, // 车辆识别代号 ,
   bracketNo: undefined, // 挂车车牌号
   plateColorCode: undefined, // 车牌颜色 ,
-  tonnage: undefined, // 载重（吨） ,
+  tonnage: undefined, // 载重（kg） ,
   weight: undefined, // 重量
   registerTime: undefined, // 注册日期 ,
   issueTime: undefined, // 发证日期 ,

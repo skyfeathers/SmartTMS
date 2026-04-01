@@ -4,7 +4,7 @@ export const checkColumns = [
   {
     title: '收款单号',
     dataIndex: 'receiveOrderNumber',
-    width: 150,
+    width: 200,
     fixed: 'left'
   },
   {
@@ -67,6 +67,7 @@ export const checkColumns = [
   {
     title: '核算附件',
     dataIndex: 'attachment',
+    width: 100,
   }
 ];
 
@@ -85,6 +86,7 @@ export const checkCreateColumns = [
 export const cancelColumns = [{
   title: '作废备注',
   dataIndex: 'cancelRemark',
+  width: 150,
 }];
 
 // 应收详情的运单列表
@@ -104,16 +106,19 @@ export const waybillColumns = [
   {
     title: '箱号',
     dataIndex: 'containerNumber',
+    width: 100,
     ellipsis: true,
   },
   {
     title: '铅封号',
     dataIndex: 'leadSealNumber',
+    width: 100,
     ellipsis: true,
   },
   {
     title: '柜型',
     dataIndex: 'cabinetName',
+    width: 100,
     ellipsis: true,
   },
   {
@@ -149,21 +154,25 @@ export const waybillColumns = [
   {
     title: '装箱地点',
     dataIndex: 'containerLocation',
+    width: 160,
     ellipsis: true,
   },
   {
     title: '装货地点',
     dataIndex: 'placingLocation',
+    width: 160,
     ellipsis: true,
   },
   {
     title: '卸货地点',
     dataIndex: 'unloadingLocation',
+    width: 160,
     ellipsis: true,
   },
   {
     title: '还箱地点',
     dataIndex: 'returnContainerLocation',
+    width: 160,
     ellipsis: true,
   },
   {

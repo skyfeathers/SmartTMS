@@ -18,7 +18,10 @@
       </a-descriptions-item>
       <a-descriptions-item label="车辆类型">{{vehicleTypeDesc}}
       </a-descriptions-item>
+      <a-descriptions-item label="机动车登记证书编号">{{ detail.vehicleRegistrationCertificateNo }}</a-descriptions-item>
       <a-descriptions-item label="车辆识别代码(车架号)">{{ detail.vin }}</a-descriptions-item>
+      <a-descriptions-item label="发动机号">{{ detail.engineNumber }}</a-descriptions-item>
+      <a-descriptions-item label="品牌型号">{{ detail.model }}</a-descriptions-item>
       <a-descriptions-item label="所属人">{{ detail.owner }}</a-descriptions-item>
       <a-descriptions-item label="使用性质">{{ detail.nature }}</a-descriptions-item>
 <!--      <a-descriptions-item label="所属人性质">
@@ -28,6 +31,7 @@
       <a-descriptions-item label="发证机关">{{ detail.issuingOrganizations }}</a-descriptions-item>
       <a-descriptions-item label="注册日期">{{ detail.registerDate }}</a-descriptions-item>
       <a-descriptions-item label="发证日期">{{ detail.issueDate }}</a-descriptions-item>
+       <a-descriptions-item label="车辆审验到期时间">{{ detail.vehicleAuditExpireDate }}</a-descriptions-item>
 <!--      <a-descriptions-item label="到期时间">{{ detail.expireDate }}</a-descriptions-item>-->
       <a-descriptions-item label="行驶证副本">
         <file-preview type="picture" :fileList="detail.drivingLicenseEctypeAttachment" />

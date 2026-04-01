@@ -13,7 +13,7 @@
 
         <a-col :span="12" v-if="form.type === OIL_CARD_TYPE_ENUM.SLAVE.value">
           <a-form-item label="主卡">
-            <OilCardSelect :type="OIL_CARD_TYPE_ENUM.MASTER.value" width="100%" v-model:value="form.masterOilCardId"/>
+            <OilCardSelect :type="OIL_CARD_TYPE_ENUM.MASTER.value" width="100%" v-model:value="form.masterOilCardId" @change="handleMasterOilCardChange" />
           </a-form-item>
         </a-col>
 
@@ -136,14 +136,14 @@ const formRef = ref();
 
 const formDefault = {
   beginBalance: null,
-  brand: '',
+  brand: null,
   fixedPointFlag: 2,
   disabledFlag: 1,
   oilCardNo: '',
   oilCardId: '',
   masterOilCardId: null, //主卡id
   password: '',
-  purpose: '',
+  purpose: null,
   remark: '',
   type: null,
   useVehicleId: null,
@@ -243,6 +243,18 @@ async function onSubmit () {
     useSpinStore().hide();
   }
 }
+
+// 主卡选择改变时，更新副卡列表
+function handleMasterOilCardChange (value, item) {
+  console.log(item);
+  form.brand = item.brand[0].valueCode
+  form.fuelType = item.fuelType;
+}
+
+
+
+
+
 
 // ----------------------- 以下是暴露的方法内容 ------------------------
 defineExpose({

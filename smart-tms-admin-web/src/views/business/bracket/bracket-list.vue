@@ -108,14 +108,8 @@
       </a-row>
 
       <a-tabs @tabClick="changeTab" v-model:activeKey="activeKey">
-        <a-tab-pane key="" tab="全部">
-        </a-tab-pane>
-        <a-tab-pane key="1" tab="内管">
-        </a-tab-pane>
-        <a-tab-pane key="2" tab="挂靠">
-        </a-tab-pane>
-        <a-tab-pane key="3" tab="外派">
-        </a-tab-pane>
+        <a-tab-pane key="" tab="全部" />
+        <a-tab-pane :key="item.value" :tab="item.desc" v-for="(item) in $smartEnumPlugin.getValueDescList('DRIVER_BUSINESS_MODE_ENUM')" />
       </a-tabs>
 
       <a-table
@@ -300,7 +294,7 @@ const { columnsData:columns, tableWidth } = useDragTable([
     }
   },
   {
-    title: '重量（吨）',
+    title: '重量（kg）',
     dataIndex: 'weight',
     width: 150,
     filterOptions:{
@@ -308,7 +302,7 @@ const { columnsData:columns, tableWidth } = useDragTable([
     },
   },
   {
-    title: '载重（吨）',
+    title: '载重（kg）',
     dataIndex: 'tonnage',
     width: 150,
     filterOptions:{
@@ -383,7 +377,7 @@ const { columnsData:columns, tableWidth } = useDragTable([
 
 const activeKey = ref('');
 function changeTab (value) {
-  queryForm.businessMode = value;
+  queryForm.businessMode = value || null;
   ajaxQuery();
 }
 
@@ -406,6 +400,9 @@ function change(obj){
     queryForm.tonnageEnd = obj.value[1];
     search()
     return
+  }
+  if(obj.key == 'businessMode'){
+    activeKey.value = obj.value;
   }
   if(obj.search){
     search()

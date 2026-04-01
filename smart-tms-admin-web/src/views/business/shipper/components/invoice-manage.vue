@@ -8,7 +8,7 @@
 -->
 <template>
   <a-card class="smart-margin-top10">
-    <a-table :columns="columns" :dataSource="tableData" :pagination="false" :scroll="{ x: 1000 }" bordered size="small">
+    <a-table :columns="columns" :dataSource="tableData" :pagination="false" :scroll="{ x: '100%' }" bordered size="small">
       <template #title>
       <a-button @click="showModal()" type="primary" size="small" v-if="!actionFlag">
           <template #icon>
@@ -65,6 +65,10 @@ const props = defineProps({
   shipperId: {
     type: Number,
     default: 0
+  },
+  defaultInfo: {
+    type: Object,
+    default: () => ({})
   }
 });
 
@@ -75,54 +79,70 @@ const actionColumn = ref({
   title: '操作',
   dataIndex: 'action',
   slots: { customRender: 'action' },
-  width:'130px'
+  width:'130px',
+  fixed: 'right',
 });
 const columns = ref([
   {
     title: '纳税人识别号',
     dataIndex: 'invoiceNo',
+    width: 200,
   },
   {
     title: '开票抬头',
     dataIndex: 'invoiceName',
+    width: 200,
+    ellipsis: true,
   },
   {
     title: '开票银行',
     dataIndex: 'invoiceBankName',
+    width: 160,
+    ellipsis: true,
   },
   {
     title: '银行账号',
     dataIndex: 'invoiceBankAccount',
+    width: 200,
   },
   {
     title: '开户行号',
     dataIndex: 'invoiceBankNo',
+    width: 130,
   },
   {
     title: '开户行地址',
     dataIndex: 'invoiceBankAddress',
+    width: 160,
+    ellipsis: true,
   },
   {
     title: '开票电话',
     dataIndex: 'invoicePhone',
+    width: 130,
   },
   {
     title: '开票地址',
     dataIndex: 'invoiceAddress',
+    width: 200,
+    ellipsis: true,
   },
   {
     title: '中征码',
     dataIndex: 'loanCardNo',
+    width: 200,
   },
   {
     title: '禁用状态',
     dataIndex: 'disableFlag',
     slots: { customRender: 'disableFlag' },
+    width: 100,
   },
   {
     title: '附件',
     dataIndex: 'attachment',
     slots: { customRender: 'attachment' },
+    width: 160,
   },
 ]);
 // ------- 列表相关 start --------
@@ -154,6 +174,14 @@ function showModal (invoiceInfo) {
   let index = tableData.value.length;
   if(invoiceInfo){
     index = invoiceInfo.index;
+  }
+  console.log((invoiceInfo));
+  // 货主详情，新增开票信息时，默认填充货主信息
+  if(_.isEmpty(invoiceInfo) && !_.isEmpty(props.defaultInfo)) {
+    invoiceInfo = Object.assign({}, {
+      invoiceNo: props.defaultInfo.consignorId,
+      invoiceName: props.defaultInfo.consignor,
+    });
   }
   operateRef.value.showModal(index, invoiceInfo);
 }

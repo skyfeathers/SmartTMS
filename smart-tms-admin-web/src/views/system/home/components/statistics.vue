@@ -8,22 +8,22 @@
         </div>
         <div class="statistics-list">
             
-            <div class="statistics-list-item driver-item">
+            <div class="statistics-list-item driver-item" @click="handleClick('/driver/list')">
                 <img class="logo" src="/@/assets/images/home/statistics-driver-icon.png" alt="" />
                 <span class="number">{{statistics.driverNum}}</span>
                 <span class="title">司机</span>
             </div>
-            <div class="statistics-list-item vehicle-item">
+            <div class="statistics-list-item vehicle-item" @click="handleClick('/vehicle/vehicle-list')">
                 <img class="logo" src="/@/assets/images/home/statistics-vehicle-icon.png" alt="" />
                 <span class="number">{{statistics.vehicleNum}}</span>
                 <span class="title">车辆</span>
             </div>
-            <div class="statistics-list-item order-item">
+            <div class="statistics-list-item order-item" @click="handleClick('/order/list')">
                 <img class="logo" src="/@/assets/images/home/statistics-order-icon.png" alt="" />
                 <span class="number">{{statistics.orderNum}}</span>
                 <span class="title">订单</span>
             </div>
-            <div class="statistics-list-item waybill-item">
+            <div class="statistics-list-item waybill-item" @click="handleClick('/waybill/waybill-list')">
                 <img class="logo" src="/@/assets/images/home/statistics-waybill-icon.png" alt="" />
                 <span class="number">{{statistics.waybillNum}}</span>
                 <span class="title">运单</span>
@@ -34,6 +34,9 @@
 <script setup>
 import { homeApi } from '/@/api/system/home/home-api';
 import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 let statistics = ref({
     driverNum: 0,
@@ -54,6 +57,11 @@ async function initStatistics() {
         console.log(error);
     }
 }   
+
+function handleClick(url) {
+   router.push(url);
+}
+
 
 
 </script>
@@ -108,6 +116,7 @@ async function initStatistics() {
         padding: 20px 20px;
         background-color: #4382ff;
         border-radius: 10px;
+        cursor: pointer;
         &.driver-item {
             background: linear-gradient(135deg, #165DFF 0%, #6997f1 100%);
         }

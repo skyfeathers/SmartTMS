@@ -321,6 +321,7 @@ function showDrawer(rowData) {
   if (rowData) {
     params = _.cloneDeep(rowData);
     params.disabledFlag = params.disabledFlag ? 1 : 0;
+    params.leaveFlag = params.leaveFlag ? 1 : 0;
   } else if (props.departmentId) {
     params.departmentId = props.departmentId;
   }

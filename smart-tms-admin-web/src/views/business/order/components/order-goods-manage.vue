@@ -47,14 +47,14 @@
         <div class="goods-add" v-if="addGoodsTag">
           <a-form  layout="inline" ref="goodsAddFormRef" :model="goodsAddForm" :rules="goodsAddRules">
             <a-form-item label="" name="goodsName">
-              <a-input v-model:value="goodsAddForm.goodsName" placeholder="请输入货物名称" style="width: 100px"/>
+              <a-input v-model:value="goodsAddForm.goodsName" placeholder="货物名称" style="width: 100px"/>
             </a-form-item>
             <a-form-item label="" name="goodsType">
               <smart-dict-select
                 style="width: 120px"
                 keyCode="cargoTypeClassificationCode"
                 v-model:value="goodsAddForm.goodsType"
-                placeholder="请选择货物类型"
+                placeholder="货物类型"
             />
             </a-form-item>
             <a-form-item label="" name="sort">
@@ -62,6 +62,7 @@
             </a-form-item>
             <a-form-item>
               <a-button class="smart-margin-left10" type="primary" @click="handleAddGoods">提交</a-button>
+              <a-button class="smart-margin-left10" @click="handleCancel">取消</a-button>
             </a-form-item>
             
           </a-form>
@@ -345,6 +346,7 @@ function handleAddGoodsBtnClick() {
   addGoodsTag.value = true;
 }
 
+
 async function handleAddGoods() {
   try {
     await goodsAddFormRef.value.validate();
@@ -360,6 +362,14 @@ async function handleAddGoods() {
     return;
   }
 }
+
+// 取消新增货物
+function handleCancel() {
+  goodsAddForm = Object.assign(goodsAddForm, defaultGoodsForm);
+  addGoodsTag.value = false;
+}
+
+
 
 </script>
 <style lang="less" scoped>
