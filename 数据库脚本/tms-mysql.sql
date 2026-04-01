@@ -5643,6 +5643,16 @@ CREATE TABLE `t_expired_certificate` (
   UNIQUE KEY `uk_module_type` (`module_type`,`module_id`,`type`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='到期证件 数据表 by listen 2022年7月19日';
 
+DROP TABLE IF EXISTS `t_expire_reminder_time`;
+CREATE TABLE `t_expire_reminder_time` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `enterprise_id` bigint NOT NULL COMMENT '企业id',
+  `config` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '备注',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `idx_enterprise_id` (`enterprise_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 -- ----------------------------
 -- Records of t_expired_certificate
 -- ----------------------------
