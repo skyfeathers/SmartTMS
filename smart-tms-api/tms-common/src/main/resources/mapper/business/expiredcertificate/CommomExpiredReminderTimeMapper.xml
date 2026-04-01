@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.tms.common.module.business.expiredcertificate.CommonExpiredReminderTimeDao">
+
+    <select id="selectByEnterpriseId"
+            resultType="net.lab1024.tms.common.module.business.expiredcertificate.domain.ExpiredReminderTimeEntity">
+        SELECT * FROM t_expire_reminder_time
+        WHERE enterprise_id = #{enterpriseId}
+    </select>
+
+</mapper>

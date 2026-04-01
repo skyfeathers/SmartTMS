@@ -4,16 +4,20 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;
+import com.google.common.collect.Lists;
 import net.lab1024.tms.admin.module.business.expiredcertificate.domain.*;
 import net.lab1024.tms.common.common.domain.PageResult;
 import net.lab1024.tms.common.common.domain.ResponseDTO;
 import net.lab1024.tms.common.common.exception.BusinessException;
+import net.lab1024.tms.common.common.util.SmartBaseEnumUtil;
 import net.lab1024.tms.common.common.util.SmartBeanUtil;
 import net.lab1024.tms.common.common.util.SmartLocalDateUtil;
 import net.lab1024.tms.common.common.util.SmartPageUtil;
+import net.lab1024.tms.common.module.business.expiredcertificate.CommonExpiredReminderTimeDao;
 import net.lab1024.tms.common.module.business.expiredcertificate.constant.ExpiredCertificateStatusEnum;
 import net.lab1024.tms.common.module.business.expiredcertificate.constant.ExpiredCertificateTypeEnum;
 import net.lab1024.tms.common.module.business.expiredcertificate.domain.ExpiredCertificateEntity;
+import net.lab1024.tms.common.module.business.expiredcertificate.domain.ExpiredReminderTimeEntity;
 import net.lab1024.tms.common.module.support.systemconfig.SystemConfigKeyEnum;
 import net.lab1024.tms.common.module.support.systemconfig.SystemConfigService;
 import net.lab1024.tms.common.module.support.systemconfig.domain.SystemConfigUpdateForm;
@@ -39,14 +43,10 @@ public class ExpiredCertificateService {
     private ExpiredCertificateDao expiredCertificateDao;
 
     @Autowired
-    private SystemConfigService systemConfigService;
+    private CommonExpiredReminderTimeDao commonExpiredReminderTimeDao;
 
     private static final Interner<String> SYNC = Interners.newWeakInterner();
 
-    /**
-     * 证件到期提醒设置 key
-     */
-    private static final SystemConfigKeyEnum EXPIRE_REMINDER_TIME_CONFIG_KEY = SystemConfigKeyEnum.EXPIRED_CERTIFICATE_EXPIRE_REMINDER_TIME;
 
     /**
      * 分页查询
@@ -67,11 +67,17 @@ public class ExpiredCertificateService {
      *
      * @return
      */
-    public ResponseDTO<ExpiredCertificateReminderTimeDTO> queryReminderTime() {
-        String value = systemConfigService.getConfigValue(EXPIRE_REMINDER_TIME_CONFIG_KEY);
-        ExpiredCertificateReminderTimeDTO timeDTO = JSON.parseObject(value, ExpiredCertificateReminderTimeDTO.class);
+    public ResponseDTO<ExpiredCertificateReminderTimeDTO> queryReminderTime(Long enterpriseId) {
+        ExpiredReminderTimeEntity reminderTimeEntity = commonExpiredReminderTimeDao.selectByEnterpriseId(enterpriseId);
+        if (reminderTimeEntity == null) {
+            ExpiredCertificateReminderTimeDTO timeDTO = new ExpiredCertificateReminderTimeDTO();
+            timeDTO.setTypeList(Lists.newArrayList());
+            return ResponseDTO.ok(timeDTO);
+        }
+        ExpiredCertificateReminderTimeDTO timeDTO = JSON.parseObject(reminderTimeEntity.getConfig(), ExpiredCertificateReminderTimeDTO.class);
         return ResponseDTO.ok(timeDTO);
     }
+
 
     /**
      * 更新 - 到期提醒时间
@@ -79,16 +85,19 @@ public class ExpiredCertificateService {
      * @param updateForm
      * @return
      */
-    public ResponseDTO<String> updateReminderTime(ExpiredCertificateReminderTimeDTO updateForm) {
-        updateForm.setUpdateTime(LocalDateTime.now());
-        // 更新设置
-        SystemConfigVO configVO = systemConfigService.getConfig(EXPIRE_REMINDER_TIME_CONFIG_KEY);
-        SystemConfigUpdateForm configUpdateForm = new SystemConfigUpdateForm();
-        configUpdateForm.setSystemConfigId(configVO.getSystemConfigId());
-        configUpdateForm.setConfigKey(EXPIRE_REMINDER_TIME_CONFIG_KEY.getValue());
-        configUpdateForm.setConfigValue(JSON.toJSONString(updateForm));
-        configUpdateForm.setConfigName(EXPIRE_REMINDER_TIME_CONFIG_KEY.getDesc());
-        systemConfigService.updateSystemConfig(configUpdateForm);
+    public ResponseDTO<String> updateReminderTime(ExpiredCertificateReminderTimeDTO updateForm, Long enterpriseId) {
+        String config = JSON.toJSONString(updateForm);
+        ExpiredReminderTimeEntity reminderTimeEntity = commonExpiredReminderTimeDao.selectByEnterpriseId(enterpriseId);
+        if (reminderTimeEntity == null) {
+            reminderTimeEntity = new ExpiredReminderTimeEntity();
+            reminderTimeEntity.setEnterpriseId(enterpriseId);
+            reminderTimeEntity.setConfig(config);
+            commonExpiredReminderTimeDao.insert(reminderTimeEntity);
+            return ResponseDTO.ok();
+        }else {
+            reminderTimeEntity.setConfig(config);
+            commonExpiredReminderTimeDao.updateById(reminderTimeEntity);
+        }
         return ResponseDTO.ok();
     }
 

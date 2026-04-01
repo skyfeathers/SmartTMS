@@ -44,14 +44,13 @@ public class ExpiredCertificateController {
     @ApiOperation("到期提醒时间设置-查询 @listen")
     @GetMapping("/expiredCertificate/reminderTime/query")
     public ResponseDTO<ExpiredCertificateReminderTimeDTO> queryReminderTime() {
-        return expiredCertificateService.queryReminderTime();
+        return expiredCertificateService.queryReminderTime(SmartRequestEnterpriseUtil.getRequestEnterpriseId());
     }
 
     @ApiOperation("到期提醒时间设置-更新 @listen")
     @PostMapping("/expiredCertificate/reminderTime/update")
     public ResponseDTO<String> updateReminderTime(@RequestBody @Valid ExpiredCertificateReminderTimeDTO updateForm) {
         RequestUser requestUser = SmartRequestUtil.getRequestUser();
-        updateForm.setUpdateName(requestUser.getUserName());
-        return expiredCertificateService.updateReminderTime(updateForm);
+        return expiredCertificateService.updateReminderTime(updateForm, SmartRequestEnterpriseUtil.getRequestEnterpriseId());
     }
 }

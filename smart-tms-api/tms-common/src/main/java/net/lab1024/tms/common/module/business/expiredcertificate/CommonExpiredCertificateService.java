@@ -28,10 +28,6 @@ public class CommonExpiredCertificateService {
 
     private static final Interner<String> SYNC = Interners.newWeakInterner();
 
-    /**
-     * 证件到期提醒设置 key
-     */
-    private static final SystemConfigKeyEnum EXPIRE_REMINDER_TIME_CONFIG_KEY = SystemConfigKeyEnum.EXPIRED_CERTIFICATE_EXPIRE_REMINDER_TIME;
 
     /**
      * 保存/更新 到期证件

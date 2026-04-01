@@ -26,12 +26,6 @@ public class ExpiredCertificateReminderTimeDTO {
     @Valid
     private List<Type> typeList;
 
-    @ApiModelProperty(hidden = true)
-    private String updateName;
-
-    @ApiModelProperty(hidden = true)
-    private LocalDateTime updateTime;
-
     @Data
     public static class Type {
 
