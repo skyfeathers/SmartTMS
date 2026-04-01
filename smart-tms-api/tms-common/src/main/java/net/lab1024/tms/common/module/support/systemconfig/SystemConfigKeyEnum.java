@@ -93,6 +93,11 @@ public enum SystemConfigKeyEnum implements BaseEnum {
      */
     FORCE_EDIT_PWD_DAYS("force_edit_pwd_days", "强制修改密码天数"),
 
+    /**
+     * 禁运说明
+     */
+    EMBARGO_STATEMENT("embargo_statement", "禁运说明"),
+
     ;
 
     private final String value;
