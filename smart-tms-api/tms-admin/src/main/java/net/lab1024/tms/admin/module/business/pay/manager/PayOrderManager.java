@@ -284,7 +284,7 @@ public class PayOrderManager extends ServiceImpl<PayOrderDao, PayOrderEntity> {
 
     public void updateWaybillPayStatusByPayOrderIdList(List<Long> payOrderIdList) {
         List<PayOrderEntity> payOrderEntity = payOrderDao.selectBatchIds(payOrderIdList);
-        List<Long> waybillIdList = payOrderEntity.stream().map(PayOrderEntity::getPayOrderId).collect(Collectors.toList());
+        List<Long> waybillIdList = payOrderEntity.stream().map(PayOrderEntity::getWaybillId).collect(Collectors.toList());
         this.batchUpdateWaybillPayStatus(waybillIdList);
     }
     /**
