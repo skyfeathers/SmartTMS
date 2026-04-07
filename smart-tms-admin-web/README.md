@@ -2,10 +2,6 @@
 
 基于 Vue 3 + Vite + Ant Design Vue 的现代化运输管理系统管理后台
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Vue Version](https://img.shields.io/badge/vue-3.3.4-brightgreen.svg)](https://v3.vuejs.org/)
-[![Vite Version](https://img.shields.io/badge/vite-5.4.6-brightgreen.svg)](https://vitejs.dev/)
-
 ## 📋 项目概述
 
 TMS（Transportation Management System）是一个功能强大、可扩展的企业级运输管理系统。该管理后台采用现代化前端技术栈开发，提供直观易用的界面，帮助企业高效管理运输业务流程。
