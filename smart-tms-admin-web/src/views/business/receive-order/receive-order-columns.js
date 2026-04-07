@@ -134,17 +134,17 @@ export const waybillColumns = [
   {
     title: '应收金额',
     dataIndex:'receiveAmount',
-    width: 80
+    width: 100
   },
   {
     title: '税金',
     dataIndex:'taxAmount',
-    width: 80
+    width: 100
   },
   {
     title: '应付金额',
     dataIndex:'payableAmount',
-    width: 80
+    width: 100
   },
   {
     title: '本单利润',
@@ -178,7 +178,7 @@ export const waybillColumns = [
   {
     title: '创建人',
     dataIndex: 'createUserName',
-    width: 80,
+    width:  100,
   },
   {
     title: '创建时间',

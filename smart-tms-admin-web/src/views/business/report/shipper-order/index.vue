@@ -39,7 +39,7 @@
         </a-button-group>
 
       </a-form-item>
-      <a-button @click="exportExcel()" class="smart-margin-left10">导出</a-button>
+      <a-button @click="exportExcel()" class="smart-margin-left10" v-privilege="'shipperOrderReport:export'">导出</a-button>
     </a-row>
   </a-form>
   <a-card size="small" :bordered="false" :hoverable="true">

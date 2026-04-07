@@ -23,8 +23,8 @@
         </a-descriptions>
       </div>
       <template #extra>
-        <a-button @click="updateEnterprise">编辑</a-button>
-        <a-button type="primary" @click="updateFlowConfig">流程配置</a-button>
+        <a-button @click="updateEnterprise" v-privilege="'enterprise:edit'">编辑</a-button>
+        <a-button type="primary" @click="updateFlowConfig" v-privilege="'enterprise:flowConfig'">流程配置</a-button>
       </template>
     </a-page-header>
   </div>

@@ -31,8 +31,8 @@
   <a-card :bordered="false" :hoverable="true" size="small">
     <a-row class="smart-table-btn-block">
       <div class="smart-table-operate-block">
-        <a-button v-if="queryForm.vehicleIdList" size="small" @click="exportExcel()">导出</a-button>
-        <a-button v-if="queryForm.vehicleIdList" size="small" @click="exportFlowExcel()">导出车辆流水表</a-button>
+        <a-button v-if="queryForm.vehicleIdList" size="small" @click="exportExcel()" v-privilege="'car-cost:report:day-statistic:export'">导出</a-button>
+        <a-button v-if="queryForm.vehicleIdList" size="small" @click="exportFlowExcel()" v-privilege="'car-cost:report:day-statistic:export-flow'">导出车辆流水表</a-button>
       </div>
     </a-row>
     <a-table
@@ -65,10 +65,10 @@
           </a-tooltip>
         </template>
         <template v-if="column.dataIndex === 'action'">
-          <a-button size="small" :disabled="!record.waybillId" type="link" @click="edit(record)">编辑工资</a-button>
-          <a-button size="small" :disabled="!record.waybillId" type="link" @click="showCostModal(record)">编辑运费</a-button>
-          <a-button size="small" v-if="record.carCostBasicInfoVO && !record.carCostBasicInfoVO.confirmFlag" :disabled="!record.waybillId" type="link" @click="showConfirmModal(record,true)">确认</a-button>
-          <a-button size="small" v-if="record.carCostBasicInfoVO && record.carCostBasicInfoVO.confirmFlag" :disabled="!record.waybillId" type="link" @click="showConfirmModal(record,false)">反确认</a-button>
+          <a-button size="small" :disabled="!record.waybillId" type="link" @click="edit(record)" v-privilege="'car-cost:report:day-statistic:edit-salary'">编辑工资</a-button>
+          <a-button size="small" :disabled="!record.waybillId" type="link" @click="showCostModal(record)" v-privilege="'car-cost:report:day-statistic:edit-cost'">编辑运费</a-button>
+          <a-button size="small" v-if="record.carCostBasicInfoVO && !record.carCostBasicInfoVO.confirmFlag" :disabled="!record.waybillId" type="link" @click="showConfirmModal(record,true)" v-privilege="'car-cost:report:day-statistic:confirm'">确认</a-button>
+          <a-button size="small" v-if="record.carCostBasicInfoVO && record.carCostBasicInfoVO.confirmFlag" :disabled="!record.waybillId" type="link" @click="showConfirmModal(record,false)" v-privilege="'car-cost:report:day-statistic:un-confirm'">反确认</a-button>
         </template>
       </template>
     </a-table>

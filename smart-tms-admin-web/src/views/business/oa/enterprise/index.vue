@@ -42,7 +42,7 @@
     </a-row>
 
     <a-table
-        :scroll="{ x: 1300 }"
+        :scroll="{ x: '100%' }"
         size="small"
         :dataSource="tableData"
         :columns="columns"
@@ -57,15 +57,15 @@
         </template>
         <template v-if="column.dataIndex === 'unifiedSocialCreditCode'">
           <span>{{ record.unifiedSocialCreditCode }}</span>
-          <SmartCopyIcon :value="text" />
+          <SmartCopyIcon :value="text" v-if="record.unifiedSocialCreditCode" />
         </template>
         <template v-if="column.dataIndex === 'networkFreightTransportCode'">
           <span>{{ record.networkFreightTransportCode }}</span>
-          <SmartCopyIcon :value="text" />
+          <SmartCopyIcon :value="text" v-if="record.networkFreightTransportCode" />
         </template>
         <template v-if="column.dataIndex === 'contactPhone'">
           <span>{{ record.contactPhone }}</span>
-          <SmartCopyIcon :value="text" />
+          <SmartCopyIcon :value="text" v-if="record.contactPhone" />
         </template>
         <template  v-if="column.dataIndex === 'disabledFlag'">
           {{ text ? '禁用' : '启用' }}
@@ -77,10 +77,10 @@
           {{$smartEnumPlugin.getDescByValue('ENTERPRISE_TYPE_ENUM', text)}}
         </template>
         <template  v-if="column.dataIndex === 'action'">
-          <a-button size="small" type="link" @click="flowConfig(record.enterpriseId)">流程配置</a-button>
-          <a-button size="small" type="link" @click="initAccount(record.enterpriseId)">账号初始化</a-button>
+          <a-button size="small" type="link" @click="flowConfig(record.enterpriseId)" v-privilege="'enterprise:flowConfig'">流程配置</a-button>
+          <a-button size="small" type="link" @click="initAccount(record.enterpriseId)" v-privilege="'enterprise:initAccount'">账号初始化</a-button>
           <a-button v-privilege="'enterprise:edit'" size="small" type="link" @click="update(record.enterpriseId)">编辑</a-button>
-          <a-button v-privilege="'enterprise:delete'" size="small" type="link" @click="confirmDelete(record.enterpriseId)">删除</a-button>
+          <a-button v-privilege="'enterprise:delete'" size="small" type="link" danger @click="confirmDelete(record.enterpriseId)">删除</a-button>
         </template>
       </template>
     </a-table>
@@ -181,7 +181,7 @@ const columns = reactive([
     title: '操作',
     dataIndex: 'action',
     fixed: 'right',
-    width: 240
+    width: 260
   },
 ]);
 

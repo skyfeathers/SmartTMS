@@ -48,7 +48,7 @@
             @click="validate(showReceiptModal)">上传回单
           </a-button>
           <a-button size="small" type="primary" :disabled="disableOperateFlag"
-                    @click="handlePathUpdate">
+                    @click="handlePathUpdate" v-privilege="'waybill:updatePath'">
                     修改路线
           </a-button>
             <a-button size="small" type="primary"

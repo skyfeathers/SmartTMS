@@ -1,5 +1,5 @@
 <template>
-  <a-form v-privilege="'oilCardRate:query'" class="smart-query-form">
+  <a-form v-privilege="'customerWaybillCount:query'" class="smart-query-form">
     <a-row class="smart-query-form-row">
       <a-form-item class="smart-query-form-item" label="客服">
         <employee-select
@@ -43,7 +43,7 @@
   <a-card :bordered="false" :hoverable="true" size="small">
     <a-row class="smart-table-btn-block">
       <div class="smart-table-operate-block">
-        <a-button v-privilege="'oilCardRate:export'" size="small" @click="exportExcel">导出</a-button>
+        <a-button v-privilege="'customerWaybillCount:export'" size="small" @click="exportExcel">导出</a-button>
       </div>
       <div class="smart-table-setting-block"></div>
     </a-row>

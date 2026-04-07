@@ -3,7 +3,7 @@
     <template #icon><smile-outlined /></template>
   </a-alert>
   <div class="view-box">
-    <a-form v-privilege="'carCostReport:query'" class="smart-query-form">
+    <a-form class="smart-query-form">
       <a-row class="smart-query-form-row">
         <a-form-item class="smart-query-form-item" label="车辆">
           <VehicleSelect v-model:value="queryForm.vehicleIdList" multiple width="150px"/>
@@ -31,7 +31,7 @@
         </a-form-item>
 
         <a-form-item class="smart-query-form-item smart-margin-left10">
-          <a-button v-privilege="'carCostReport:export'" @click="exportExcel()">导出</a-button>
+          <a-button v-privilege="'car-cost:report:month-statistic:export'" @click="exportExcel()">导出</a-button>
         </a-form-item>
       </a-row>
     </a-form>
@@ -57,8 +57,8 @@
       >
         <template #bodyCell="{ text, record, index, column }">
           <template v-if="column.dataIndex === 'action'">
-            <a-button v-privilege="'carCostReport:detail'" size="small" type="link" @click="detail(record.vehicleId)">明细</a-button>
-            <a-button v-privilege="'carCostReport:export'" size="small" type="link" @click="exportDetailExcel(record.vehicleId)" >导出</a-button>
+            <a-button v-privilege="'car-cost:report:month-statistic:detail'" size="small" type="link" @click="detail(record.vehicleId)">明细</a-button>
+            <a-button v-privilege="'car-cost:report:month-statistic:export-single'" size="small" type="link" @click="exportDetailExcel(record.vehicleId)" >导出</a-button>
           </template>
         </template>
       </a-table>
@@ -266,7 +266,7 @@ function detail (vehicleId) {
     endTime
   } = queryForm
   router.push({
-    path: '/car-cost/day-stastics',
+    path: '/car-cost/report/day-stastics',
     query: {
       vehicleId,
       enterpriseId,

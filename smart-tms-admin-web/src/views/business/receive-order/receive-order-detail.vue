@@ -231,6 +231,7 @@ const waybillReceiveColumns = computed(() => {
     headerColumns.push({
       title: '本次应收',
       dataIndex: 'thisReceiveAmount',
+      width: 100
     });
     return headerColumns.concat(columns);
   }

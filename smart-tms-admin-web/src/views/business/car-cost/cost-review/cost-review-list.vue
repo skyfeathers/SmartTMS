@@ -1,5 +1,5 @@
 <template>
-    <a-form class="smart-query-form">
+    <a-form class="smart-query-form" v-privilege="'car-cost:cost-review:query'">
         <a-row class="smart-query-form-row">
             <a-form-item class="smart-query-form-item" label="运单号">
                 <a-input v-model:value="queryForm.waybillNumber" style="width: 150px;" placeholder="运单号"></a-input>
@@ -45,31 +45,31 @@
     <a-card size="small" :bordered="false" :hoverable="true">
         <a-row class="smart-table-btn-block">
             <div class="smart-table-operate-block">
-                <a-button @click="addCarCostPay()" type="primary" size="small">
+                <a-button @click="addCarCostPay()" type="primary" size="small" v-privilege="'car-cost:cost-review:add'">
                     <template #icon>
                         <PlusOutlined />
                     </template>
                     新增费用
                 </a-button>
-                <a-button @click="addCarCostReceive()" type="primary" size="small">
+                <a-button @click="addCarCostReceive()" type="primary" size="small" v-privilege="'car-cost:cost-review:apply'">
                     <template #icon>
                         <PlusOutlined />
                     </template>
                     申请出车款
                 </a-button>
-                <a-button @click="addCarCostOilReceive()" type="primary" size="small">
+                <a-button @click="addCarCostOilReceive()" type="primary" size="small" v-privilege="'car-cost:cost-review:oil-recharge'">
                     <template #icon>
                         <PlusOutlined />
                     </template>
                     油卡充值
                 </a-button>
-                <a-button @click="showBatchAudit()" type="default" size="small">
+                <a-button @click="showBatchAudit()" type="default" size="small" v-privilege="'car-cost:cost-review:batch-audit'">
                     批量审核
                 </a-button>
-                <a-button @click="associationWaybill()" type="default" size="small">
+                <a-button @click="associationWaybill()" type="default" size="small" v-privilege="'car-cost:cost-review:association'">
                     关联运单
                 </a-button>
-                <a-button @click="unAssociation()" type="default" size="small">
+                <a-button @click="unAssociation()" type="default" size="small" v-privilege="'car-cost:cost-review:un-association'">
                     取消关联
                 </a-button>
             </div>
@@ -97,9 +97,9 @@
                 </template>
                 <template v-else-if="column.dataIndex === 'action'">
                     <div class="smart-table-operate">
-                        <a-button @click="showAudit(record)" type="link">审核</a-button>
-                        <a-button @click="edit(record)" type="link">修改</a-button>
-                        <a-button @click="confirmDelete(record.tabulationId)" type="link">删除
+                        <a-button @click="showAudit(record)" type="link" v-privilege="'car-cost:cost-review:audit'">审核</a-button>
+                        <a-button @click="edit(record)" type="link" v-privilege="'car-cost:cost-review:edit'">修改</a-button>
+                        <a-button @click="confirmDelete(record.tabulationId)" type="link" v-privilege="'car-cost:cost-review:delete'">删除
                         </a-button>
                     </div>
                 </template>

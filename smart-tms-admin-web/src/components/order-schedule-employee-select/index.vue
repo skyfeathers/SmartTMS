@@ -55,15 +55,9 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['update:value', 'change']);
-// 箭头value变化
-watch(
-    () => props.shipperId,
-    (newValue) => {
-      query();
-    }
-);
+
 // =========== 业务逻辑 =============
-let roleCode = null;
+let roleCode = ref('');
 //员工列表数据
 const employeeList = ref([]);
 
@@ -71,8 +65,8 @@ async function query () {
   try {
     // 临时修改-- 订单查询所有调度
     let params = {};
-    if (roleCode) {
-      params = { roleCode: roleCode };
+    if (roleCode.value) {
+      params = { roleCode: roleCode.value };
     }
     if(null != props.disabledFlag){
       params.disabledFlag = props.disabledFlag;
@@ -90,7 +84,8 @@ async function queryRoleIdBySystemConfig () {
   try {
     useSpinStore().show();
     const { data } = await configApi.queryByKey(SYSTEM_CONFIG_KEY_ENUM.SCHEDULE_ROLE_CODE.value);
-    roleCode = data.configValue;
+    roleCode.value = data.configValue;
+    query();
   } catch (e) {
     console.log(e);
   } finally {

@@ -1,5 +1,5 @@
 <template>
-  <a-form class="smart-query-form">
+  <a-form class="smart-query-form" v-privilege="'vehicle-maintenance:query'">
     <a-row class="smart-query-form-row">
       <a-form-item label="保养时间" class="smart-query-form-item">
         <a-space direction="vertical" :size="12">
@@ -26,7 +26,7 @@
   <a-card size="small" :bordered="false" :hoverable="true">
     <a-row class="smart-table-btn-block">
       <div class="smart-table-operate-block">
-        <a-button @click="addOrUpdate()" type="primary" size="small">
+        <a-button @click="addOrUpdate()" type="primary" size="small" v-privilege="'vehicle-maintenance:add'">
           <template #icon>
             <PlusOutlined/>
           </template>
@@ -67,8 +67,8 @@
         </template>
         <template v-if="column.dataIndex === 'action'">
           <div class="smart-table-operate">
-            <a-button @click="addOrUpdate(record)" type="link">编辑</a-button>
-            <a-button @click="confirmDelete(record.maintenanceId)" type="link">删除</a-button>
+            <a-button @click="addOrUpdate(record)" type="link" v-privilege="'vehicle-maintenance:edit'">编辑</a-button>
+            <a-button @click="confirmDelete(record.maintenanceId)" type="link" danger v-privilege="'vehicle-maintenance:delete'">删除</a-button>
           </div>
         </template>
       </template>

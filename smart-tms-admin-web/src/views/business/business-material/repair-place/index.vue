@@ -87,7 +87,8 @@
           </div>
         </template>
         <template v-else-if="column.dataIndex == 'repairPlantName'">
-          <a-button @click="toDetail(record)" type="link">{{ record.repairPlantName }}</a-button>
+          <a-button @click="toDetail(record)" type="link" v-if="$privilege('repairPlace:detail')">{{ record.repairPlantName }}</a-button>
+          <span v-else>{{ record.repairPlantName }}</span>
         </template>
         <template v-else-if="column.dataIndex === 'disabledFlag'">
           <a-tag v-show="record.disabledFlag" color="error">禁用</a-tag>

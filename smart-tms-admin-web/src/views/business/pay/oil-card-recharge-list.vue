@@ -7,7 +7,7 @@
  * @LastEditTime: 2022-08-06
 -->
 <template>
-  <a-form class="smart-query-form" v-privilege="'payOrder:query'">
+  <a-form class="smart-query-form">
     <a-row class="smart-query-form-row">
 
       <a-form-item label="司机" class="smart-query-form-item">
@@ -178,7 +178,7 @@
         </template>
         <template v-if="column.dataIndex === 'action'">
           <div class="smart-table-operate">
-            <a-button v-show="record.auditStatus == FLOW_AUDIT_STATUS_ENUM.WAIT.value && record.auditFlag && $privilege('oilCardRecharge:audit')" size="small" type="link"
+            <a-button v-show="record.auditStatus == FLOW_AUDIT_STATUS_ENUM.WAIT.value && record.auditFlag && $privilege('oilCardRecharge:check')" size="small" type="link"
                       @click="showAuditModal(record)">
               审核
             </a-button>

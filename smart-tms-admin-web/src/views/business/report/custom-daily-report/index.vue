@@ -42,7 +42,7 @@
         </template>
         <template v-if="column.dataIndex === 'rate'">{{ record.rate }}%</template>
         <template v-if="column.dataIndex === 'action'">
-          <a-button  @click="showReceive(record.shipperId)" type="link">查看应收</a-button>
+          <a-button  @click="showReceive(record.shipperId)" type="link" v-privilege="'shipperReport:receive'">查看应收</a-button>
         </template>
       </template>
     </a-table>

@@ -1,5 +1,5 @@
 <template>
-  <a-form class="smart-query-form" v-privilege="'enterprise:query'">
+  <a-form class="smart-query-form" v-privilege="'pic:query'">
     <a-row class="smart-query-form-row">
       <a-form-item label="关键字" class="smart-query-form-item">
         <a-input style="width: 300px" v-model:value.trim="queryForm.keywords" placeholder="标题"/>
@@ -30,7 +30,7 @@
   <a-card size="small" :bordered="false" :hoverable="true">
     <a-row class="smart-table-btn-block">
       <div class="smart-table-operate-block">
-        <a-button @click="add()" v-privilege="'enterprise:add'" type="primary" size="small">
+        <a-button @click="add()" v-privilege="'pic:add'" type="primary" size="small">
           <template #icon>
             <PlusOutlined/>
           </template>
@@ -64,8 +64,8 @@
         {{  text?'启用':'禁用' }}
       </template>
       <template v-if="column.dataIndex === 'action'">
-        <a-button @click="update(record)" type="link">编辑</a-button>
-        <a-button @click="changeEnableFlag(record)" type="link">{{record.enableFlag?'禁用':'启用'}}</a-button>
+        <a-button @click="update(record)" type="link" v-privilege="'pic:edit'">编辑</a-button>
+        <a-button @click="changeEnableFlag(record)" type="link" v-privilege="'pic:enable'">{{record.enableFlag?'禁用':'启用'}}</a-button>
       </template>
     </template>
     </a-table>

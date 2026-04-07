@@ -4,7 +4,7 @@
       :width="750"
       cancel-text="取消"
       ok-text="确认"
-      :title="form.waybillId ? '编辑':'添加'"
+      :title="form.basicInfoId ? '编辑':'添加'"
       @cancel="onClose"
       @ok="onSubmit"
   >

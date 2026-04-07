@@ -1,5 +1,5 @@
 <template>
-    <a-form class="smart-query-form" v-privilege="'businessType:query'">
+    <a-form class="smart-query-form" v-privilege="'car-cost:salary:query'">
         <a-row class="smart-query-form-row">
             <a-form-item class="smart-query-form-item" label="运单号">
                 <a-input v-model:value="queryForm.waybillNumber" style="width: 200px;" placeholder="运单号"></a-input>
@@ -33,7 +33,7 @@
     <a-card size="small" :bordered="false" :hoverable="true">
         <a-row class="smart-table-btn-block">
             <div class="smart-table-operate-block">
-                <a-button @click="addCarCostBasic()" type="primary" size="small">
+                <a-button @click="addCarCostBasic()" type="primary" size="small" v-privilege="'car-cost:salary:add'">
                     <template #icon>
                         <PlusOutlined />
                     </template>
@@ -54,12 +54,12 @@
                 </template>
                 <template v-else-if="column.dataIndex === 'action'">
                     <div class="smart-table-operate">
-                        <a-button @click="confirm(record)"
+                        <a-button @click="confirm(record)" v-privilege="'car-cost:salary:confirm'"
                             type="link">{{ record.confirmFlag ? '反确认' : '确认'}}</a-button>
-                        <a-button @click="confirmDelete(record.basicInfoId)"
-                            type="link">删除
+                        <a-button @click="confirmDelete(record.basicInfoId)" v-privilege="'car-cost:salary:delete'"
+                            type="link" danger>删除
                         </a-button>
-                        <a-button @click="edit(record)"
+                        <a-button @click="edit(record)" v-privilege="'car-cost:salary:edit'"
                             type="link">修改
                         </a-button>
                     </div>

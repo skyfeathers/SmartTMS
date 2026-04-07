@@ -110,7 +110,7 @@
         <template v-else-if="column.dataIndex === 'action'">
           <div class="smart-table-operate">
             <a-button type="link" @click="addOrUpdate(record.noticeId)" v-privilege="'notice:edit'">编辑</a-button>
-            <a-button type="link" @click="onDelete(record.noticeId)" v-privilege="'notice:delete'">删除</a-button>
+            <a-button type="link" danger @click="onDelete(record.noticeId)" v-privilege="'notice:delete'">删除</a-button>
           </div>
         </template>
       </template>
@@ -239,7 +239,7 @@ const tableColumns = reactive([
     title: '操作',
     dataIndex: 'action',
     fixed: 'right',
-    width: 100,
+    width: 120,
   },
 ]);
 

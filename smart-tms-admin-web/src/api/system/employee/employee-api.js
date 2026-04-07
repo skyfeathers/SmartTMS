@@ -17,8 +17,8 @@ export const employeeApi = {
    * }
    * @return {*}
    */
-  queryAll: () => {
-    return getRequest(`/employee/queryAll`);
+  queryAll: (params) => {
+    return getRequest(`/employee/queryAll`, params);
   },
   /**
    * @description: 员工管理查询
