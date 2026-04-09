@@ -220,7 +220,7 @@ const { columnsData:columns,tableWidth } = useDragTable([
   {
     title: "关联车辆",
     dataIndex: "driverVehicleVOList",
-    width: 140,
+    width: 170,
   },
 
   {

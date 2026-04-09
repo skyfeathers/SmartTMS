@@ -7,6 +7,7 @@
  */
 import { resolve } from 'path';
 import vue from '@vitejs/plugin-vue';
+import compression from 'vite-plugin-compression'
 
 const pathResolve = (dir) => {
   return resolve(__dirname, '.', dir);
@@ -39,6 +40,14 @@ export default {
   },
   plugins: [
     vue(),
+    // gzip 压缩
+    compression({
+      verbose: true, // 是否在控制台输出压缩结果
+      disable: false, // 是否禁用
+      threshold: 10240, // 体积大于 threshold 才会被压缩,单位 b
+      algorithm: 'gzip', // 压缩算法,可选 [ 'gzip' , 'brotliCompress' ,'deflate' , 'deflateRaw']
+      ext: '.gz', // 生成的压缩包后缀
+    }),
   ],
   optimizeDeps: {
     include: ['ant-design-vue/es/locale/zh_CN', 'dayjs/locale/zh-cn', 'ant-design-vue/es/locale/en_US'],

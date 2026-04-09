@@ -2,7 +2,7 @@
   <a-card size="small">
     <a-page-header :title="fleetDetail.fleetName">
       <template #extra>
-        <a-button danger @click="confirmDelete(fleetDetail.fleetId,onClose)" v-privilege="'fleet:delete'">删除</a-button>
+        <a-button danger @click="confirmDelete([fleetDetail.fleetId],onClose)" v-privilege="'fleet:delete'">删除</a-button>
         <a-button @click="updateFleet" v-privilege="'fleet:edit'">编辑</a-button>
         <a-button v-if="fleetDetail.auditStatus === AUDIT_STATUS_ENUM.WAIT_AUDIT.value" type="primary"
                   @click="auditFleet" v-privilege="'fleet:batchAudit'">审核

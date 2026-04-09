@@ -6,7 +6,7 @@
         <SmartCopyIcon v-if="driverDetail.driverName" :value="driverDetail.driverName" />
       </template>
       <template #extra>
-        <a-button danger @click="confirmDelete(driverDetail.driverId,onClose)" v-privilege="'driver:delete'">删除</a-button>
+        <a-button danger @click="confirmDelete([driverDetail.driverId],onClose)" v-privilege="'driver:delete'">删除</a-button>
         <a-button @click="updateDriver" v-privilege="'driver:edit'">编辑</a-button>
         <a-button v-if="driverDetail.auditStatus === AUDIT_STATUS_ENUM.WAIT_AUDIT.value" type="primary" v-privilege="'driver:audit'"
                   @click="auditDriver">审核

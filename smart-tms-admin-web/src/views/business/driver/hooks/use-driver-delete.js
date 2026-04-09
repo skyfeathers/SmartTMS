@@ -5,7 +5,7 @@ import { driverApi } from '/@/api/business/driver/driver-api';
 export function useDriverDelete () {
   function confirmDelete (driverIdList, callBack) {
     Modal.confirm({
-      title: `确认要删除${driverIdList.length}个司机吗？`,
+      title: `确认要删除吗？`,
       content: '删除后，该信息将不可恢复',
       okText: '删除',
       okType: 'danger',

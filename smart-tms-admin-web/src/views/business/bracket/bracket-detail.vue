@@ -15,7 +15,7 @@
           <SmartCopyIcon v-if="bracketDetail.bracketNo" :value="bracketDetail.bracketNo" />
         </template>
         <template #extra>
-          <a-button danger @click="confirmDelete(bracketDetail.bracketId, onClose)"
+          <a-button danger @click="confirmDelete([bracketDetail.bracketId], onClose)"
             v-privilege="'bracket:delete'">删除</a-button>
           <a-button @click="updateBracket" v-privilege="'bracket:edit'">编辑</a-button>
           <a-button v-if="bracketDetail.auditStatus === AUDIT_STATUS_ENUM.WAIT_AUDIT.value"
