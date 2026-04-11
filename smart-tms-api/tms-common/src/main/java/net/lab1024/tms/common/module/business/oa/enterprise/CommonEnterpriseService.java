@@ -62,7 +62,7 @@ public class CommonEnterpriseService {
      */
     public EnterpriseEntity selectByDomainName(HttpServletRequest request){
         String domainName = request.getServerName();
-        if(request.getServerPort() != 80){
+        if(request.getServerPort() != 80 && request.getServerPort() != 443){
             domainName = domainName + ":" + request.getServerPort();
         }
         EnterpriseEntity enterpriseEntity = domainEnterpriseMap.get(domainName);
