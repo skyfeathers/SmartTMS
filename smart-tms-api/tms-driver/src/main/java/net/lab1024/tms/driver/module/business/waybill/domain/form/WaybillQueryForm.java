@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import net.lab1024.tms.common.common.domain.PageParam;
 import net.lab1024.tms.common.common.swagger.ApiModelPropertyEnum;
+import net.lab1024.tms.common.module.business.pay.constant.PayOrderStatusEnum;
 import net.lab1024.tms.common.module.business.waybill.constant.WaybillStatusEnum;
 
 import java.time.LocalDate;
@@ -21,6 +22,13 @@ public class WaybillQueryForm extends PageParam {
 
     @ApiModelPropertyEnum(value = WaybillStatusEnum.class, desc = "运单状态")
     private List<Integer> waybillStatusList;
+
+    @ApiModelProperty("付款状态")
+    @ApiModelPropertyEnum(PayOrderStatusEnum.class)
+    private Integer payStatus;
+
+    @ApiModelPropertyEnum(value = WaybillStatusEnum.class, desc = "运单状态")
+    private Integer waybillStatus;
 
     @ApiModelProperty("货主ID")
     private Long shipperId;

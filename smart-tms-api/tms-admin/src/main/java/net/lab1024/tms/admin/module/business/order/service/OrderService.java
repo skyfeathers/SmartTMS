@@ -437,9 +437,6 @@ public class OrderService {
         if (CollectionUtils.isEmpty(managerList)) {
             return ResponseDTO.userErrorParam("货主业务负责人不能为空");
         }
-        if (BooleanUtils.isTrue(createForm.getSplitTransportFlag()) && OrderTypeEnum.NETWORK_FREIGHT.equalsValue(createForm.getOrderType())) {
-            return ResponseDTO.userErrorParam("分段运输不允许网络货运配送");
-        }
         EnterpriseEntity enterpriseEntity = enterpriseDao.selectById(createForm.getEnterpriseId());
         if (null == enterpriseEntity || enterpriseEntity.getDeletedFlag()) {
             return ResponseDTO.userErrorParam("订单所属公司不存在");
@@ -448,13 +445,6 @@ public class OrderService {
         // 如果订单所属公司与货主的公司不一致，提示
         if (!createForm.getEnterpriseId().equals(shipperEntity.getEnterpriseId())) {
             return ResponseDTO.userErrorParam("货主属于【" + shipperEnterpriseEntity.getEnterpriseName() + "】与订单所属公司不一致");
-        }
-        if (TransportationTypeEnum.CONTAINER_TRANSPORT.equalsValue(createForm.getBusinessTypeCode())) {
-            if (null == createForm.getCabinetId()) {
-                return ResponseDTO.userErrorParam("集装箱运输，请填写柜型");
-            }
-        } else {
-            createForm.setCabinetId(null);
         }
         createForm.setManagerId(managerList.get(NumberConst.ZERO).getEmployeeId());
         return ResponseDTO.ok();

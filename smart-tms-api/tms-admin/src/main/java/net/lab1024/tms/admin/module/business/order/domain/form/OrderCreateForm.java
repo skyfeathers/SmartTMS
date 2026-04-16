@@ -54,7 +54,6 @@ public class OrderCreateForm {
     private Integer businessTypeCode;
 
     @ApiModelProperty("业务类型")
-    @NotNull(message = "业务类型不能为空")
     private Long containerBusinessTypeId;
 
     @ApiModelProperty("柜型")

@@ -22,7 +22,6 @@ public class WaybillUpdateForm extends WaybillSettleTypeForm {
     @NotNull(message = "运单id不能为空")
     private Long waybillId;
 
-    @NotNull(message = "业务类型不能为空")
     @CheckEnum(value = WaybillTransportModeEnum.class, message = "业务类型不正确")
     private Integer transportMode;
 

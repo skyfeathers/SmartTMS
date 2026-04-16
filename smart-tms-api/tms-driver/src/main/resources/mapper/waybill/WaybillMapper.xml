@@ -39,6 +39,12 @@
             <if test="queryForm.vehicleId != null">
                 AND w.vehicle_id = #{queryForm.vehicleId}
             </if>
+            <if test="queryForm.waybillStatus != null">
+                and w.waybill_status = #{queryForm.waybillStatus}
+            </if>
+            <if test="queryForm.payStatus != null">
+                AND w.pay_status = #{queryForm.payStatus}
+            </if>
             <if test="queryForm.startTime != null">
                 AND DATE_FORMAT(w.create_time, '%Y-%m-%d') &gt;= #{queryForm.startTime}
             </if>
