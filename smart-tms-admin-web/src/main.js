@@ -132,4 +132,4 @@ function initBaiduMapAk() {
   }
 }
 
-initBaiduMapAk();
+//initBaiduMapAk();
