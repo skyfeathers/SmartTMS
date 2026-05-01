@@ -94,6 +94,8 @@ public class DriverManager extends ServiceImpl<DriverDao, DriverEntity> {
     @Transactional(rollbackFor = Throwable.class)
     public void updateHandle(DriverUpdateForm updateForm, Long enterpriseId, Long requestUserId, String requestUserName) {
         DriverEntity driverEntity = SmartBeanUtil.copy(updateForm, DriverEntity.class);
+        // DriverUpdateForm 无 enterpriseId 字段；到期证件等处依赖 DriverEntity.enterpriseId，需从当前租户上下文注入
+        driverEntity.setEnterpriseId(enterpriseId);
         driverEntity.setAuditStatus(AuditStatusEnum.WAIT_AUDIT.getValue());
         driverEntity.setUpdateUserId(requestUserId);
         driverEntity.setUpdateUserName(requestUserName);
