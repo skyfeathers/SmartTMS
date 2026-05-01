@@ -39,7 +39,7 @@ export default {
   // 网站logo
   logoUrl: logoImg,
   // 备案号
-  beiAnNo: '豫ICP备123456号-2',
+  beiAnNo: '',
   // android
   androidQr: gongzhonghao,
   // ios
@@ -47,9 +47,9 @@ export default {
   // 登录二维码
   loginQr: loginQR,
   // 公司名称
-  companyName: '1024实验室',
+  companyName: '福建智农互联',
   // 网站名称
-  websiteName: 'TMS系统',
+  websiteName: '智农物流平台',
   // 网站描述
   websiteDesc: ' ',
   dingdingLoginFlag: false,

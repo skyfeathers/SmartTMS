@@ -39,18 +39,16 @@
           </a-form-item>
           <div class="code-info">
             <div class="code-info-item">
-              <img src="/@/assets/images/login/code-h5.png" alt="" class="code-info-item-img" />
-              <div class="code-info-item-text">移动端</div>
+              <div class="code-info-item-text"></div>
             </div>
             <div class="code-info-item">
-              <img src="/@/assets/images/login/code-mp.png" alt="" class="code-info-item-img" />
-              <div class="code-info-item-text">微信号</div>
+              <div class="code-info-item-text"></div>
             </div>
           </div>
         </a-form>
         <div v-else class="login-form dingding-login-qrcode">
           <div>
-            <div class="sub-title">钉钉扫码登录</div>
+            <div class="sub-title"></div>
             <div id="self_defined_element" class="self-defined-classname">
             </div>
           </div>
@@ -59,7 +57,7 @@
     </div>
     <div class="footer">
       <div>
-        备案号：<span @click="toBeiAn">{{ appDefaultConfig.beiAnNo }}</span>版权所有© 2006{{
+        版权所有© 2025{{
           copyYear
         }}.{{ appDefaultConfig.companyName }}版权所有
       </div>
