@@ -1,13 +1,6 @@
 <template>
     <div class="code-info">
-        <div class="code-info-item">
-          <img src="/@/assets/images/login/code-h5.png" alt="" class="code-info-item-img" />
-          <div class="code-info-item-text">移动端</div>
-        </div>
-        <div class="code-info-item">
-          <img src="/@/assets/images/login/code-mp.png" alt="" class="code-info-item-img" />
-          <div class="code-info-item-text">微信号</div>
-        </div>
+        
     </div>
 </template>
 
