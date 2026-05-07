@@ -72,22 +72,8 @@ const watermark = {
   },
   // 该方法只允许调用一次
   set: function (id, str) {
-    // 如果存在水印，则不允许再调用了
-    if (document.getElementById(WATER_MARK_DOM_ID) !== null) {
-      alert('已经添加过全局水印了，请不要再重复添加!');
-      return;
-    }
-
-    setWatermark(id, str);
-
-    //每隔1分钟检查一次水印
-    smartAdminWaterMarkIntervalId = setInterval(() => {
-      setWatermark(id, str);
-    }, 60000);
-
-    window.onresize = () => {
-      setWatermark(id, str);
-    };
+    // 水印已禁用
+    return;
   },
   // 清空水印
   clear: function () {
